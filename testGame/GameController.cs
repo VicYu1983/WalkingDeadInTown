@@ -4,6 +4,7 @@ using System;
 using TouchScript.Gestures;
 using VicScript;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class GameController : MonoBehaviour {
 
@@ -17,6 +18,8 @@ public class GameController : MonoBehaviour {
     /* 代表單指劃過 */
     bool isFlicked = false;
 
+    List<IWeapon> weapons = new List<IWeapon>();
+
 	// Use this for initialization
 	void Start () {
         ke.OnFClick += OnFClick;
@@ -29,12 +32,33 @@ public class GameController : MonoBehaviour {
         vc.GamePage.GetComponent<ReleaseGesture>().Released += OnGamePageReleased;
         vc.GamePage.GetComponent<FlickGesture>().Flicked += OnGamePageFlicked;
         vc.GamePage.GetComponent<DoubleFlickedGesture>().OnDoubleFlickedEvent += OnGamePageDoubleFlicked;
-       // foreach (GameObject e in vc.Enemys) e.GetComponent<TapGesture>().Tapped += OnEnemyTapped;
+        // foreach (GameObject e in vc.Enemys) e.GetComponent<TapGesture>().Tapped += OnEnemyTapped;
+
+        /* age, size, dragable, count, offset, expand_speed, delay */
+
+        /* 步槍(半自動) */
+        //weapons.Add(new HalfAutoWeapon(vc, new object[] { 6, .3f, false, 3, 30.0f, 1.0f, false }));
+
+        /* 高性能狙擊槍 */
+       // weapons.Add(new HalfAutoWeapon(vc, new object[] { 60, 2.0f, false, 1, 0.0f, 0.1f, false }));
+
+        /* 雙管散彈槍 */
+       // weapons.Add(new HalfAutoWeapon(vc, new object[] { 6, .2f, false, 10, 20.0f, 1.0f, false }));
+
+        /* 智慧型狙擊槍 */
+        weapons.Add(new HalfAutoWeapon(vc, new object[] { 300, 1.0f, true, 1, 0.0f, 0.02f, true }));
+
+        /* 雷射加農砲 */
+      //  weapons.Add(new HalfAutoWeapon(vc, new object[] { 300, 1.0f, true, 1, 0.0f, 0.1f, true }));
+
+        /* 步槍:全自動 */
+       // weapons.Add(new AutoWeapon(vc, new object[] { 6, .1f, false, 1, 30.0f, 0.02f, false }));
     }
 
     private void OnGamePageReleased(object sender, EventArgs e)
     {
-        vc.ClearLastestAims();
+       // vc.ClearLastestAims();
+        foreach (IWeapon w in weapons) w.EndAim();
     }
 
     private void OnGamePagePressed(object sender, EventArgs e)
@@ -47,23 +71,7 @@ public class GameController : MonoBehaviour {
 #endif
             Vector3 touchPos = vc.GamePage.GetComponent<PressGesture>().ScreenPosition;
             Vector3 firePos = Camera.main.ScreenToWorldPoint(touchPos);
-
-        /* age, size, dragable, count, offset, expand_speed, delay */
-        /* 步槍(半自動) */
-        //vc.CreateAim(firePos, new object[] { 6, .3f, false, 3, 30.0f, 1.0f, false });
-
-        /* 高性能狙擊槍 */
-        //vc.CreateAim(firePos, new object[] { 60, 2.0f, false, 1, 0.0f, 0.1f, false });
-
-        /* 雙管散彈槍 */
-        //vc.CreateAim(firePos, new object[] { 6, .2f, false, 10, 20.0f, 1.0f, false });
-
-        /* 智慧型狙擊槍 */
-        //vc.CreateAim(firePos, new object[] { 300, 1.0f, true, 1, 0.0f, 0.02f, true });
-
-        /* 雷射加農砲 */
-        //vc.CreateAim(firePos, new object[] { 300, 1.0f, true, 1, 0.0f, 0.1f, true });
-
+            foreach (IWeapon w in weapons) w.StartAim(firePos);
 #if UNITY_EDITOR
 #else
         }
@@ -194,18 +202,17 @@ public class GameController : MonoBehaviour {
 
             uc.SetState( "Normal Move" );
         }
-        
+
 #if UNITY_EDITOR
-        vc.DragAims(Camera.main.ScreenToWorldPoint( Input.mousePosition ));
+        foreach (IWeapon w in weapons) w.MoveAim(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+        foreach (IWeapon w in weapons) w.KeepStartAim(Camera.main.ScreenToWorldPoint(Input.mousePosition));
 #else
         if (GetTouchCount() == 1 && !isFlicked )
         {
-            //vc.DragAims(Camera.main.ScreenToWorldPoint(GetTouchPosition()));
-            
+            foreach (IWeapon w in weapons) w.MoveAim(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+
             Vector3 firePos = Camera.main.ScreenToWorldPoint(GetTouchPosition());
-            
-            /* 步槍:全自動 */
-            vc.CreateAim(firePos, new object[] { 6, .1f, false, 1, 30.0f, 0.02f, false });
+            foreach (IWeapon w in weapons) w.KeepStartAim(firePos);
         }
 #endif
     }

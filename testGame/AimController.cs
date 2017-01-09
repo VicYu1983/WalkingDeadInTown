@@ -63,17 +63,8 @@ public class AimController : MonoBehaviour {
         int maxAge = GetComponent<AgeCalculator>().DeadAge;
         currentSize += ExpandSpeed;
         if (currentSize >= Size) currentSize = Size;
-
         Vector3 s = GetComponent<RectTransform>().localScale;
         s.x = s.y = currentSize;
-        /*
-        float scaleFac = (float)currentAge / (float)maxAge * ExpandSpeed;
-        if (scaleFac > 1) scaleFac = 1;
-        scaleFac *= Size;
-        
-        Vector3 s = GetComponent<RectTransform>().localScale;
-        s.x = s.y = scaleFac;
-        */
         GetComponent<RectTransform>().localScale = s;
     }
 }
