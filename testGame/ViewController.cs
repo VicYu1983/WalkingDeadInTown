@@ -68,7 +68,7 @@ public class ViewController : MonoBehaviour {
         CreateOneBullet(PrefabName.SPECIAL, from, dir, force);
     }
 
-    public void CreateAim( Vector3 pos, object[] config )
+    public int CreateAim( Vector3 pos, object[] config )
     {
         int age = (int)config[0];
         float size = (float)config[1];
@@ -78,6 +78,7 @@ public class ViewController : MonoBehaviour {
         float expandSpeed = (float) config[5];
         bool delay = (bool)config[6];
 
+        aimsId++;
         if (!Aims.ContainsKey(aimsId))
         {
             Aims.Add(aimsId, new List<AimController>());
@@ -94,50 +95,50 @@ public class ViewController : MonoBehaviour {
             aim.GetComponent<AimController>().SetPosition(pos);
             Aims[aimsId].Add(aim.GetComponent<AimController>());
         }
-
-        aimsId++;
+        return aimsId;
     }
 
-    public void DragAims(Vector3 pos)
+    public void DragAimsByIds(int[] ids, Vector3 pos)
     {
-        List<AimController> nowAims = GetLastAims();
-        if(nowAims != null)
+        foreach( int id in ids)
         {
-            foreach( AimController a in nowAims)
+            List<AimController> nowAims = GetAimById(id);
+            if (nowAims != null)
             {
-                if( a.Dragable)
+                foreach (AimController a in nowAims)
                 {
-                    try
+                    if (a.Dragable)
                     {
-                        a.GetComponent<AimController>().SetPosition(pos);
-                    }
-                    catch( Exception e )
-                    {
-                        /* AimController 在時間到時會自己刪掉自己。發生時。這邊就不用刪了 */
+                        try
+                        {
+                            a.GetComponent<AimController>().SetPosition(pos);
+                        }
+                        catch (Exception e)
+                        {
+                            /* AimController 在時間到時會自己刪掉自己。發生時。這邊就不用刪了 */
+                        }
                     }
                 }
             }
-        }
-    }
-    
-    public List<AimController> GetLastAims()
-    {
-        try
-        {
-            return Aims[aimsId - 1];
-        }
-        catch( Exception e )
-        {
-            return null;
+            
         }
     }
 
-    public void ClearLastestAims()
+    public List<AimController> GetAimById(int id)
     {
-        if(Aims.ContainsKey(aimsId-1))
+        if(Aims.ContainsKey(id))
         {
-            List<AimController> nowAims = GetLastAims();
-            if( nowAims != null )
+            return Aims[id];
+        }
+        return null;
+    }
+
+    public void ClearAimsByIds( int[] ids )
+    {
+        foreach( int id in ids)
+        {
+            List<AimController> nowAims = GetAimById(id);
+            if (nowAims != null)
             {
                 foreach (AimController a in nowAims)
                 {
@@ -157,10 +158,15 @@ public class ViewController : MonoBehaviour {
                 }
                 Aims.Remove(aimsId - 1);
             }
-            
         }
+        
     }
-
+    /*
+    public void ClearLastestAims()
+    {
+        ClearAimsById(aimsId);
+    }
+    */
     private void CreateOneBullet(PrefabName bulletName, Vector3 from, Vector3 dir, float force)
     {
         GameObject bullet = GameObjectFactory(bulletName);

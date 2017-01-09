@@ -9,17 +9,17 @@ public class HalfAutoWeapon : BasicWeapon, IWeapon {
 
     public override void StartAim(Vector3 pos)
     {
-        GetViewController().CreateAim(pos, GetConfig());
+        DoStartAim(pos);
     }
 
     public override void EndAim()
     {
-        GetViewController().ClearLastestAims();
+        DoEndAim();
     }
 
     public override void MoveAim(Vector3 pos)
     {
-        GetViewController().DragAims(pos);
+        DoMoveAim(pos);
     }
 
     public override void KeepStartAim(Vector3 pos)

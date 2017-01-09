@@ -37,7 +37,7 @@ public class GameController : MonoBehaviour {
         /* age, size, dragable, count, offset, expand_speed, delay */
 
         /* 步槍(半自動) */
-        //weapons.Add(new HalfAutoWeapon(vc, new object[] { 6, .3f, false, 3, 30.0f, 1.0f, false }));
+        weapons.Add(new HalfAutoWeapon(vc, new object[] { 6, .3f, false, 3, 30.0f, 1.0f, false }));
 
         /* 高性能狙擊槍 */
        // weapons.Add(new HalfAutoWeapon(vc, new object[] { 60, 2.0f, false, 1, 0.0f, 0.1f, false }));
