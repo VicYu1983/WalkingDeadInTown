@@ -62,7 +62,7 @@ public class BasicWeapon : IWeapon {
 
     bool IsClearWhenRelease()
     {
-        return (bool)GetConfig()[8];
+        return (bool)GetConfig()[9];
     }
 
     object[] GetConfig()

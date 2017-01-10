@@ -70,14 +70,14 @@ public class ViewController : MonoBehaviour {
 
     public int CreateAim( Vector3 pos, object[] config )
     {
-        int age = (int)config[0];
-        float size = (float)config[1];
-        bool dragable = (bool)config[2];
-        int count = (int)config[3];
-        float seperateRange = (float)config[4];
-        float expandSpeed = (float) config[5];
-        bool delay = (bool)config[6];
-        float startSize = (float)config[7];
+        int age = (int)config[1];
+        float size = (float)config[2];
+        bool dragable = (bool)config[3];
+        int count = (int)config[4];
+        float seperateRange = (float)config[5];
+        float expandSpeed = (float) config[6];
+        bool delay = (bool)config[7];
+        float startSize = (float)config[8];
 
         aimsId++;
         if (!Aims.ContainsKey(aimsId))

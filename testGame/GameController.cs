@@ -18,12 +18,38 @@ public class GameController : MonoBehaviour {
     /* 代表單指劃過 */
     bool isFlicked = false;
 
+    /* 持有武器 */
     List<IWeapon> weapons = new List<IWeapon>();
 
     bool showConfig = false;
     public void ToggleConfig( bool toggle )
     {
         showConfig = toggle;
+        weapons.Clear();
+        if (!showConfig)
+        {
+            UsingConfig();
+        }
+    }
+
+    void UsingConfig()
+    {
+        foreach (object[] c in GameConfig.WeaponConfig)
+        {
+            bool usingWeapon = (bool)c[11];
+            if (usingWeapon)
+            {
+                bool autoWeapon = (bool)c[10];
+                if (autoWeapon)
+                {
+                    weapons.Add(new AutoWeapon(vc, c));
+                }
+                else
+                {
+                    weapons.Add(new HalfAutoWeapon(vc, c));
+                }
+            }
+        }
     }
 
 	// Use this for initialization
@@ -43,7 +69,7 @@ public class GameController : MonoBehaviour {
         /* age, size, dragable, count, offset, expand_speed, delay */
 
         /* 步槍(半自動) */
-        weapons.Add(new HalfAutoWeapon(vc, new object[] { 10, .3f, false, 3, 30.0f, 0.05f, false, 0.0f, false }));
+        //weapons.Add(new HalfAutoWeapon(vc, new object[] { 10, .3f, false, 3, 30.0f, 0.05f, false, 0.0f, false }));
 
         /* 高性能狙擊槍 */
        // weapons.Add(new HalfAutoWeapon(vc, new object[] { 60, 2.0f, false, 1, 0.0f, 0.1f, false }));
@@ -52,7 +78,7 @@ public class GameController : MonoBehaviour {
        // weapons.Add(new HalfAutoWeapon(vc, new object[] { 6, .2f, false, 10, 20.0f, 1.0f, false }));
 
         /* 智慧型狙擊槍 */
-        weapons.Add(new HalfAutoWeapon(vc, new object[] { 300, 1.0f, true, 1, 0.0f, 0.02f, true, .5f, true }));
+        //weapons.Add(new HalfAutoWeapon(vc, new object[] { 300, 1.0f, true, 1, 0.0f, 0.02f, true, .5f, true }));
 
         /* 雷射加農砲 */
       //  weapons.Add(new HalfAutoWeapon(vc, new object[] { 300, 1.0f, true, 1, 0.0f, 0.1f, true }));
@@ -227,38 +253,50 @@ public class GameController : MonoBehaviour {
     {
         /* name, age, size, dragable, count, offset, expand_speed, delay, startSize, clearWhenRelease */
 
+        GUIStyle style = new GUIStyle();
+        style.fontSize = 30;
+        style.margin = new RectOffset(10, 10, 5, 5);
+        style.normal.textColor = Color.white;
+
         if (showConfig)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.TextField("name");
-            GUILayout.TextField("age");
-            GUILayout.TextField("size");
-            GUILayout.TextField("dragable");
-            GUILayout.TextField("count");
-            GUILayout.TextField("offset");
-            GUILayout.TextField("expand_speed");
-            GUILayout.TextField("delay");
-            GUILayout.TextField("startSize");
-            GUILayout.TextField("clearWhenRelease");
+            GUILayout.TextField("武器名稱", style);
+            GUILayout.TextField("準星生命", style);
+            GUILayout.TextField("準星大小", style);
+            GUILayout.TextField("可拖動", style);
+            GUILayout.TextField("數量", style);
+            GUILayout.TextField("偏移量", style);
+            GUILayout.TextField("擴張速度", style);
+            GUILayout.TextField("延擊射擊", style);
+            GUILayout.TextField("起使大小", style);
+            GUILayout.TextField("離開消失", style);
             GUILayout.EndHorizontal();
-
+            GUILayout.BeginHorizontal();
+            GUILayout.TextField("");
+            GUILayout.EndHorizontal();
             foreach (object[] c in GameConfig.WeaponConfig)
             {
                 GUILayout.BeginHorizontal();
-                c[0] = GUILayout.TextField((string)c[0]);
-                c[1] = float.Parse(GUILayout.TextField(c[1] + ""));
-                c[2] = float.Parse(GUILayout.TextField(c[2] + ""));
-                c[3] = (GUILayout.TextField((bool)c[3] ? "1" : "0") == "1");
-                c[4] = float.Parse(GUILayout.TextField(c[4] + ""));
-                c[5] = float.Parse(GUILayout.TextField(c[5] + ""));
-                c[6] = float.Parse(GUILayout.TextField(c[6] + ""));
-                c[7] = (GUILayout.TextField((bool)c[7] ? "1" : "0") == "1");
-                c[8] = float.Parse(GUILayout.TextField(c[8] + ""));
-                c[9] = (GUILayout.TextField((bool)c[9] ? "1" : "0") == "1");
-                GUILayout.Toggle(false, "use");
+                c[0] = GUILayout.TextField((string)c[0], style);
+                c[1] = int.Parse(GUILayout.TextField(c[1] + "", style));
+                c[2] = float.Parse(GUILayout.TextField(c[2] + "", style));
+                c[3] = GUILayout.Toggle((bool)c[3], (bool)c[3] ? "可拖" : "不可拖", style);
+                c[4] = int.Parse(GUILayout.TextField(c[4] + "", style));
+                c[5] = float.Parse(GUILayout.TextField(c[5] + "", style));
+                c[6] = float.Parse(GUILayout.TextField(c[6] + "", style));
+                c[7] = GUILayout.Toggle((bool)c[7], (bool)c[7] ? "延擊" : "非延擊", style);
+                c[8] = float.Parse(GUILayout.TextField(c[8] + "", style));
+                c[9] = GUILayout.Toggle((bool)c[9], (bool)c[9] ? "離開消失" : "", style);
+                c[10] = GUILayout.Toggle((bool)c[10], (bool)c[10] ? "全自" : "半自" , style);
+                c[11] = GUILayout.Toggle((bool)c[11], (bool)c[11] ? "使用" : "不使用", style);
+                GUILayout.EndHorizontal();
+                GUILayout.BeginHorizontal();
+                GUILayout.TextField("");
                 GUILayout.EndHorizontal();
             }
         }
         
     }
+    
 }
