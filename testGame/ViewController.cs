@@ -77,6 +77,7 @@ public class ViewController : MonoBehaviour {
         float seperateRange = (float)config[4];
         float expandSpeed = (float) config[5];
         bool delay = (bool)config[6];
+        float startSize = (float)config[7];
 
         aimsId++;
         if (!Aims.ContainsKey(aimsId))
@@ -89,7 +90,7 @@ public class ViewController : MonoBehaviour {
             GameObject aim = GameObjectFactory(PrefabName.AIM);
             aim.SetActive(true);
             aim.transform.parent = ObjectContainer.transform;
-            aim.GetComponent<AimController>().SetConfig(age, size, dragable, expandSpeed, delay);
+            aim.GetComponent<AimController>().SetConfig(age, size, startSize, dragable, expandSpeed, delay);
             Vector3 offset = new Vector3(UnityEngine.Random.Range(-1.0f, 1.0f) * seperateRange, UnityEngine.Random.Range(-1.0f, 1.0f) * seperateRange, 0);
             aim.GetComponent<AimController>().Offset = offset;
             aim.GetComponent<AimController>().SetPosition(pos);

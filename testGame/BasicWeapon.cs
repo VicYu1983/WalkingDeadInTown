@@ -56,7 +56,13 @@ public class BasicWeapon : IWeapon {
 
     protected void DoEndAim()
     {
-        GetViewController().ClearAimsByIds(_ids.ToArray());
+        if(IsClearWhenRelease())
+            GetViewController().ClearAimsByIds(_ids.ToArray());
+    }
+
+    bool IsClearWhenRelease()
+    {
+        return (bool)GetConfig()[8];
     }
 
     object[] GetConfig()

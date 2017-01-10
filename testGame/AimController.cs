@@ -26,13 +26,14 @@ public class AimController : MonoBehaviour {
 
     float currentSize = 0.0f;
 
-    public void SetConfig( int maxAge, float size, bool dragable, float speed, bool delay )
+    public void SetConfig( int maxAge, float size, float startSize, bool dragable, float speed, bool delay )
     {
         GetComponent<AgeCalculator>().DeadAge = maxAge;
         this.Size = size;
         this.Dragable = dragable;
         this.ExpandSpeed = speed;
         this.Delay = delay;
+        this.currentSize = startSize;
     }
 
     public void SetPosition( Vector3 pos )
