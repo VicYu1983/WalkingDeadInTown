@@ -20,6 +20,12 @@ public class GameController : MonoBehaviour {
 
     List<IWeapon> weapons = new List<IWeapon>();
 
+    bool showConfig = false;
+    public void ToggleConfig( bool toggle )
+    {
+        showConfig = toggle;
+    }
+
 	// Use this for initialization
 	void Start () {
         ke.OnFClick += OnFClick;
@@ -215,5 +221,44 @@ public class GameController : MonoBehaviour {
             foreach (IWeapon w in weapons) w.KeepStartAim(firePos);
         }
 #endif
+    }
+
+    void OnGUI()
+    {
+        /* name, age, size, dragable, count, offset, expand_speed, delay, startSize, clearWhenRelease */
+
+        if (showConfig)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.TextField("name");
+            GUILayout.TextField("age");
+            GUILayout.TextField("size");
+            GUILayout.TextField("dragable");
+            GUILayout.TextField("count");
+            GUILayout.TextField("offset");
+            GUILayout.TextField("expand_speed");
+            GUILayout.TextField("delay");
+            GUILayout.TextField("startSize");
+            GUILayout.TextField("clearWhenRelease");
+            GUILayout.EndHorizontal();
+
+            foreach (object[] c in GameConfig.WeaponConfig)
+            {
+                GUILayout.BeginHorizontal();
+                c[0] = GUILayout.TextField((string)c[0]);
+                c[1] = float.Parse(GUILayout.TextField(c[1] + ""));
+                c[2] = float.Parse(GUILayout.TextField(c[2] + ""));
+                c[3] = (GUILayout.TextField((bool)c[3] ? "1" : "0") == "1");
+                c[4] = float.Parse(GUILayout.TextField(c[4] + ""));
+                c[5] = float.Parse(GUILayout.TextField(c[5] + ""));
+                c[6] = float.Parse(GUILayout.TextField(c[6] + ""));
+                c[7] = (GUILayout.TextField((bool)c[7] ? "1" : "0") == "1");
+                c[8] = float.Parse(GUILayout.TextField(c[8] + ""));
+                c[9] = (GUILayout.TextField((bool)c[9] ? "1" : "0") == "1");
+                GUILayout.Toggle(false, "use");
+                GUILayout.EndHorizontal();
+            }
+        }
+        
     }
 }
