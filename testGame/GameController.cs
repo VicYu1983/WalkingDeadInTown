@@ -116,7 +116,7 @@ public class GameController : MonoBehaviour {
         if ( GetTouchCount() == 2)
         {
             uc.SetState("Dodge");
-            vc.DodgePlayer(obj.ScreenFlickVector.normalized, 14000);
+            vc.DodgePlayer(obj.ScreenFlickVector.normalized, GameConfig.DodgeSpeed);
 
             /* 因為此操作會和單指操作衝突，因此加個flag來決定單指操作是否能觸發 */
             isDoubleFlicked = true;
@@ -133,9 +133,9 @@ public class GameController : MonoBehaviour {
         {
             Vector3 dir = vc.GamePage.GetComponent<FlickGesture>().ScreenFlickVector.normalized;
             Vector3 fromVec = vc.Player.GetComponent<RectTransform>().position;
-            vc.SetPlayerPosition(fromVec + dir * 200);
+            vc.SetPlayerPosition(fromVec + dir * GameConfig.LongMoveDistance);
 
-            uc.SetState("Move Long Distance:" + dir * 200);
+            uc.SetState("Move Long Distance:" + dir * GameConfig.LongMoveDistance);
 
             /* 因為此操作會和雙指持續按壓地面的操作衝突，因此加個flag來決定雙指持續按壓地面的操作是否能觸發 */
             isFlicked = true;
@@ -144,11 +144,6 @@ public class GameController : MonoBehaviour {
                 isFlicked = false;
             }));
         }
-    }
-
-    private void OnGoundClick()
-    {
-        print("DDD");
     }
     
     private void OnEnemyTapped(object sender, EventArgs e)
@@ -251,15 +246,42 @@ public class GameController : MonoBehaviour {
 
     void OnGUI()
     {
-        /* name, age, size, dragable, count, offset, expand_speed, delay, startSize, clearWhenRelease */
+        
 
-        GUIStyle style = new GUIStyle();
-        style.fontSize = 30;
-        style.margin = new RectOffset(10, 10, 5, 5);
-        style.normal.textColor = Color.white;
+
 
         if (showConfig)
         {
+            GUIStyle style = new GUIStyle();
+#if UNITY_EDITOR
+            style.fontSize = 10;
+            style.fixedWidth = 40;
+#else
+        style.fontSize = 30;
+        style.fixedWidth = 140;
+#endif
+            style.margin = new RectOffset(10, 10, 5, 5);
+            style.normal.textColor = Color.white;
+            style.alignment = TextAnchor.LowerRight;
+
+            GUILayout.BeginHorizontal();
+            GUILayout.TextField("移動速度", style);
+            GUILayout.TextField("閃避速度", style);
+            GUILayout.TextField("長距離移動", style);
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GameConfig.MoveSpeed = float.Parse(GUILayout.TextField(GameConfig.MoveSpeed + "", style));
+            GameConfig.DodgeSpeed = float.Parse(GUILayout.TextField(GameConfig.DodgeSpeed + "", style));
+            GameConfig.LongMoveDistance = int.Parse(GUILayout.TextField(GameConfig.LongMoveDistance + "", style));
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.EndHorizontal();
+
             GUILayout.BeginHorizontal();
             GUILayout.TextField("武器名稱", style);
             GUILayout.TextField("準星生命", style);
@@ -268,31 +290,36 @@ public class GameController : MonoBehaviour {
             GUILayout.TextField("數量", style);
             GUILayout.TextField("偏移量", style);
             GUILayout.TextField("擴張速度", style);
-            GUILayout.TextField("延擊射擊", style);
+            GUILayout.TextField("延遲射擊", style);
             GUILayout.TextField("起使大小", style);
             GUILayout.TextField("離開消失", style);
+            GUILayout.TextField("全/半自動", style);
+            GUILayout.TextField("裝備", style);
             GUILayout.EndHorizontal();
+
             GUILayout.BeginHorizontal();
-            GUILayout.TextField("");
             GUILayout.EndHorizontal();
+
+            /* name, age, size, dragable, count, offset, expand_speed, delay, startSize, clearWhenRelease */
+
             foreach (object[] c in GameConfig.WeaponConfig)
             {
                 GUILayout.BeginHorizontal();
                 c[0] = GUILayout.TextField((string)c[0], style);
+                //c[1] = (int)GUILayout.HorizontalSlider((int)c[1], 0, 300);
                 c[1] = int.Parse(GUILayout.TextField(c[1] + "", style));
                 c[2] = float.Parse(GUILayout.TextField(c[2] + "", style));
-                c[3] = GUILayout.Toggle((bool)c[3], (bool)c[3] ? "可拖" : "不可拖", style);
+                c[3] = GUILayout.Toggle((bool)c[3], (bool)c[3] ? "可" : "不可", style);
                 c[4] = int.Parse(GUILayout.TextField(c[4] + "", style));
                 c[5] = float.Parse(GUILayout.TextField(c[5] + "", style));
                 c[6] = float.Parse(GUILayout.TextField(c[6] + "", style));
-                c[7] = GUILayout.Toggle((bool)c[7], (bool)c[7] ? "延擊" : "非延擊", style);
+                c[7] = GUILayout.Toggle((bool)c[7], (bool)c[7] ? "延遲" : "非延遲", style);
                 c[8] = float.Parse(GUILayout.TextField(c[8] + "", style));
-                c[9] = GUILayout.Toggle((bool)c[9], (bool)c[9] ? "離開消失" : "", style);
+                c[9] = GUILayout.Toggle((bool)c[9], (bool)c[9] ? "消失" : "不消失", style);
                 c[10] = GUILayout.Toggle((bool)c[10], (bool)c[10] ? "全自" : "半自" , style);
-                c[11] = GUILayout.Toggle((bool)c[11], (bool)c[11] ? "使用" : "不使用", style);
+                c[11] = GUILayout.Toggle((bool)c[11], (bool)c[11] ? "裝備" : "不裝備", style);
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
-                GUILayout.TextField("");
                 GUILayout.EndHorizontal();
             }
         }

@@ -227,7 +227,7 @@ public class ViewController : MonoBehaviour {
             }
             else
             {
-                SetPlayerForce(diffVec, 400);
+                SetPlayerForce(diffVec, GameConfig.MoveSpeed);
             }
         }
     }
