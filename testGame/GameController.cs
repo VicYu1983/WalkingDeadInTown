@@ -12,6 +12,8 @@ public class GameController : MonoBehaviour {
     public ViewController vc;
     public UIController uc;
 
+    bool isDoubleHold = false;
+
     bool isClicked = false;
 
     /* 代表雙指劃過 */
@@ -76,14 +78,17 @@ public class GameController : MonoBehaviour {
     {
 #if UNITY_EDITOR
 #else
-        if ( Input.touchCount == 1)
+        if ( Input.touchCount == 1 )
         {
 #endif
-        Vector3 touchPos = vc.GamePage.GetComponent<LongPressGesture>().ScreenPosition;
-        Vector3 firePos = Camera.main.ScreenToWorldPoint(touchPos);
-        foreach (IWeapon w in weapons) w.StartAim(firePos);
+            Vector3 touchPos = vc.GamePage.GetComponent<LongPressGesture>().ScreenPosition;
+            Vector3 firePos = Camera.main.ScreenToWorldPoint(touchPos);
+            foreach (IWeapon w in weapons) w.StartAim(firePos);
 #if UNITY_EDITOR
 #else
+        }
+        else if ( Input.touchCount == 2 ){
+            isDoubleHold = true;
         }
 #endif
         uc.SetState("OnGamePageLongPressed");
@@ -91,7 +96,7 @@ public class GameController : MonoBehaviour {
 
     private void OnGamePageReleased(object sender, EventArgs e)
     {
-       // vc.ClearLastestAims();
+        isDoubleHold = false;
         foreach (IWeapon w in weapons) w.EndAim();
     }
 
@@ -226,14 +231,19 @@ public class GameController : MonoBehaviour {
     void Update () {
 
         /* 如果單指有劃過，就不觸動持續移動的功能 */
-	    if( GetTouchCount() == 2 && !isFlicked )
+	    if( GetTouchCount() == 2 && GetIsClick() && !isFlicked )
         {
             vc.SetPlayerPositionByScreenPos(GetTouchPosition());
-
             uc.SetState( "Normal Move" );
         }
+        
+        if ( isDoubleHold && !isFlicked )
+        {
+            vc.SetPlayerPositionByScreenPos(GetTouchPosition());
+            uc.SetState("Normal Move");
+        }
 
-        uc.SetState("judgeIsHoldTime: " + judgeIsHoldTime.ToString());
+        //uc.SetState("judgeIsHoldTime: " + judgeIsHoldTime.ToString());
 
 #if UNITY_EDITOR
         foreach (IWeapon w in weapons) w.MoveAim(Camera.main.ScreenToWorldPoint(Input.mousePosition));

@@ -210,6 +210,7 @@ public class ViewController : MonoBehaviour {
     void SetPlayerForce(Vector3 dir, float force)
     {
         Player.GetComponent<Rigidbody2D>().AddForce(dir.normalized * force);
+        Player.GetComponent<PlayerController>().SetBodyImage(dir.normalized);
     }
 	
 	void Update () {

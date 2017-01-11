@@ -8,6 +8,7 @@ class GameConfig
     public static float MoveSpeed = 400.0f;
     public static float DodgeSpeed = 14000.0f;
     public static int LongMoveDistance = 200;
+    public static float AimOffsetY = 0.0f;
 
     public static List<object[]> WeaponConfig = new List<object[]>()
     {

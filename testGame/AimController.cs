@@ -39,7 +39,7 @@ public class AimController : MonoBehaviour {
     public void SetPosition( Vector3 pos )
     {
         pos.z = 0;
-        pos.y += 50;
+        pos.y += GameConfig.AimOffsetY;
         GetComponent<RectTransform>().position = pos + _offset;
     }
     
