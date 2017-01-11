@@ -26,4 +26,9 @@ public class HalfAutoWeapon : BasicWeapon, IWeapon {
     {
         /* 半自動步槍不能持續開火 */
     }
+
+    public override void AimOnce(Vector3 pos)
+    {
+        DoAimOnce(pos);
+    }
 }

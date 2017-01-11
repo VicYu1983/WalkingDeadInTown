@@ -12,6 +12,8 @@ public class GameController : MonoBehaviour {
     public ViewController vc;
     public UIController uc;
 
+    bool isClicked = false;
+
     /* 代表雙指劃過 */
     bool isDoubleFlicked = false;
 
@@ -36,7 +38,7 @@ public class GameController : MonoBehaviour {
     {
         foreach (object[] c in GameConfig.WeaponConfig)
         {
-            bool usingWeapon = (bool)c[11];
+            bool usingWeapon = (bool)c[12];
             if (usingWeapon)
             {
                 bool autoWeapon = (bool)c[10];
@@ -60,31 +62,31 @@ public class GameController : MonoBehaviour {
         
         vc.Player.GetComponent<TapGesture>().Tapped += OnPlayerTapped;
         // vc.Ground.GetComponent<TapGesture>().Tapped += OnTapped;
-        vc.GamePage.GetComponent<PressGesture>().Pressed += OnGamePagePressed;
+        //vc.GamePage.GetComponent<PressGesture>().Pressed += OnGamePagePressed;
+        vc.GamePage.GetComponent<LongPressGesture>().LongPressed += OnGamePageLongPressed;
         vc.GamePage.GetComponent<ReleaseGesture>().Released += OnGamePageReleased;
         vc.GamePage.GetComponent<FlickGesture>().Flicked += OnGamePageFlicked;
         vc.GamePage.GetComponent<DoubleFlickedGesture>().OnDoubleFlickedEvent += OnGamePageDoubleFlicked;
         // foreach (GameObject e in vc.Enemys) e.GetComponent<TapGesture>().Tapped += OnEnemyTapped;
 
-        /* age, size, dragable, count, offset, expand_speed, delay */
+        UsingConfig();
+    }
 
-        /* 步槍(半自動) */
-        //weapons.Add(new HalfAutoWeapon(vc, new object[] { 10, .3f, false, 3, 30.0f, 0.05f, false, 0.0f, false }));
-
-        /* 高性能狙擊槍 */
-       // weapons.Add(new HalfAutoWeapon(vc, new object[] { 60, 2.0f, false, 1, 0.0f, 0.1f, false }));
-
-        /* 雙管散彈槍 */
-       // weapons.Add(new HalfAutoWeapon(vc, new object[] { 6, .2f, false, 10, 20.0f, 1.0f, false }));
-
-        /* 智慧型狙擊槍 */
-        //weapons.Add(new HalfAutoWeapon(vc, new object[] { 300, 1.0f, true, 1, 0.0f, 0.02f, true, .5f, true }));
-
-        /* 雷射加農砲 */
-      //  weapons.Add(new HalfAutoWeapon(vc, new object[] { 300, 1.0f, true, 1, 0.0f, 0.1f, true }));
-
-        /* 步槍:全自動 */
-       // weapons.Add(new AutoWeapon(vc, new object[] { 6, .1f, false, 1, 30.0f, 0.02f, false }));
+    private void OnGamePageLongPressed(object sender, EventArgs e)
+    {
+#if UNITY_EDITOR
+#else
+        if ( Input.touchCount == 1)
+        {
+#endif
+        Vector3 touchPos = vc.GamePage.GetComponent<LongPressGesture>().ScreenPosition;
+        Vector3 firePos = Camera.main.ScreenToWorldPoint(touchPos);
+        foreach (IWeapon w in weapons) w.StartAim(firePos);
+#if UNITY_EDITOR
+#else
+        }
+#endif
+        uc.SetState("OnGamePageLongPressed");
     }
 
     private void OnGamePageReleased(object sender, EventArgs e)
@@ -95,15 +97,14 @@ public class GameController : MonoBehaviour {
 
     private void OnGamePagePressed(object sender, EventArgs e)
     {
-
 #if UNITY_EDITOR
 #else
         if ( Input.touchCount == 1)
         {
 #endif
-            Vector3 touchPos = vc.GamePage.GetComponent<PressGesture>().ScreenPosition;
-            Vector3 firePos = Camera.main.ScreenToWorldPoint(touchPos);
-            foreach (IWeapon w in weapons) w.StartAim(firePos);
+        Vector3 touchPos = vc.GamePage.GetComponent<PressGesture>().ScreenPosition;
+        Vector3 firePos = Camera.main.ScreenToWorldPoint(touchPos);
+        foreach (IWeapon w in weapons) w.StartAim(firePos);
 #if UNITY_EDITOR
 #else
         }
@@ -213,12 +214,14 @@ public class GameController : MonoBehaviour {
         vc.CreateBullet(fromVec + dir * 50, dir, 100);
     }
 
-    void FireSpecialOnce( Vector3 firePos )
+    void FireSpecialOnce(Vector3 firePos)
     {
         Vector3 fromVec = vc.Player.GetComponent<RectTransform>().position;
         Vector3 dir = (firePos - fromVec).normalized;
         vc.CreateSpecialBullet(fromVec + dir * 50, dir, 100);
     }
+
+    int judgeIsHoldTime = 0;
     
     void Update () {
 
@@ -230,6 +233,8 @@ public class GameController : MonoBehaviour {
             uc.SetState( "Normal Move" );
         }
 
+        uc.SetState("judgeIsHoldTime: " + judgeIsHoldTime.ToString());
+
 #if UNITY_EDITOR
         foreach (IWeapon w in weapons) w.MoveAim(Camera.main.ScreenToWorldPoint(Input.mousePosition));
         foreach (IWeapon w in weapons) w.KeepStartAim(Camera.main.ScreenToWorldPoint(Input.mousePosition));
@@ -237,19 +242,37 @@ public class GameController : MonoBehaviour {
         if (GetTouchCount() == 1 && !isFlicked )
         {
             foreach (IWeapon w in weapons) w.MoveAim(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+            if( GetIsClick() )
+            {
+                if( !isClicked ){
+                    isClicked = true;
+                    judgeIsHoldTime = 0;
+                    StartCoroutine(DelayCall(.3f, () =>
+                    {
+                        isClicked = false;
+                    }));
 
-            Vector3 firePos = Camera.main.ScreenToWorldPoint(GetTouchPosition());
-            foreach (IWeapon w in weapons) w.KeepStartAim(firePos);
+                    Vector3 firePos = Camera.main.ScreenToWorldPoint(GetTouchPosition());
+                    foreach (IWeapon w in weapons) w.AimOnce(firePos);
+                }
+            }
+            else
+            {
+                judgeIsHoldTime++;
+                if( judgeIsHoldTime >= 10 ){
+                    Vector3 firePos = Camera.main.ScreenToWorldPoint(GetTouchPosition());
+                    foreach (IWeapon w in weapons) w.KeepStartAim(firePos);
+                }
+            }
+        }else{
+            judgeIsHoldTime = 0;
         }
 #endif
+        foreach (IWeapon w in weapons) w.Update();
     }
 
     void OnGUI()
     {
-        
-
-
-
         if (showConfig)
         {
             GUIStyle style = new GUIStyle();
@@ -257,8 +280,8 @@ public class GameController : MonoBehaviour {
             style.fontSize = 10;
             style.fixedWidth = 40;
 #else
-        style.fontSize = 30;
-        style.fixedWidth = 140;
+            style.fontSize = 30;
+            style.fixedWidth = 140;
 #endif
             style.margin = new RectOffset(10, 10, 5, 5);
             style.normal.textColor = Color.white;
@@ -294,6 +317,7 @@ public class GameController : MonoBehaviour {
             GUILayout.TextField("起使大小", style);
             GUILayout.TextField("離開消失", style);
             GUILayout.TextField("全/半自動", style);
+            GUILayout.TextField("時長", style);
             GUILayout.TextField("裝備", style);
             GUILayout.EndHorizontal();
 
@@ -317,7 +341,8 @@ public class GameController : MonoBehaviour {
                 c[8] = float.Parse(GUILayout.TextField(c[8] + "", style));
                 c[9] = GUILayout.Toggle((bool)c[9], (bool)c[9] ? "消失" : "不消失", style);
                 c[10] = GUILayout.Toggle((bool)c[10], (bool)c[10] ? "全自" : "半自" , style);
-                c[11] = GUILayout.Toggle((bool)c[11], (bool)c[11] ? "裝備" : "不裝備", style);
+                c[11] = int.Parse(GUILayout.TextField(c[11] + "", style));
+                c[12] = GUILayout.Toggle((bool)c[12], (bool)c[12] ? "裝備" : "不裝備", style);
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
                 GUILayout.EndHorizontal();

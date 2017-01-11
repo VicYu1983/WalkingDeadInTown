@@ -5,4 +5,6 @@ public interface IWeapon {
     void EndAim();
     void MoveAim( Vector3 pos );
     void KeepStartAim(Vector3 pos );
+    void AimOnce( Vector3 pos );
+    void Update();
 }

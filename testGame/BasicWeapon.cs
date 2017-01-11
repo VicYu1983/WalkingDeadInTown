@@ -33,15 +33,33 @@ public class BasicWeapon : IWeapon {
         throw new Exception("need to be override!");
     }
 
+    public virtual void AimOnce(Vector3 pos)
+    {
+        throw new Exception("need to be override!");
+    }
+
+    public virtual void Update()
+    {
+        keepShootTime++;
+        if( IsKeepAim())
+        {
+            DoKeepStartAim(startShootingPos);
+        }
+    }
+
     protected ViewController GetViewController()
     {
         return vc;
     }
 
+    Vector3 startShootingPos;
+
     protected void DoStartAim( Vector3 pos )
     {
-        _ids.Clear();
-        _ids.Add(GetViewController().CreateAim(pos, GetConfig()));
+        if( IsDragable())
+        {
+            Shooting(pos);
+        }
     }
 
     protected void DoMoveAim(Vector3 pos)
@@ -60,9 +78,46 @@ public class BasicWeapon : IWeapon {
             GetViewController().ClearAimsByIds(_ids.ToArray());
     }
 
+    protected void DoAimOnce(Vector3 pos)
+    {
+        if( !IsDragable() )
+        {
+            Shooting( pos );
+        }
+    }
+
+    void Shooting( Vector3 pos )
+    {
+        _ids.Clear();
+        _ids.Add(GetViewController().CreateAim(pos, GetConfig()));
+
+        startShootingPos = pos;
+        keepShootTime = 0;
+    }
+
+    int keepShootTime = 0;
+    bool IsKeepAim()
+    {
+        if( keepShootTime < GetShootingTime())
+        {
+            return true;
+        }
+        return false;
+    }
+
+    int GetShootingTime()
+    {
+        return (int)GetConfig()[11];
+    }
+
     bool IsClearWhenRelease()
     {
         return (bool)GetConfig()[9];
+    }
+
+    bool IsDragable()
+    {
+        return (bool)GetConfig()[3];
     }
 
     object[] GetConfig()

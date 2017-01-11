@@ -56,7 +56,7 @@ namespace VicScript
             pos /= count;
             return new Vector3(pos.x, pos.y, 0);
         }
-
+        
         void Update()
         {
 
