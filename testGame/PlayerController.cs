@@ -1,12 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System;
 
 public class PlayerController : MonoBehaviour {
 
     public Sprite[] bodySprites;
     public GameObject body;
     public GameObject foot;
+    public Action<GameObject,GameObject> OnHitEvent;
 
     Vector3 normalScale = new Vector3(1, 1, 1);
     Vector3 flipScale = new Vector3(-1, 1, 1);
@@ -26,8 +28,6 @@ public class PlayerController : MonoBehaviour {
 
 
     public void BodyRotateByAimDir ( Vector3 dir ){
-
-        print(dir);
         SetBodyImage(dir);
         _isAim = true;
     }
@@ -36,6 +36,12 @@ public class PlayerController : MonoBehaviour {
     {
         if (_isAim) return;
         SetBodyImage(dir);
+    }
+
+    void OnTriggerEnter2D( Collider2D other )
+    {
+        if(OnHitEvent != null)
+            OnHitEvent(this.gameObject,other.gameObject);
     }
 
     void SetBodyImage(Vector3 dir )

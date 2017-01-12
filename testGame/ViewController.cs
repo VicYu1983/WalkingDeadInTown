@@ -7,7 +7,8 @@ using System;
 enum PrefabName{
     BULLET,
     SPECIAL,
-    AIM
+    AIM,
+    BODY_EXPLODE
 }
 
 public class ViewController : MonoBehaviour {
@@ -16,7 +17,7 @@ public class ViewController : MonoBehaviour {
     public GameObject ObjectContainer;
     public GameObject Player;
     public GameObject Ground;
-    public GameObject[] Enemys;
+    public List<GameObject> Enemys;
 
     public GameObject[] Prefabs;
 
@@ -184,12 +185,7 @@ public class ViewController : MonoBehaviour {
             Player.GetComponent<PlayerController>().IsAim = false;
         }
     }
-    /*
-    public void ClearLastestAims()
-    {
-        ClearAimsById(aimsId);
-    }
-    */
+    
     private void CreateOneBullet(PrefabName bulletName, Vector3 from, Vector3 dir, float force)
     {
         GameObject bullet = GameObjectFactory(bulletName);
@@ -199,6 +195,21 @@ public class ViewController : MonoBehaviour {
         bullet.GetComponent<Rigidbody2D>().AddForce(dir * force);
         bullet.GetComponent<AgeCalculator>().OnDeadEvent += OnBulletDeadEvent;
         Bullets.Add(bullet);
+    }
+
+    private void CreateExplodeEffect( Vector3 pos )
+    {
+        GameObject explode = GameObjectFactory(PrefabName.BODY_EXPLODE);
+        explode.SetActive(true);
+        explode.transform.parent = ObjectContainer.transform;
+        explode.GetComponent<RectTransform>().position = pos;
+        explode.GetComponent<EffectTimeEvent>().OnEffectEndEvent += OnEffectEndEvent;
+    }
+
+    private void OnEffectEndEvent(GameObject obj)
+    {
+        obj.GetComponent<EffectTimeEvent>().OnEffectEndEvent -= OnEffectEndEvent;
+        Destroy(obj);
     }
 
     private void OnBulletDeadEvent(AgeCalculator sender)
@@ -218,6 +229,8 @@ public class ViewController : MonoBehaviour {
                 return Instantiate(Prefabs[1]);
             case PrefabName.AIM:
                 return Instantiate(Prefabs[2]);
+            case PrefabName.BODY_EXPLODE:
+                return Instantiate(Prefabs[3]);
         }
         return null;
     }
@@ -239,6 +252,18 @@ public class ViewController : MonoBehaviour {
     {
         ForSortingZ.Add(Player);
         foreach (GameObject e in Enemys) ForSortingZ.Add(e);
+        foreach( GameObject e in Enemys ) e.GetComponent<PlayerController>().OnHitEvent += OnEnmeyHit;
+    }
+
+    private void OnEnmeyHit(GameObject enemy, GameObject other )
+    {
+        if (other.name.IndexOf("Aim") != -1)
+        {
+            CreateExplodeEffect(enemy.GetComponent<RectTransform>().position);
+            Destroy(enemy);
+            Enemys.Remove(enemy);
+            ForSortingZ.Remove(enemy);
+        }
     }
 
     void Update () {
