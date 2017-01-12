@@ -11,16 +11,43 @@ public class PlayerController : MonoBehaviour {
     Vector3 normalScale = new Vector3(1, 1, 1);
     Vector3 flipScale = new Vector3(-1, 1, 1);
 
-    public void SetBodyImage( Vector3 dir )
+    bool _isAim = false;
+    public bool IsAim
     {
-        if( dir.x > .2f)
+        set
+        {
+            _isAim = value;
+        }
+        get
+        {
+            return _isAim;
+        }
+    }
+
+
+    public void BodyRotateByAimDir ( Vector3 dir ){
+
+        print(dir);
+        SetBodyImage(dir);
+        _isAim = true;
+    }
+
+    public void BodyRotateByMoveDir( Vector3 dir )
+    {
+        if (_isAim) return;
+        SetBodyImage(dir);
+    }
+
+    void SetBodyImage(Vector3 dir )
+    {
+        if (dir.x > .2f)
         {
             body.transform.localScale = normalScale;
-            if ( dir.y > .2f)
+            if (dir.y > .2f)
             {
                 body.GetComponent<Image>().sprite = bodySprites[3];
             }
-            else if( dir.y < -.2f )
+            else if (dir.y < -.2f)
             {
                 body.GetComponent<Image>().sprite = bodySprites[1];
             }
@@ -29,7 +56,7 @@ public class PlayerController : MonoBehaviour {
                 body.GetComponent<Image>().sprite = bodySprites[2];
             }
         }
-        else if( dir.x < -.2f)
+        else if (dir.x < -.2f)
         {
             body.transform.localScale = flipScale;
             if (dir.y > .2f)

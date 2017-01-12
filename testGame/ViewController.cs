@@ -98,7 +98,14 @@ public class ViewController : MonoBehaviour {
             aim.GetComponent<AgeCalculator>().OnDeadEvent += OnAimDeadEvent;
             Aims[aimsId].Add(aim.GetComponent<AimController>());
         }
+        BodyRotateByAimDir(pos);
         return aimsId;
+    }
+
+    private void BodyRotateByAimDir( Vector3 aimPos )
+    {
+        Vector3 aimDir = (aimPos - Player.GetComponent<RectTransform>().position).normalized;
+        Player.GetComponent<PlayerController>().BodyRotateByAimDir(aimDir);
     }
 
     private void OnAimDeadEvent(AgeCalculator obj)
@@ -120,6 +127,7 @@ public class ViewController : MonoBehaviour {
                 }
             }
         }
+        CheckIsStopAim();
     }
 
     public void DragAimsByIds(int[] ids, Vector3 pos)
@@ -134,10 +142,10 @@ public class ViewController : MonoBehaviour {
                     if (a.Dragable)
                     {
                         a.GetComponent<AimController>().SetPosition(pos);
+                        BodyRotateByAimDir(pos);
                     }
                 }
             }
-            
         }
     }
 
@@ -166,7 +174,15 @@ public class ViewController : MonoBehaviour {
                 if (Aims.ContainsKey(id)) Aims.Remove(id);
             }
         }
-        
+        CheckIsStopAim();
+    }
+
+    void CheckIsStopAim()
+    {
+        if( Aims.Count == 0)
+        {
+            Player.GetComponent<PlayerController>().IsAim = false;
+        }
     }
     /*
     public void ClearLastestAims()
@@ -216,7 +232,7 @@ public class ViewController : MonoBehaviour {
     void SetPlayerForce(Vector3 dir, float force)
     {
         Player.GetComponent<Rigidbody2D>().AddForce(dir.normalized * force);
-        Player.GetComponent<PlayerController>().SetBodyImage(dir.normalized);
+        Player.GetComponent<PlayerController>().BodyRotateByMoveDir(dir.normalized);
     }
 	
 	void Update () {
