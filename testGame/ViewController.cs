@@ -22,8 +22,8 @@ public class ViewController : MonoBehaviour {
 
     [SerializeField]
     private List<GameObject> Bullets;
+    private List<GameObject> ForSortingZ = new List<GameObject>();
 
-    [SerializeField]
     private Dictionary<int,List<AimController>> Aims = new Dictionary<int,List<AimController>>();
 
     int aimsId = 0;
@@ -234,8 +234,14 @@ public class ViewController : MonoBehaviour {
         Player.GetComponent<Rigidbody2D>().AddForce(dir.normalized * force);
         Player.GetComponent<PlayerController>().BodyRotateByMoveDir(dir.normalized);
     }
-	
-	void Update () {
+
+    void Start()
+    {
+        ForSortingZ.Add(Player);
+        foreach (GameObject e in Enemys) ForSortingZ.Add(e);
+    }
+
+    void Update () {
         Vector3 cameraPos = Camera.main.transform.localPosition;
         cameraPos.x = Player.GetComponent<RectTransform>().position.x;
         cameraPos.y = Player.GetComponent<RectTransform>().position.y;
@@ -253,9 +259,20 @@ public class ViewController : MonoBehaviour {
                 SetPlayerForce(diffVec, GameConfig.MoveSpeed);
             }
         }
-
-        //print("=================: " + Aims.Count);
+        SortingZ();
     }
 
+    void SortingZ()
+    {
+        ForSortingZ.Sort((GameObject a, GameObject b) =>
+        {
+            if (a.GetComponent<RectTransform>().position.y > b.GetComponent<RectTransform>().position.y) return -1;
+            return 1;
+        });
 
+        for (int i = 0; i < ForSortingZ.Count; ++i)
+        {
+            ForSortingZ[i].transform.SetAsLastSibling();
+        }
+    }
 }
