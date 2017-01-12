@@ -4,7 +4,7 @@ using System;
 
 public class AimController : MonoBehaviour {
 
-    public int id;
+    public int GroupId;
 
     public float ExpandSpeed = 1.0f;
     public float Size = 1.0f;
@@ -45,15 +45,15 @@ public class AimController : MonoBehaviour {
     
     void Start () {
         GetComponent<RectTransform>().localScale = new Vector3();
-        GetComponent<AgeCalculator>().OnDeadEvent += OnDeadEvent;
+        //GetComponent<AgeCalculator>().OnDeadEvent += OnDeadEvent;
     }
-    
+    /*
     private void OnDeadEvent(AgeCalculator obj)
     {
         GetComponent<AgeCalculator>().OnDeadEvent -= OnDeadEvent;
         Destroy(this.gameObject);
     }
-    
+    */
     void Update () {
         SetSize();
     }

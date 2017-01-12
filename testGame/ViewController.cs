@@ -94,9 +94,32 @@ public class ViewController : MonoBehaviour {
             Vector3 offset = new Vector3(UnityEngine.Random.Range(-1.0f, 1.0f) * seperateRange, UnityEngine.Random.Range(-1.0f, 1.0f) * seperateRange, 0);
             aim.GetComponent<AimController>().Offset = offset;
             aim.GetComponent<AimController>().SetPosition(pos);
+            aim.GetComponent<AimController>().GroupId = aimsId;
+            aim.GetComponent<AgeCalculator>().OnDeadEvent += OnAimDeadEvent;
             Aims[aimsId].Add(aim.GetComponent<AimController>());
         }
         return aimsId;
+    }
+
+    private void OnAimDeadEvent(AgeCalculator obj)
+    {
+        obj.OnDeadEvent -= OnAimDeadEvent;
+        GameObject aimSender = obj.gameObject;
+        int groupId = aimSender.GetComponent<AimController>().GroupId;
+        List<AimController> nowAims = GetAimById(groupId);
+        if (nowAims != null)
+        {
+            nowAims.Remove(aimSender.GetComponent<AimController>());
+            Destroy(aimSender);
+
+            if (nowAims.Count == 0)
+            {
+                if (Aims.ContainsKey(groupId))
+                {
+                    Aims.Remove(groupId);
+                }
+            }
+        }
     }
 
     public void DragAimsByIds(int[] ids, Vector3 pos)
@@ -110,14 +133,7 @@ public class ViewController : MonoBehaviour {
                 {
                     if (a.Dragable)
                     {
-                        try
-                        {
-                            a.GetComponent<AimController>().SetPosition(pos);
-                        }
-                        catch (Exception e)
-                        {
-                            /* AimController 在時間到時會自己刪掉自己。發生時。這邊就不用刪了 */
-                        }
+                        a.GetComponent<AimController>().SetPosition(pos);
                     }
                 }
             }
@@ -143,21 +159,11 @@ public class ViewController : MonoBehaviour {
             {
                 foreach (AimController a in nowAims)
                 {
-                    try
-                    {
-                        if (a.Delay)
-                        {
-                            /* fire delay shoot! */
-                        }
-                        Destroy(a.gameObject);
-                    }
-                    catch (Exception e)
-                    {
-                        /* AimController 在時間到時會自己刪掉自己。發生時。這邊就不用刪了 */
-                    }
-
+                    a.GetComponent<AgeCalculator>().OnDeadEvent -= OnAimDeadEvent;
+                    Destroy(a.gameObject);
                 }
-                Aims.Remove(aimsId - 1);
+                nowAims.Clear();
+                if (Aims.ContainsKey(id)) Aims.Remove(id);
             }
         }
         
@@ -231,6 +237,8 @@ public class ViewController : MonoBehaviour {
                 SetPlayerForce(diffVec, GameConfig.MoveSpeed);
             }
         }
+
+        //print("=================: " + Aims.Count);
     }
 
 
