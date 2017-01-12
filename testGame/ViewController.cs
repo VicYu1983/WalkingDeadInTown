@@ -270,9 +270,9 @@ public class ViewController : MonoBehaviour {
             return 1;
         });
 
-        for (int i = 0; i < ForSortingZ.Count; ++i)
+        for (int i = ForSortingZ.Count - 1; i >= 0; --i)
         {
-            ForSortingZ[i].transform.SetAsLastSibling();
+            ForSortingZ[i].transform.SetAsFirstSibling();
         }
     }
 }
