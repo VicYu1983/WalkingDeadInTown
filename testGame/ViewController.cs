@@ -17,10 +17,10 @@ public class ViewController : MonoBehaviour {
     public GameObject GamePage;
     public GameObject ObjectContainer;
     public GameObject AimPointContainer;
-    public GameObject Player;
+    public PlayerController Player;
     public GameObject Ground;
     public Color EnemyColor;
-    public List<GameObject> Enemys;
+    public List<PlayerController> Enemys;
     public List<GameObject> Stuffs;
 
     public GameObject[] Prefabs;
@@ -33,9 +33,9 @@ public class ViewController : MonoBehaviour {
 
     int aimsId = 0;
 
-    Vector3? targetPos;
-    Vector3 additivePos = new Vector3();
-
+   // Vector3? targetPos;
+   // Vector3 additivePos = new Vector3();
+   /*
     public void SetPlayerPositionByScreenPos( Vector3 screenPos )
     {
         targetPos = GetMousePositionOnWorld( screenPos );
@@ -50,19 +50,20 @@ public class ViewController : MonoBehaviour {
     {
         SetPlayerForce(dir, force);
     }
-
+    */
     public GameObject GetObjectFromObjectContainerByName( string name )
     {
         return ObjectContainer.transform.FindChild(name).gameObject;
     }
 
+    /*
     public void MakePlayerStop()
     {
         Vector3 playerAcc = Player.GetComponent<Rigidbody2D>().velocity;
         Player.GetComponent<Rigidbody2D>().AddForce(-playerAcc * 40);
         targetPos = null;
     }
-
+    */
     public void CreateBullet( Vector3 from, Vector3 dir, float force )
     {
         CreateOneBullet(PrefabName.BULLET, from, dir, force);
@@ -254,29 +255,30 @@ public class ViewController : MonoBehaviour {
         }
         return null;
     }
-
+    /*
     Vector3 GetMousePositionOnWorld( Vector3 screenPos )
     {
         Vector3 clickPos = screenPos;
         clickPos.z = Camera.main.transform.localPosition.z;
         return Camera.main.ScreenToWorldPoint(clickPos);
     }
-
+    */
+    /*
     void SetPlayerForce(Vector3 dir, float force)
     {
         Player.GetComponent<Rigidbody2D>().AddForce(dir.normalized * force);
         Player.GetComponent<PlayerController>().BodyRotateByMoveDir(dir.normalized);
     }
-
+    */
     void Start()
     {
-        ForSortingZ.Add(Player);
-        foreach (GameObject e in Enemys)
+        ForSortingZ.Add(Player.gameObject);
+        foreach (PlayerController e in Enemys)
         {
-            e.GetComponent<PlayerController>().SetColor(EnemyColor);
-            e.GetComponent<PlayerController>().OnHitEvent += OnEnmeyHit;
-            e.GetComponent<PlayerController>().SetAI(this, new AI());
-            ForSortingZ.Add(e);
+            e.SetColor(EnemyColor);
+            e.OnHitEvent += OnEnmeyHit;
+            e.SetAI(this, new AI());
+            ForSortingZ.Add(e.gameObject);
         }
         foreach (GameObject e in Stuffs) ForSortingZ.Add(e);
     }
@@ -285,19 +287,19 @@ public class ViewController : MonoBehaviour {
     {
         if (other.name.IndexOf("Aim") != -1)
         {
-            CreateExplodeEffect(enemy.GetComponent<RectTransform>().position);
+            CreateExplodeEffect(enemy.GetComponent<PlayerController>().Position);
             Destroy(enemy);
-            Enemys.Remove(enemy);
+            Enemys.Remove(enemy.GetComponent<PlayerController>());
             ForSortingZ.Remove(enemy);
         }
     }
 
     void Update () {
         Vector3 cameraPos = Camera.main.transform.localPosition;
-        cameraPos.x = Player.GetComponent<RectTransform>().position.x;
-        cameraPos.y = Player.GetComponent<RectTransform>().position.y;
+        cameraPos.x = Player.Position.x;
+        cameraPos.y = Player.Position.y;
         Camera.main.transform.localPosition = cameraPos;
-      
+      /*
         if( targetPos != null)
         {
             Vector3 diffVec = (Vector3)targetPos - Player.GetComponent<RectTransform>().position;
@@ -310,6 +312,7 @@ public class ViewController : MonoBehaviour {
                 SetPlayerForce(diffVec, GameConfig.MoveSpeed);
             }
         }
+        */
         SortingZ();
     }
 

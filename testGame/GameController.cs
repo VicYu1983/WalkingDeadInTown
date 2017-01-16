@@ -122,7 +122,7 @@ public class GameController : MonoBehaviour {
         if ( GetTouchCount() == 2)
         {
             uc.SetState("Dodge");
-            vc.DodgePlayer(obj.ScreenFlickVector.normalized, GameConfig.DodgeSpeed);
+            vc.Player.DodgePlayer(obj.ScreenFlickVector.normalized, GameConfig.DodgeSpeed);
 
             /* 因為此操作會和單指操作衝突，因此加個flag來決定單指操作是否能觸發 */
             isDoubleFlicked = true;
@@ -139,7 +139,7 @@ public class GameController : MonoBehaviour {
         {
             Vector3 dir = vc.GamePage.GetComponent<FlickGesture>().ScreenFlickVector.normalized;
             Vector3 fromVec = vc.Player.GetComponent<RectTransform>().position;
-            vc.SetPlayerPosition(fromVec + dir * GameConfig.LongMoveDistance);
+            vc.Player.SetPlayerPosition(fromVec + dir * GameConfig.LongMoveDistance);
 
             uc.SetState("Move Long Distance:" + dir * GameConfig.LongMoveDistance);
 
@@ -164,7 +164,7 @@ public class GameController : MonoBehaviour {
 
     private void OnSpaceClick()
     {
-        vc.MakePlayerStop();
+        vc.Player.MakePlayerStop();
     }
 
     private void OnPlayerTapped(object sender, EventArgs e)
@@ -172,7 +172,7 @@ public class GameController : MonoBehaviour {
         if ( GetTouchCount() == 2)
         {
             uc.SetState("Stop Player");
-            vc.MakePlayerStop();
+            vc.Player.MakePlayerStop();
         }
     }
     
@@ -183,12 +183,12 @@ public class GameController : MonoBehaviour {
 
     private void OnFPress()
     {
-        vc.SetPlayerPositionByScreenPos( Input.mousePosition );
+        vc.Player.SetPlayerPositionByScreenPos( Input.mousePosition );
     }
 
     private void OnFClick()
     {
-        vc.SetPlayerPositionByScreenPos( Input.mousePosition );
+        vc.Player.SetPlayerPositionByScreenPos( Input.mousePosition );
     }
 
     IEnumerator DelayCall( float time, Action doAction )
@@ -233,13 +233,13 @@ public class GameController : MonoBehaviour {
         /* 如果單指有劃過，就不觸動持續移動的功能 */
 	    if( GetTouchCount() == 2 && GetIsClick() && !isFlicked )
         {
-            vc.SetPlayerPositionByScreenPos(GetTouchPosition());
+            vc.Player.SetPlayerPositionByScreenPos(GetTouchPosition());
             uc.SetState( "Normal Move" );
         }
         
         if ( isDoubleHold && !isFlicked )
         {
-            vc.SetPlayerPositionByScreenPos(GetTouchPosition());
+            vc.Player.SetPlayerPositionByScreenPos(GetTouchPosition());
             uc.SetState("Normal Move");
         }
 

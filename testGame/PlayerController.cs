@@ -14,19 +14,20 @@ public class PlayerController : MonoBehaviour {
     Vector3 normalScale = new Vector3(1, 1, 1);
     Vector3 flipScale = new Vector3(-1, 1, 1);
 
-    AI _ai;
+    Vector3? targetPos;
+    Vector3 additivePos = new Vector3();
 
-    Vector3 _pos;
+    AI _ai;
+    
     public Vector3 Position
     {
         set
         {
-            _pos = value;
-            this.GetComponent<RectTransform>().position = _pos;
+            this.GetComponent<RectTransform>().position = value;
         }
         get
         {
-            return _pos;
+            return this.GetComponent<RectTransform>().position;
         }
     }
 
@@ -43,6 +44,27 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    public void SetPlayerPositionByScreenPos(Vector3 screenPos)
+    {
+        targetPos = GetMousePositionOnWorld(screenPos);
+    }
+
+    public void SetPlayerPosition(Vector3 pos)
+    {
+        targetPos = pos;
+    }
+
+    public void DodgePlayer(Vector3 dir, float force)
+    {
+        SetPlayerForce(dir, force);
+    }
+
+    public void MakePlayerStop()
+    {
+        Vector3 playerAcc = GetComponent<Rigidbody2D>().velocity;
+        GetComponent<Rigidbody2D>().AddForce(-playerAcc * 40);
+        targetPos = null;
+    }
 
     public void BodyRotateByAimDir ( Vector3 dir ){
         SetBodyImage(dir);
@@ -73,6 +95,12 @@ public class PlayerController : MonoBehaviour {
     {
         if(OnHitEvent != null)
             OnHitEvent(this.gameObject,other.gameObject);
+    }
+
+    void SetPlayerForce(Vector3 dir, float force)
+    {
+        GetComponent<Rigidbody2D>().AddForce(dir.normalized * force);
+        GetComponent<PlayerController>().BodyRotateByMoveDir(dir.normalized);
     }
 
     void SetBodyImage(Vector3 dir )
@@ -131,7 +159,30 @@ public class PlayerController : MonoBehaviour {
     void Update()
     {
         foot.GetComponent<Animator>().SetFloat("Speed", GetComponent<Rigidbody2D>().velocity.magnitude);
-
+        UpdatePosition();
         if (_ai != null) _ai.Update();
+    }
+
+    void UpdatePosition()
+    {
+        if (targetPos != null)
+        {
+            Vector3 diffVec = (Vector3)targetPos - Position;
+            if (diffVec.magnitude < 40)
+            {
+                targetPos = null;
+            }
+            else
+            {
+                SetPlayerForce(diffVec, GameConfig.MoveSpeed);
+            }
+        }
+    }
+
+    Vector3 GetMousePositionOnWorld(Vector3 screenPos)
+    {
+        Vector3 clickPos = screenPos;
+        clickPos.z = Camera.main.transform.localPosition.z;
+        return Camera.main.ScreenToWorldPoint(clickPos);
     }
 }
