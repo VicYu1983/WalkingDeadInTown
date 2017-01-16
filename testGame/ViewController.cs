@@ -8,16 +8,20 @@ enum PrefabName{
     BULLET,
     SPECIAL,
     AIM,
-    BODY_EXPLODE
+    BODY_EXPLODE,
+    AIM_POINT_0
 }
 
 public class ViewController : MonoBehaviour {
 
     public GameObject GamePage;
     public GameObject ObjectContainer;
+    public GameObject AimPointContainer;
     public GameObject Player;
     public GameObject Ground;
+    public Color EnemyColor;
     public List<GameObject> Enemys;
+    public List<GameObject> Stuffs;
 
     public GameObject[] Prefabs;
 
@@ -67,6 +71,20 @@ public class ViewController : MonoBehaviour {
     public void CreateSpecialBullet(Vector3 from, Vector3 dir, float force)
     {
         CreateOneBullet(PrefabName.SPECIAL, from, dir, force);
+    }
+
+    public void CreateAimPoint( int type, Vector3 pos)
+    {
+        GameObject ap;
+        switch( type)
+        {
+            case 0: ap = GameObjectFactory(PrefabName.AIM_POINT_0);break;
+            case 1: ap = GameObjectFactory(PrefabName.AIM_POINT_0); break;
+            case 2: ap = GameObjectFactory(PrefabName.AIM_POINT_0); break;
+            default:ap = GameObjectFactory(PrefabName.AIM_POINT_0); break;
+        }
+        ap.transform.parent = AimPointContainer.transform;
+        ap.GetComponent<RectTransform>().position = pos;
     }
 
     public int CreateAim( Vector3 pos, object[] config )
@@ -231,6 +249,8 @@ public class ViewController : MonoBehaviour {
                 return Instantiate(Prefabs[2]);
             case PrefabName.BODY_EXPLODE:
                 return Instantiate(Prefabs[3]);
+            case PrefabName.AIM_POINT_0:
+                return Instantiate(Prefabs[4]);
         }
         return null;
     }
@@ -251,8 +271,10 @@ public class ViewController : MonoBehaviour {
     void Start()
     {
         ForSortingZ.Add(Player);
+        foreach (GameObject e in Enemys) e.GetComponent<PlayerController>().SetColor(EnemyColor);
         foreach (GameObject e in Enemys) ForSortingZ.Add(e);
-        foreach( GameObject e in Enemys ) e.GetComponent<PlayerController>().OnHitEvent += OnEnmeyHit;
+        foreach (GameObject e in Stuffs) ForSortingZ.Add(e);
+        foreach ( GameObject e in Enemys ) e.GetComponent<PlayerController>().OnHitEvent += OnEnmeyHit;
     }
 
     private void OnEnmeyHit(GameObject enemy, GameObject other )

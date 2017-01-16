@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour {
     public Sprite[] bodySprites;
     public GameObject body;
     public GameObject foot;
+    public Color color;
     public Action<GameObject,GameObject> OnHitEvent;
 
     Vector3 normalScale = new Vector3(1, 1, 1);
@@ -36,6 +37,13 @@ public class PlayerController : MonoBehaviour {
     {
         if (_isAim) return;
         SetBodyImage(dir);
+    }
+
+    public void SetColor( Color color )
+    {
+        Image[] cs = GetComponentsInChildren<Image>();
+        foreach (Image c in cs) c.color = color;
+        this.color = color;
     }
 
     void OnTriggerEnter2D( Collider2D other )
@@ -90,6 +98,11 @@ public class PlayerController : MonoBehaviour {
                 body.GetComponent<Image>().sprite = bodySprites[0];
             }
         }
+    }
+
+    void Start()
+    {
+        SetColor(color);
     }
 
     void Update()
