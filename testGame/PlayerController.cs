@@ -14,6 +14,22 @@ public class PlayerController : MonoBehaviour {
     Vector3 normalScale = new Vector3(1, 1, 1);
     Vector3 flipScale = new Vector3(-1, 1, 1);
 
+    AI _ai;
+
+    Vector3 _pos;
+    public Vector3 Position
+    {
+        set
+        {
+            _pos = value;
+            this.GetComponent<RectTransform>().position = _pos;
+        }
+        get
+        {
+            return _pos;
+        }
+    }
+
     bool _isAim = false;
     public bool IsAim
     {
@@ -46,6 +62,13 @@ public class PlayerController : MonoBehaviour {
         this.color = color;
     }
 
+    public void SetAI( ViewController vc, AI ai)
+    {
+        _ai = ai;
+        _ai.ViewController = vc;
+        _ai.PlayerController = this;
+    }
+    
     void OnTriggerEnter2D( Collider2D other )
     {
         if(OnHitEvent != null)
@@ -108,5 +131,7 @@ public class PlayerController : MonoBehaviour {
     void Update()
     {
         foot.GetComponent<Animator>().SetFloat("Speed", GetComponent<Rigidbody2D>().velocity.magnitude);
+
+        if (_ai != null) _ai.Update();
     }
 }

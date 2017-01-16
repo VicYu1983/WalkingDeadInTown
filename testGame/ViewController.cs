@@ -271,10 +271,14 @@ public class ViewController : MonoBehaviour {
     void Start()
     {
         ForSortingZ.Add(Player);
-        foreach (GameObject e in Enemys) e.GetComponent<PlayerController>().SetColor(EnemyColor);
-        foreach (GameObject e in Enemys) ForSortingZ.Add(e);
+        foreach (GameObject e in Enemys)
+        {
+            e.GetComponent<PlayerController>().SetColor(EnemyColor);
+            e.GetComponent<PlayerController>().OnHitEvent += OnEnmeyHit;
+            e.GetComponent<PlayerController>().SetAI(this, new AI());
+            ForSortingZ.Add(e);
+        }
         foreach (GameObject e in Stuffs) ForSortingZ.Add(e);
-        foreach ( GameObject e in Enemys ) e.GetComponent<PlayerController>().OnHitEvent += OnEnmeyHit;
     }
 
     private void OnEnmeyHit(GameObject enemy, GameObject other )
