@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using System;
+using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour {
 
@@ -13,6 +14,9 @@ public class PlayerController : MonoBehaviour {
 
     Vector3 normalScale = new Vector3(1, 1, 1);
     Vector3 flipScale = new Vector3(-1, 1, 1);
+
+    /* 持有武器 */
+    public List<IWeapon> weapons = new List<IWeapon>();
 
     Vector3? targetPos;
 

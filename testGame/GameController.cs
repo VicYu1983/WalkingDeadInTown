@@ -22,14 +22,11 @@ public class GameController : MonoBehaviour {
     /* 代表單指劃過 */
     bool isFlicked = false;
 
-    /* 持有武器 */
-    List<IWeapon> weapons = new List<IWeapon>();
-
     bool showConfig = false;
     public void ToggleConfig( bool toggle )
     {
         showConfig = toggle;
-        weapons.Clear();
+        vc.Player.weapons.Clear();
         if (!showConfig)
         {
             UsingConfig();
@@ -46,11 +43,11 @@ public class GameController : MonoBehaviour {
                 bool autoWeapon = (bool)c[10];
                 if (autoWeapon)
                 {
-                    weapons.Add(new AutoWeapon(vc, c));
+                    vc.Player.weapons.Add(new AutoWeapon(vc, c));
                 }
                 else
                 {
-                    weapons.Add(new HalfAutoWeapon(vc, c));
+                    vc.Player.weapons.Add(new HalfAutoWeapon(vc, c));
                 }
             }
         }
@@ -83,7 +80,7 @@ public class GameController : MonoBehaviour {
 #endif
             Vector3 touchPos = vc.GamePage.GetComponent<LongPressGesture>().ScreenPosition;
             Vector3 firePos = Camera.main.ScreenToWorldPoint(touchPos);
-            foreach (IWeapon w in weapons) w.StartAim(firePos);
+            foreach (IWeapon w in vc.Player.weapons) w.StartAim(firePos);
 #if UNITY_EDITOR
 #else
         }
@@ -97,7 +94,7 @@ public class GameController : MonoBehaviour {
     private void OnGamePageReleased(object sender, EventArgs e)
     {
         isDoubleHold = false;
-        foreach (IWeapon w in weapons) w.EndAim();
+        foreach (IWeapon w in vc.Player.weapons) w.EndAim();
     }
 
     private void OnGamePagePressed(object sender, EventArgs e)
@@ -109,7 +106,7 @@ public class GameController : MonoBehaviour {
 #endif
         Vector3 touchPos = vc.GamePage.GetComponent<PressGesture>().ScreenPosition;
         Vector3 firePos = Camera.main.ScreenToWorldPoint(touchPos);
-        foreach (IWeapon w in weapons) w.StartAim(firePos);
+        foreach (IWeapon w in vc.Player.weapons) w.StartAim(firePos);
 #if UNITY_EDITOR
 #else
         }
@@ -246,12 +243,12 @@ public class GameController : MonoBehaviour {
         //uc.SetState("judgeIsHoldTime: " + judgeIsHoldTime.ToString());
 
 #if UNITY_EDITOR
-        foreach (IWeapon w in weapons) w.MoveAim(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-        foreach (IWeapon w in weapons) w.KeepStartAim(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+        foreach (IWeapon w in vc.Player.weapons) w.MoveAim(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+        foreach (IWeapon w in vc.Player.weapons) w.KeepStartAim(Camera.main.ScreenToWorldPoint(Input.mousePosition));
 #else
         if (GetTouchCount() == 1 && !isFlicked )
         {
-            foreach (IWeapon w in weapons) w.MoveAim(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+            foreach (IWeapon w in vc.Player.weapons) w.MoveAim(Camera.main.ScreenToWorldPoint(Input.mousePosition));
             if( GetIsClick() )
             {
                 if( !isClicked ){
@@ -263,7 +260,7 @@ public class GameController : MonoBehaviour {
                     }));
 
                     Vector3 firePos = Camera.main.ScreenToWorldPoint(GetTouchPosition());
-                    foreach (IWeapon w in weapons) w.AimOnce(firePos);
+                    foreach (IWeapon w in vc.Player.weapons) w.AimOnce(firePos);
                 }
             }
             else
@@ -271,14 +268,14 @@ public class GameController : MonoBehaviour {
                 judgeIsHoldTime++;
                 if( judgeIsHoldTime >= 10 ){
                     Vector3 firePos = Camera.main.ScreenToWorldPoint(GetTouchPosition());
-                    foreach (IWeapon w in weapons) w.KeepStartAim(firePos);
+                    foreach (IWeapon w in vc.Player.weapons) w.KeepStartAim(firePos);
                 }
             }
         }else{
             judgeIsHoldTime = 0;
         }
 #endif
-        foreach (IWeapon w in weapons) w.Update();
+        foreach (IWeapon w in vc.Player.weapons) w.Update();
     }
 
     void OnGUI()
