@@ -15,7 +15,6 @@ public class PlayerController : MonoBehaviour {
     Vector3 flipScale = new Vector3(-1, 1, 1);
 
     Vector3? targetPos;
-    Vector3 additivePos = new Vector3();
 
     AI _ai;
     

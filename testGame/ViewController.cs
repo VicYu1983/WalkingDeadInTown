@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Events;
 using System;
+using UnityEngine.UI;
 
 enum PrefabName{
     BULLET,
@@ -33,37 +34,11 @@ public class ViewController : MonoBehaviour {
 
     int aimsId = 0;
 
-   // Vector3? targetPos;
-   // Vector3 additivePos = new Vector3();
-   /*
-    public void SetPlayerPositionByScreenPos( Vector3 screenPos )
-    {
-        targetPos = GetMousePositionOnWorld( screenPos );
-    }
-
-    public void SetPlayerPosition(Vector3 pos)
-    {
-        targetPos = pos;
-    }
-
-    public void DodgePlayer( Vector3 dir, float force )
-    {
-        SetPlayerForce(dir, force);
-    }
-    */
     public GameObject GetObjectFromObjectContainerByName( string name )
     {
         return ObjectContainer.transform.FindChild(name).gameObject;
     }
 
-    /*
-    public void MakePlayerStop()
-    {
-        Vector3 playerAcc = Player.GetComponent<Rigidbody2D>().velocity;
-        Player.GetComponent<Rigidbody2D>().AddForce(-playerAcc * 40);
-        targetPos = null;
-    }
-    */
     public void CreateBullet( Vector3 from, Vector3 dir, float force )
     {
         CreateOneBullet(PrefabName.BULLET, from, dir, force);
@@ -216,13 +191,14 @@ public class ViewController : MonoBehaviour {
         Bullets.Add(bullet);
     }
 
-    private void CreateExplodeEffect( Vector3 pos )
+    private void CreateExplodeEffect( Vector3 pos, Color color )
     {
         GameObject explode = GameObjectFactory(PrefabName.BODY_EXPLODE);
         explode.SetActive(true);
         explode.transform.parent = ObjectContainer.transform;
         explode.GetComponent<RectTransform>().position = pos;
         explode.GetComponent<EffectTimeEvent>().OnEffectEndEvent += OnEffectEndEvent;
+        explode.GetComponent<Image>().color = color;
     }
 
     private void OnEffectEndEvent(GameObject obj)
@@ -255,21 +231,7 @@ public class ViewController : MonoBehaviour {
         }
         return null;
     }
-    /*
-    Vector3 GetMousePositionOnWorld( Vector3 screenPos )
-    {
-        Vector3 clickPos = screenPos;
-        clickPos.z = Camera.main.transform.localPosition.z;
-        return Camera.main.ScreenToWorldPoint(clickPos);
-    }
-    */
-    /*
-    void SetPlayerForce(Vector3 dir, float force)
-    {
-        Player.GetComponent<Rigidbody2D>().AddForce(dir.normalized * force);
-        Player.GetComponent<PlayerController>().BodyRotateByMoveDir(dir.normalized);
-    }
-    */
+
     void Start()
     {
         ForSortingZ.Add(Player.gameObject);
@@ -287,7 +249,7 @@ public class ViewController : MonoBehaviour {
     {
         if (other.name.IndexOf("Aim") != -1)
         {
-            CreateExplodeEffect(enemy.GetComponent<PlayerController>().Position);
+            CreateExplodeEffect(enemy.GetComponent<PlayerController>().Position, enemy.GetComponent<PlayerController>().color);
             Destroy(enemy);
             Enemys.Remove(enemy.GetComponent<PlayerController>());
             ForSortingZ.Remove(enemy);
@@ -299,20 +261,6 @@ public class ViewController : MonoBehaviour {
         cameraPos.x = Player.Position.x;
         cameraPos.y = Player.Position.y;
         Camera.main.transform.localPosition = cameraPos;
-      /*
-        if( targetPos != null)
-        {
-            Vector3 diffVec = (Vector3)targetPos - Player.GetComponent<RectTransform>().position;
-            if (diffVec.magnitude < 40)
-            {
-                targetPos = null;
-            }
-            else
-            {
-                SetPlayerForce(diffVec, GameConfig.MoveSpeed);
-            }
-        }
-        */
         SortingZ();
     }
 
