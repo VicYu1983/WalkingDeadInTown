@@ -246,7 +246,7 @@ public class GameController : MonoBehaviour {
         foreach (IWeapon w in vc.Player.weapons) w.MoveAim(Camera.main.ScreenToWorldPoint(Input.mousePosition));
         foreach (IWeapon w in vc.Player.weapons) w.KeepStartAim(Camera.main.ScreenToWorldPoint(Input.mousePosition));
 #else
-        if (GetTouchCount() == 1 && !isFlicked )
+        if (GetTouchCount() == 1 )
         {
             foreach (IWeapon w in vc.Player.weapons) w.MoveAim(Camera.main.ScreenToWorldPoint(Input.mousePosition));
             if( GetIsClick() )
@@ -266,7 +266,7 @@ public class GameController : MonoBehaviour {
             else
             {
                 judgeIsHoldTime++;
-                if( judgeIsHoldTime >= 10 ){
+                if( judgeIsHoldTime >= 5 ){
                     Vector3 firePos = Camera.main.ScreenToWorldPoint(GetTouchPosition());
                     foreach (IWeapon w in vc.Player.weapons) w.KeepStartAim(firePos);
                 }
