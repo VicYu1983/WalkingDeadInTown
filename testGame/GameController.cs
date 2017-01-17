@@ -123,7 +123,7 @@ public class GameController : MonoBehaviour {
 
             /* 因為此操作會和單指操作衝突，因此加個flag來決定單指操作是否能觸發 */
             isDoubleFlicked = true;
-            StartCoroutine(DelayCall(1.0f, () =>
+            StartCoroutine(DelayCall(.6f, () =>
             {
                 isDoubleFlicked = false;
             }));
@@ -142,7 +142,7 @@ public class GameController : MonoBehaviour {
 
             /* 因為此操作會和雙指持續按壓地面的操作衝突，因此加個flag來決定雙指持續按壓地面的操作是否能觸發 */
             isFlicked = true;
-            StartCoroutine(DelayCall( 1.0f, () =>
+            StartCoroutine(DelayCall( .6f, () =>
             {
                 isFlicked = false;
             }));
