@@ -65,6 +65,7 @@ public class ViewController : MonoBehaviour {
 
     public int CreateAim( Vector3 pos, object[] config )
     {
+        print("CreateAim");
         int age = (int)config[1];
         float size = (float)config[2];
         bool dragable = (bool)config[3];
@@ -239,7 +240,7 @@ public class ViewController : MonoBehaviour {
         {
             e.SetColor(EnemyColor);
             e.OnHitEvent += OnEnmeyHit;
-            e.SetAI(this, new AI());
+            e.SetAI(this, new AIMove());
             ForSortingZ.Add(e.gameObject);
         }
         foreach (GameObject e in Stuffs) ForSortingZ.Add(e);

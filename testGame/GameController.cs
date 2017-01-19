@@ -69,6 +69,13 @@ public class GameController : MonoBehaviour {
         // foreach (GameObject e in vc.Enemys) e.GetComponent<TapGesture>().Tapped += OnEnemyTapped;
 
         UsingConfig();
+
+        vc.Enemys[0].weapons.Add(new HalfAutoWeapon(vc, GameConfig.WeaponConfig[0]));
+
+        AIBasic aiw = new AIWeapon();
+        aiw.ViewController = vc;
+        aiw.PlayerController = vc.Enemys[0];
+        vc.Enemys[0].AIWeapons.Add(aiw);
     }
 
     private void OnGamePageLongPressed(object sender, EventArgs e)

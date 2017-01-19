@@ -1,37 +1,20 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System;
+using System.Linq;
+using System.Text;
+using UnityEngine;
 
-public class AI {
-
-    private ViewController _vc;
-    public ViewController ViewController
-    {
-        set
-        {
-            _vc = value;
-        }
-    }
-
-    private PlayerController _pc;
-    public PlayerController PlayerController
-    {
-        set
-        {
-            _pc = value;
-        }
-    }
-
-    public void Update()
+public class AIMove : AIBasic
+{
+    public override void Update()
     {
         Vector3 targetPos = _pc.Position;
         targetPos += GetPlayerMoveTarget(_pc, _vc.Player, 100, TrackAndKeepMethod);
 
         List<PlayerController> mates = _vc.Enemys;
-        foreach(PlayerController m in mates)
+        foreach (PlayerController m in mates)
         {
-            if( _pc != m)
+            if (_pc != m)
             {
                 targetPos += GetPlayerMoveTarget(_pc, m, 60, KeepMethod);
             }
@@ -41,7 +24,7 @@ public class AI {
 
     delegate bool TrackMethod(Vector3 diff, float distance);
 
-    bool TrackAndKeepMethod( Vector3 diff, float distance )
+    bool TrackAndKeepMethod(Vector3 diff, float distance)
     {
         return diff.magnitude > distance || diff.magnitude < distance - 10;
     }
@@ -51,7 +34,7 @@ public class AI {
         return diff.magnitude < distance - 10;
     }
 
-    Vector3 GetPlayerMoveTarget( PlayerController follower, PlayerController hoster, float distance, TrackMethod method   )
+    Vector3 GetPlayerMoveTarget(PlayerController follower, PlayerController hoster, float distance, TrackMethod method)
     {
         Vector3 diff = hoster.Position - follower.Position;
         Vector3 retOffset = new Vector3();

@@ -20,7 +20,8 @@ public class PlayerController : MonoBehaviour {
 
     Vector3? targetPos;
 
-    AI _ai;
+    public AIBasic AIMove;
+    public List<AIBasic> AIWeapons = new List<AIBasic>();
     
     public Vector3 Position
     {
@@ -87,11 +88,11 @@ public class PlayerController : MonoBehaviour {
         this.color = color;
     }
 
-    public void SetAI( ViewController vc, AI ai)
+    public void SetAI( ViewController vc, AIBasic ai)
     {
-        _ai = ai;
-        _ai.ViewController = vc;
-        _ai.PlayerController = this;
+        AIMove = ai;
+        AIMove.ViewController = vc;
+        AIMove.PlayerController = this;
     }
     
     void OnTriggerEnter2D( Collider2D other )
@@ -163,7 +164,8 @@ public class PlayerController : MonoBehaviour {
     {
         foot.GetComponent<Animator>().SetFloat("Speed", GetComponent<Rigidbody2D>().velocity.magnitude);
         UpdatePosition();
-        if (_ai != null) _ai.Update();
+        if (AIMove != null) AIMove.Update();
+        if(AIWeapons!= null) foreach (AIBasic aiw in AIWeapons) aiw.Update();
     }
 
     void UpdatePosition()

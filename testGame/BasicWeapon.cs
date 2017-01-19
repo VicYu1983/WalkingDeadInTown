@@ -56,7 +56,8 @@ public class BasicWeapon : IWeapon {
 
     protected void DoStartAim( Vector3 pos )
     {
-        if( IsDragable())
+        Debug.Log("DoStartAim");
+        if ( IsDragable())
         {
             Shooting(pos);
         }
@@ -88,6 +89,7 @@ public class BasicWeapon : IWeapon {
 
     void Shooting( Vector3 pos )
     {
+        Debug.Log("Shooting");
         _ids.Clear();
         _ids.Add(GetViewController().CreateAim(pos, GetConfig()));
 
