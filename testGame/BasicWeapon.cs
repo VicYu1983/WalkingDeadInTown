@@ -38,6 +38,11 @@ public class BasicWeapon : IWeapon {
         throw new Exception("need to be override!");
     }
 
+    public bool IsBlade()
+    {
+        return (bool)GetConfig()[12];
+    }
+
     public virtual void Update()
     {
         keepShootTime++;

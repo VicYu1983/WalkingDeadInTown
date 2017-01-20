@@ -11,7 +11,7 @@ public class AIWeapon : AIBasic
         Vector3 diff = _vc.Player.Position - _pc.Position;
         if( diff.magnitude < 100)
         {
-            _pc.weapons[0].AimOnce(_vc.Player.Position);
+           // _pc.weapons[0].AimOnce(_vc.Player.Position);
         }
     }
 }

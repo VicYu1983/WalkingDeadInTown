@@ -7,4 +7,5 @@ public interface IWeapon {
     void KeepStartAim(Vector3 pos );
     void AimOnce( Vector3 pos );
     void Update();
+    bool IsBlade();
 }

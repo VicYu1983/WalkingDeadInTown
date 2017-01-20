@@ -37,7 +37,7 @@ public class GameController : MonoBehaviour {
     {
         foreach (object[] c in GameConfig.WeaponConfig)
         {
-            bool usingWeapon = (bool)c[12];
+            bool usingWeapon = (bool)c[13];
             if (usingWeapon)
             {
                 bool autoWeapon = (bool)c[10];

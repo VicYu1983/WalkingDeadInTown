@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour {
 
-    public Sprite[] bodySprites;
+   // public Sprite[] bodySprites;
     public GameObject body;
     public GameObject foot;
     public Color color;
@@ -107,6 +107,27 @@ public class PlayerController : MonoBehaviour {
         GetComponent<PlayerController>().BodyRotateByMoveDir(dir.normalized);
     }
 
+    void SetAnimation( string aniName )
+    {
+        body.GetComponent<Animator>().Play(aniName);
+    }
+
+    bool isHaveBlade()
+    {
+        foreach( IWeapon w in weapons)
+        {
+            if (w.IsBlade()) return true;
+        }
+        return false;
+    }
+
+    string GetAnimationStr( string dir )
+    {
+        string w = isHaveBlade() ? "Blade" : "Gun";
+        string i = "Idle";
+        return "Player_" + w + "_" + i + "_" + dir;
+    }
+
     void SetBodyImage(Vector3 dir )
     {
         if (dir.x > .2f)
@@ -114,15 +135,15 @@ public class PlayerController : MonoBehaviour {
             body.transform.localScale = normalScale;
             if (dir.y > .2f)
             {
-                body.GetComponent<Image>().sprite = bodySprites[3];
+                SetAnimation(GetAnimationStr("Right_Up"));
             }
             else if (dir.y < -.2f)
             {
-                body.GetComponent<Image>().sprite = bodySprites[1];
+                SetAnimation(GetAnimationStr("Right_Down"));
             }
             else
             {
-                body.GetComponent<Image>().sprite = bodySprites[2];
+                SetAnimation(GetAnimationStr("Right"));
             }
         }
         else if (dir.x < -.2f)
@@ -130,15 +151,15 @@ public class PlayerController : MonoBehaviour {
             body.transform.localScale = flipScale;
             if (dir.y > .2f)
             {
-                body.GetComponent<Image>().sprite = bodySprites[3];
+                SetAnimation(GetAnimationStr("Right_Up"));
             }
             else if (dir.y < -.2f)
             {
-                body.GetComponent<Image>().sprite = bodySprites[1];
+                SetAnimation(GetAnimationStr("Right_Down"));
             }
             else
             {
-                body.GetComponent<Image>().sprite = bodySprites[2];
+                SetAnimation(GetAnimationStr("Right"));
             }
         }
         else
@@ -146,11 +167,11 @@ public class PlayerController : MonoBehaviour {
             body.transform.localScale = normalScale;
             if (dir.y > .2f)
             {
-                body.GetComponent<Image>().sprite = bodySprites[4];
+                SetAnimation(GetAnimationStr("Up"));
             }
             else if (dir.y < -.2f)
             {
-                body.GetComponent<Image>().sprite = bodySprites[0];
+                SetAnimation(GetAnimationStr("Down"));
             }
         }
     }
