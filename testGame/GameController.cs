@@ -63,10 +63,11 @@ public class GameController : MonoBehaviour {
         // vc.Ground.GetComponent<TapGesture>().Tapped += OnTapped;
         //vc.GamePage.GetComponent<PressGesture>().Pressed += OnGamePagePressed;
         vc.GamePage.GetComponent<LongPressGesture>().LongPressed += OnGamePageLongPressed;
-        vc.GamePage.GetComponent<ReleaseGesture>().Released += OnGamePageReleased;
+        //vc.GamePage.GetComponent<ReleaseGesture>().Released += OnGamePageReleased;
+        vc.GamePage.GetComponent<Button>().onClick.AddListener(OnGamePageClick);
         vc.GamePage.GetComponent<FlickGesture>().Flicked += OnGamePageFlicked;
         vc.GamePage.GetComponent<DoubleFlickedGesture>().OnDoubleFlickedEvent += OnGamePageDoubleFlicked;
-        // foreach (GameObject e in vc.Enemys) e.GetComponent<TapGesture>().Tapped += OnEnemyTapped;
+        foreach (PlayerController e in vc.Enemys) e.GetComponent<TapGesture>().Tapped += OnEnemyTapped;
 
         UsingConfig();
 
@@ -92,15 +93,28 @@ public class GameController : MonoBehaviour {
 #else
         }
         else if ( Input.touchCount == 2 ){
+            
             isDoubleHold = true;
+            
+            uc.SetState("OnGamePageLongPressed: isDoubleHold: " + isDoubleHold);
         }
 #endif
-        uc.SetState("OnGamePageLongPressed");
+       // uc.SetState("OnGamePageLongPressed");
+    }
+
+    private void OnGamePageClick()
+    {
+        isDoubleHold = false;
+
+        uc.SetState("OnGamePageReleased: isDoubleHold: " + isDoubleHold);
+        foreach (IWeapon w in vc.Player.weapons) w.EndAim();
     }
 
     private void OnGamePageReleased(object sender, EventArgs e)
     {
         isDoubleHold = false;
+
+        uc.SetState("OnGamePageReleased: isDoubleHold: " + isDoubleHold);
         foreach (IWeapon w in vc.Player.weapons) w.EndAim();
     }
 
@@ -118,14 +132,14 @@ public class GameController : MonoBehaviour {
 #else
         }
 #endif
-        uc.SetState("OnGamePagePressed");
+       // uc.SetState("OnGamePagePressed");
     }
 
     private void OnGamePageDoubleFlicked(FlickGesture obj)
     {
         if ( GetTouchCount() == 2)
         {
-            uc.SetState("Dodge");
+          //  uc.SetState("Dodge");
             vc.Player.DodgePlayer(obj.ScreenFlickVector.normalized, GameConfig.DodgeSpeed);
 
             /* 因為此操作會和單指操作衝突，因此加個flag來決定單指操作是否能觸發 */
@@ -145,7 +159,7 @@ public class GameController : MonoBehaviour {
             Vector3 fromVec = vc.Player.GetComponent<RectTransform>().position;
             vc.Player.SetPlayerPosition(fromVec + dir * GameConfig.LongMoveDistance);
 
-            uc.SetState("Move Long Distance:" + dir * GameConfig.LongMoveDistance);
+           // uc.SetState("Move Long Distance:" + dir * GameConfig.LongMoveDistance);
 
             /* 因為此操作會和雙指持續按壓地面的操作衝突，因此加個flag來決定雙指持續按壓地面的操作是否能觸發 */
             isFlicked = true;
@@ -162,7 +176,8 @@ public class GameController : MonoBehaviour {
         GameObject senderObject = vc.GetObjectFromObjectContainerByName(senderName);
         if (senderObject != null)
         {
-            FireSpecialOnce(senderObject.GetComponent<RectTransform>().position);
+            Vector3 firePos = senderObject.GetComponent<RectTransform>().position;
+            foreach (IWeapon w in vc.Player.weapons) w.AimOnce(firePos);
         }
     }
 
@@ -175,7 +190,7 @@ public class GameController : MonoBehaviour {
     {
         if ( GetTouchCount() == 2)
         {
-            uc.SetState("Stop Player");
+          //  uc.SetState("Stop Player");
             vc.Player.MakePlayerStop();
         }
     }
@@ -238,15 +253,17 @@ public class GameController : MonoBehaviour {
 	    if( GetTouchCount() == 2 && GetIsClick() && !isFlicked )
         {
             vc.Player.SetPlayerPositionByScreenPos(GetTouchPosition());
-            uc.SetState( "Normal Move" );
+        //    uc.SetState( "Normal Move" );
         }
         
         if ( isDoubleHold && !isFlicked )
         {
             vc.Player.SetPlayerPositionByScreenPos(GetTouchPosition());
-            uc.SetState("Normal Move");
+        //    uc.SetState("Normal Move");
         }
 
+        //uc.SetState("isDoubleHold: " + isDoubleHold);
+        //uc.SetState(GetComponent<DetectTouchCountByPassTime>().GetTouchString());
         //uc.SetState("judgeIsHoldTime: " + judgeIsHoldTime.ToString());
 
 #if UNITY_EDITOR
@@ -332,6 +349,7 @@ public class GameController : MonoBehaviour {
             GUILayout.TextField("離開消失", style);
             GUILayout.TextField("全/半自動", style);
             GUILayout.TextField("時長", style);
+            GUILayout.TextField("刀裝備", style);
             GUILayout.TextField("裝備", style);
             GUILayout.EndHorizontal();
 
@@ -356,7 +374,8 @@ public class GameController : MonoBehaviour {
                 c[9] = GUILayout.Toggle((bool)c[9], (bool)c[9] ? "消失" : "不消失", style);
                 c[10] = GUILayout.Toggle((bool)c[10], (bool)c[10] ? "全自" : "半自" , style);
                 c[11] = int.Parse(GUILayout.TextField(c[11] + "", style));
-                c[12] = GUILayout.Toggle((bool)c[12], (bool)c[12] ? "裝備" : "不裝備", style);
+                c[12] = GUILayout.Toggle((bool)c[12], (bool)c[12] ? "是" : "否", style);
+                c[13] = GUILayout.Toggle((bool)c[13], (bool)c[13] ? "裝備" : "不裝備", style);
                 GUILayout.EndHorizontal();
                 GUILayout.BeginHorizontal();
                 GUILayout.EndHorizontal();

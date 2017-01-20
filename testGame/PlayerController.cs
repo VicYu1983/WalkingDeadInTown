@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour {
 
     Vector3 normalScale = new Vector3(1, 1, 1);
     Vector3 flipScale = new Vector3(-1, 1, 1);
+    Vector3 currentDir = new Vector3(0, -1, 0);
 
     /* 持有武器 */
     public List<IWeapon> weapons = new List<IWeapon>();
@@ -71,12 +72,14 @@ public class PlayerController : MonoBehaviour {
     }
 
     public void BodyRotateByAimDir ( Vector3 dir ){
-        SetBodyImage(dir);
+        currentDir = dir;
         _isAim = true;
+        SetBodyImage(dir);
     }
 
     public void BodyRotateByMoveDir( Vector3 dir )
     {
+        currentDir = dir;
         if (_isAim) return;
         SetBodyImage(dir);
     }
@@ -94,6 +97,11 @@ public class PlayerController : MonoBehaviour {
         AIMove.ViewController = vc;
         AIMove.PlayerController = this;
     }
+
+    public void UpdateBody()
+    {
+       // SetBodyImage(currentDir);
+    }
     
     void OnTriggerEnter2D( Collider2D other )
     {
@@ -109,6 +117,8 @@ public class PlayerController : MonoBehaviour {
 
     void SetAnimation( string aniName )
     {
+        body.GetComponent<Animator>().enabled = false;
+        body.GetComponent<Animator>().enabled = true;
         body.GetComponent<Animator>().Play(aniName);
     }
 
@@ -123,9 +133,9 @@ public class PlayerController : MonoBehaviour {
 
     string GetAnimationStr( string dir )
     {
-        string w = isHaveBlade() ? "Blade" : "Gun";
-        string i = "Idle";
-        return "Player_" + w + "_" + i + "_" + dir;
+        string w = isHaveBlade() ? "_Blade" : "_Gun";
+        string i = IsAim ? "" : "_Idle";
+        return "Player" + w + i + "_" + dir;
     }
 
     void SetBodyImage(Vector3 dir )
@@ -171,6 +181,7 @@ public class PlayerController : MonoBehaviour {
             }
             else if (dir.y < -.2f)
             {
+                //print("DD");
                 SetAnimation(GetAnimationStr("Down"));
             }
         }

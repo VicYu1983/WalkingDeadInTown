@@ -33,13 +33,10 @@ public class AimController : MonoBehaviour {
         this.Dragable = dragable;
         this.ExpandSpeed = speed;
         this.Delay = delay;
-        // this.currentSize = startSize;
         this.currentSize = new Vector2
         (
             ori_size.x * startSize, ori_size.y * startSize
         );
-
-        print(ori_size.ToString());
     }
 
     public void SetPosition( Vector3 pos )
@@ -52,19 +49,10 @@ public class AimController : MonoBehaviour {
     Vector2 ori_size;
 
     void Start () {
-       // GetComponent<RectTransform>().localScale = new Vector3();
-       
         ori_size = GetComponent<RectTransform>().sizeDelta;
         GetComponent<RectTransform>().sizeDelta = new Vector2();
-        print(ori_size.x);
     }
-    /*
-    private void OnDeadEvent(AgeCalculator obj)
-    {
-        GetComponent<AgeCalculator>().OnDeadEvent -= OnDeadEvent;
-        Destroy(this.gameObject);
-    }
-    */
+
     void Update () {
         SetSize();
     }
@@ -73,7 +61,6 @@ public class AimController : MonoBehaviour {
     {
         int currentAge = GetComponent<AgeCalculator>().CurrentAge;
         int maxAge = GetComponent<AgeCalculator>().DeadAge;
-        //  currentSize += ExpandSpeed;
 
         currentSize.x += ExpandSpeed * ori_size.x;
         currentSize.y += ExpandSpeed * ori_size.y;
@@ -82,14 +69,5 @@ public class AimController : MonoBehaviour {
         if (currentSize.y >= Size * ori_size.y ) currentSize.y = Size * ori_size.y;
 
         GetComponent<RectTransform>().sizeDelta = currentSize;
-        /*
-        int currentAge = GetComponent<AgeCalculator>().CurrentAge;
-        int maxAge = GetComponent<AgeCalculator>().DeadAge;
-        currentSize += ExpandSpeed;
-        if (currentSize >= Size) currentSize = Size;
-        Vector3 s = GetComponent<RectTransform>().localScale;
-        s.x = s.y = currentSize;
-        GetComponent<RectTransform>().localScale = s;
-        */
     }
 }
