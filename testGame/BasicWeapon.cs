@@ -61,7 +61,6 @@ public class BasicWeapon : IWeapon {
 
     protected void DoStartAim( Vector3 pos )
     {
-        Debug.Log("DoStartAim");
         if ( IsDragable())
         {
             Shooting(pos);
