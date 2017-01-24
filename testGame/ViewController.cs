@@ -73,6 +73,7 @@ public class ViewController : MonoBehaviour {
         float expandSpeed = (float) config[6];
         bool delay = (bool)config[7];
         float startSize = (float)config[8];
+        bool isBlade = (bool)config[12];
 
         aimsId++;
         if (!Aims.ContainsKey(aimsId))
@@ -94,6 +95,7 @@ public class ViewController : MonoBehaviour {
             Aims[aimsId].Add(aim.GetComponent<AimController>());
         }
         BodyRotateByAimDir(pos);
+        Player.IsBlade = isBlade;
         return aimsId;
     }
 

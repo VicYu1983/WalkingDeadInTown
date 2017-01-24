@@ -5,8 +5,7 @@ using System;
 using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour {
-
-   // public Sprite[] bodySprites;
+    
     public GameObject body;
     public GameObject foot;
     public Color color;
@@ -46,6 +45,15 @@ public class PlayerController : MonoBehaviour {
         get
         {
             return _isAim;
+        }
+    }
+
+    bool _isBlade = false;
+    public bool IsBlade
+    {
+        set
+        {
+            _isBlade = value;
         }
     }
 
@@ -121,16 +129,12 @@ public class PlayerController : MonoBehaviour {
         body.GetComponent<Animator>().enabled = true;
         body.GetComponent<Animator>().Play(aniName);
     }
-
+    
     bool isHaveBlade()
     {
-        foreach( IWeapon w in weapons)
-        {
-            if (w.IsBlade()) return true;
-        }
-        return false;
+        return _isBlade;
     }
-
+    
     string GetAnimationStr( string dir )
     {
         string w = isHaveBlade() ? "_Blade" : "_Gun";
@@ -200,6 +204,13 @@ public class PlayerController : MonoBehaviour {
         UpdatePosition();
         if (AIMove != null) AIMove.Update();
         if(AIWeapons!= null) foreach (AIBasic aiw in AIWeapons) aiw.Update();
+    }
+
+    void OnDestroy()
+    {
+        AIMove = null;
+        AIWeapons.Clear();
+        AIWeapons = null;
     }
 
     void UpdatePosition()

@@ -25,9 +25,6 @@ public class UIController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        dpd_halfAutoWeapons.options.Add(new Dropdown.OptionData(""));
-        dpd_halfAutoDelayWeapons.options.Add(new Dropdown.OptionData(""));
-        dpd_autoWeapons.options.Add(new Dropdown.OptionData(""));
         foreach (object[] c in GameConfig.WeaponConfig)
         {
             bool autoWeapon = (bool)c[10];

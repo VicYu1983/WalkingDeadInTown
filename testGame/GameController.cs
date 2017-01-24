@@ -48,7 +48,7 @@ public class GameController : MonoBehaviour {
                 bool autoWeapon = (bool)c[10];
                 if (autoWeapon)
                 {
-                    if(halfAutoDelayName == "")
+                    if(halfAutoDelayName == "遲發動(不裝備)")
                     {
                         vc.Player.weapons.Add(new AutoWeapon(vc, c));
                     }
@@ -98,14 +98,16 @@ public class GameController : MonoBehaviour {
         vc.GamePage.GetComponent<DoubleFlickedGesture>().OnDoubleFlickedEvent += OnGamePageDoubleFlicked;
         foreach (PlayerController e in vc.Enemys) e.GetComponent<TapGesture>().Tapped += OnEnemyTapped;
 
-        UsingConfig();
+        //UsingConfig();
 
-        vc.Enemys[0].weapons.Add(new HalfAutoWeapon(vc, GameConfig.WeaponConfig[0]));
-
-        AIBasic aiw = new AIWeapon();
-        aiw.ViewController = vc;
-        aiw.PlayerController = vc.Enemys[0];
-        vc.Enemys[0].AIWeapons.Add(aiw);
+        foreach (PlayerController p in vc.Enemys)
+        {
+            p.weapons.Add(new HalfAutoWeapon(vc, GameConfig.WeaponConfig[5]));
+            AIBasic aiw = new AIWeapon();
+            aiw.ViewController = vc;
+            aiw.PlayerController = p;
+            p.AIWeapons.Add(aiw);
+        }
     }
 
     private void OnGamePageLongPressed(object sender, EventArgs e)
