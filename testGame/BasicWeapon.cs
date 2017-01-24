@@ -7,12 +7,15 @@ public class BasicWeapon : IWeapon {
 
     protected ViewController vc;
     protected object[] config;
+    public PlayerController owner;
+    public List<PlayerController> enemys = null;
 
     List<int> _ids = new List<int>();
 
-    public BasicWeapon(ViewController vc, object[] config )
+    public BasicWeapon(PlayerController owner, ViewController vc, object[] config )
     {
         this.vc = vc;
+        this.owner = owner;
         this.config = config;
     }
 
@@ -74,7 +77,7 @@ public class BasicWeapon : IWeapon {
 
     protected void DoKeepStartAim(Vector3 pos)
     {
-        _ids.Add(GetViewController().CreateAim(pos, GetConfig()));
+        _ids.Add(GetViewController().CreateAim(owner, pos, GetConfig()));
     }
 
     protected void DoEndAim()
@@ -93,9 +96,8 @@ public class BasicWeapon : IWeapon {
 
     void Shooting( Vector3 pos )
     {
-        Debug.Log("Shooting");
         _ids.Clear();
-        _ids.Add(GetViewController().CreateAim(pos, GetConfig()));
+        _ids.Add(GetViewController().CreateAim(owner, pos, GetConfig()));
 
         startShootingPos = pos;
         keepShootTime = 0;

@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class HalfAutoWeapon : BasicWeapon, IWeapon {
-    public HalfAutoWeapon(ViewController vc, object[] config) : base(vc, config)
+    public HalfAutoWeapon(PlayerController owner, ViewController vc, object[] config) : base(owner, vc, config)
     {
 
     }

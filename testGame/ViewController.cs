@@ -63,7 +63,7 @@ public class ViewController : MonoBehaviour {
         ap.GetComponent<RectTransform>().position = pos;
     }
 
-    public int CreateAim( Vector3 pos, object[] config )
+    public int CreateAim(PlayerController attacker, Vector3 pos, object[] config )
     {
         int age = (int)config[1];
         float size = (float)config[2];
@@ -88,21 +88,22 @@ public class ViewController : MonoBehaviour {
             aim.transform.parent = ObjectContainer.transform;
             aim.GetComponent<AimController>().SetConfig(age, size, startSize, dragable, expandSpeed, delay);
             Vector3 offset = new Vector3(UnityEngine.Random.Range(-1.0f, 1.0f) * seperateRange, UnityEngine.Random.Range(-1.0f, 1.0f) * seperateRange, 0);
+            aim.GetComponent<AimController>().owner = attacker;
             aim.GetComponent<AimController>().Offset = offset;
             aim.GetComponent<AimController>().SetPosition(pos);
             aim.GetComponent<AimController>().GroupId = aimsId;
             aim.GetComponent<AgeCalculator>().OnDeadEvent += OnAimDeadEvent;
             Aims[aimsId].Add(aim.GetComponent<AimController>());
         }
-        BodyRotateByAimDir(pos);
-        Player.IsBlade = isBlade;
+        BodyRotateByAimDir(attacker, pos);
+        attacker.IsBlade = isBlade;
         return aimsId;
     }
 
-    private void BodyRotateByAimDir( Vector3 aimPos )
+    private void BodyRotateByAimDir( PlayerController attacker, Vector3 aimPos )
     {
-        Vector3 aimDir = (aimPos - Player.GetComponent<RectTransform>().position).normalized;
-        Player.GetComponent<PlayerController>().BodyRotateByAimDir(aimDir);
+        Vector3 aimDir = (aimPos - attacker.Position).normalized;
+        attacker.BodyRotateByAimDir(aimDir);
     }
 
     private void OnAimDeadEvent(AgeCalculator obj)
@@ -139,7 +140,7 @@ public class ViewController : MonoBehaviour {
                     if (a.Dragable)
                     {
                         a.GetComponent<AimController>().SetPosition(pos);
-                        BodyRotateByAimDir(pos);
+                        BodyRotateByAimDir(Player, pos);
                     }
                 }
             }
@@ -176,11 +177,30 @@ public class ViewController : MonoBehaviour {
 
     void CheckIsStopAim()
     {
-        if( Aims.Count == 0)
+
+        List<PlayerController> buffer = new List<PlayerController>(playersAimCount.Keys);
+        foreach (PlayerController key in buffer)
         {
-            Player.GetComponent<PlayerController>().IsAim = false;
-            Player.GetComponent<PlayerController>().UpdateBody();
+            playersAimCount[key] = false;
         }
+        
+        foreach ( List<AimController> acs in Aims.Values )
+        {
+            foreach( AimController ac in acs)
+            {
+                playersAimCount[ac.owner] = true;
+            }
+        }
+
+        foreach( PlayerController owner in playersAimCount.Keys)
+        {
+            if( !playersAimCount[owner] )
+            {
+                owner.IsAim = false;
+                owner.UpdateBody();
+            }
+        }
+        
     }
     
     private void CreateOneBullet(PrefabName bulletName, Vector3 from, Vector3 dir, float force)
@@ -235,20 +255,24 @@ public class ViewController : MonoBehaviour {
         return null;
     }
 
+    Dictionary<PlayerController, bool> playersAimCount = new Dictionary<PlayerController, bool>();
     void Start()
     {
+        playersAimCount.Add(Player, false);
         ForSortingZ.Add(Player.gameObject);
         foreach (PlayerController e in Enemys)
         {
             e.SetColor(EnemyColor);
             e.OnHitEvent += OnEnmeyHit;
             e.SetAI(this, new AIMove());
-            e.UpdateBody();
             ForSortingZ.Add(e.gameObject);
+            playersAimCount.Add(e, false);
+            e.UpdateBody();
         }
         foreach (GameObject e in Stuffs) ForSortingZ.Add(e);
 
         Player.UpdateBody();
+        CheckIsStopAim();
     }
 
     private void OnEnmeyHit(GameObject enemy, GameObject other )
@@ -258,6 +282,7 @@ public class ViewController : MonoBehaviour {
             CreateExplodeEffect(enemy.GetComponent<PlayerController>().Position, enemy.GetComponent<PlayerController>().color);
             Destroy(enemy);
             Enemys.Remove(enemy.GetComponent<PlayerController>());
+            playersAimCount.Remove(enemy.GetComponent<PlayerController>());
             ForSortingZ.Remove(enemy);
         }
     }

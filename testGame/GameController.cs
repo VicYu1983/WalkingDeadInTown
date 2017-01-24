@@ -50,12 +50,12 @@ public class GameController : MonoBehaviour {
                 {
                     if(halfAutoDelayName == "遲發動(不裝備)")
                     {
-                        vc.Player.weapons.Add(new AutoWeapon(vc, c));
+                        vc.Player.weapons.Add(new AutoWeapon(vc.Player, vc, c));
                     }
                 }
                 else
                 {
-                    vc.Player.weapons.Add(new HalfAutoWeapon(vc, c));
+                    vc.Player.weapons.Add(new HalfAutoWeapon(vc.Player, vc, c));
                 }
             }
         }
@@ -72,11 +72,11 @@ public class GameController : MonoBehaviour {
                 bool autoWeapon = (bool)c[10];
                 if (autoWeapon)
                 {
-                    vc.Player.weapons.Add(new AutoWeapon(vc, c));
+                    vc.Player.weapons.Add(new AutoWeapon(vc.Player, vc, c));
                 }
                 else
                 {
-                    vc.Player.weapons.Add(new HalfAutoWeapon(vc, c));
+                    vc.Player.weapons.Add(new HalfAutoWeapon(vc.Player, vc, c));
                 }
             }
         }
@@ -100,14 +100,22 @@ public class GameController : MonoBehaviour {
 
         //UsingConfig();
 
+        
         foreach (PlayerController p in vc.Enemys)
         {
-            p.weapons.Add(new HalfAutoWeapon(vc, GameConfig.WeaponConfig[5]));
+            BasicWeapon w = new HalfAutoWeapon(p, vc, GameConfig.WeaponConfig[5]);
+            w.enemys = new List<PlayerController>() { vc.Player };
+            p.weapons.Add(w);
+
             AIBasic aiw = new AIWeapon();
+            
             aiw.ViewController = vc;
             aiw.PlayerController = p;
             p.AIWeapons.Add(aiw);
+
+            p.UpdateBody();
         }
+        
     }
 
     private void OnGamePageLongPressed(object sender, EventArgs e)

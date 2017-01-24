@@ -12,7 +12,7 @@ public class AIWeapon : AIBasic
             Vector3 diff = _vc.Player.Position - _pc.Position;
             if (diff.magnitude < 100)
             {
-                if (UnityEngine.Random.value > .99f)
+                if (UnityEngine.Random.value > .995f)
                 {
                     _pc.weapons[0].AimOnce(_vc.Player.Position);
                 }

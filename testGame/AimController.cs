@@ -6,6 +6,7 @@ public class AimController : MonoBehaviour {
 
     public int GroupId;
 
+    public PlayerController owner;
     public float ExpandSpeed = 1.0f;
     public float Size = 1.0f;
     public bool Dragable = true;
