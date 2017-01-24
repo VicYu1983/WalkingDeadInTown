@@ -135,6 +135,10 @@ public class PlayerController : MonoBehaviour {
     {
         string w = isHaveBlade() ? "_Blade" : "_Gun";
         string i = IsAim ? "" : "_Idle";
+
+        /* 暫時做法，因為不想多拉拿槍動態的animation */
+        if (w == "_Gun") i = "_Idle";
+
         return "Player" + w + i + "_" + dir;
     }
 
@@ -181,7 +185,6 @@ public class PlayerController : MonoBehaviour {
             }
             else if (dir.y < -.2f)
             {
-                //print("DD");
                 SetAnimation(GetAnimationStr("Down"));
             }
         }
