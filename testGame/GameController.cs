@@ -33,6 +33,29 @@ public class GameController : MonoBehaviour {
         }
     }
 
+    public void SetPlayerWeapons( int value )
+    {
+        string[] ews = uc.GetWeaponListFromUI();
+        print(ews[0]);
+        print(ews[1]);
+        foreach (object[] c in GameConfig.WeaponConfig)
+        {
+            string wsName = c[0].ToString();
+            if (wsName == ews[0] || wsName == ews[1])
+            {
+                bool autoWeapon = (bool)c[10];
+                if (autoWeapon)
+                {
+                    vc.Player.weapons.Add(new AutoWeapon(vc, c));
+                }
+                else
+                {
+                    vc.Player.weapons.Add(new HalfAutoWeapon(vc, c));
+                }
+            }
+        }
+    }
+
     void UsingConfig()
     {
         foreach (object[] c in GameConfig.WeaponConfig)
@@ -301,8 +324,13 @@ public class GameController : MonoBehaviour {
 #endif
         foreach (IWeapon w in vc.Player.weapons) w.Update();
     }
-
+    /*
     void OnGUI()
+    {
+        CreateConfigGUI();
+    }*/
+
+    void CreateConfigGUI()
     {
         if (showConfig)
         {
@@ -372,7 +400,7 @@ public class GameController : MonoBehaviour {
                 c[7] = GUILayout.Toggle((bool)c[7], (bool)c[7] ? "延遲" : "非延遲", style);
                 c[8] = float.Parse(GUILayout.TextField(c[8] + "", style));
                 c[9] = GUILayout.Toggle((bool)c[9], (bool)c[9] ? "消失" : "不消失", style);
-                c[10] = GUILayout.Toggle((bool)c[10], (bool)c[10] ? "全自" : "半自" , style);
+                c[10] = GUILayout.Toggle((bool)c[10], (bool)c[10] ? "全自" : "半自", style);
                 c[11] = int.Parse(GUILayout.TextField(c[11] + "", style));
                 c[12] = GUILayout.Toggle((bool)c[12], (bool)c[12] ? "是" : "否", style);
                 c[13] = GUILayout.Toggle((bool)c[13], (bool)c[13] ? "裝備" : "不裝備", style);
@@ -381,7 +409,5 @@ public class GameController : MonoBehaviour {
                 GUILayout.EndHorizontal();
             }
         }
-        
     }
-    
 }
