@@ -36,17 +36,22 @@ public class GameController : MonoBehaviour {
     public void SetPlayerWeapons( int value )
     {
         string[] ews = uc.GetWeaponListFromUI();
-        print(ews[0]);
-        print(ews[1]);
+        vc.Player.weapons.Clear();
         foreach (object[] c in GameConfig.WeaponConfig)
         {
             string wsName = c[0].ToString();
-            if (wsName == ews[0] || wsName == ews[1])
+            string halfAutoName = ews[0];
+            string halfAutoDelayName = ews[2];
+            string autoName = ews[1];
+            if (wsName == halfAutoName || wsName == halfAutoDelayName || wsName == autoName)
             {
                 bool autoWeapon = (bool)c[10];
                 if (autoWeapon)
                 {
-                    vc.Player.weapons.Add(new AutoWeapon(vc, c));
+                    if(halfAutoDelayName == "")
+                    {
+                        vc.Player.weapons.Add(new AutoWeapon(vc, c));
+                    }
                 }
                 else
                 {
@@ -54,6 +59,7 @@ public class GameController : MonoBehaviour {
                 }
             }
         }
+        vc.Player.UpdateBody();
     }
 
     void UsingConfig()

@@ -26,7 +26,6 @@ class GameConfig
         new object[] { "砍刀:半自動", 20, 1.0f, false, 1, 0.0f, 0.03f, false, .7f, true, false, 0, true, false },
         new object[] { "步槍:全自動", 6, 1.0f, false, 1, 30.0f, 0.2f, false, 0.0f, false, true, 0, false, false },
         new object[] { "雷射機槍", 6, 1.0f, false, 1, 10.0f, 0.2f, false, 0.0f, false, true, 0, false, false },
-        new object[] { "衝鋒槍", 6, 1.0f, false, 1, 15.0f, 0.2f, false, 0.0f, false, true, 0, false, false },
-        new object[] { "步槍:全自動", 6, .6f, false, 1, 30.0f, 0.2f, false, 0.0f, false, true, 0, false, false }
+        new object[] { "衝鋒槍", 6, 1.0f, false, 1, 15.0f, 0.2f, false, 0.0f, false, true, 0, false, false }
     };
 }

@@ -100,7 +100,7 @@ public class PlayerController : MonoBehaviour {
 
     public void UpdateBody()
     {
-       // SetBodyImage(currentDir);
+        SetBodyImage(currentDir);
     }
     
     void OnTriggerEnter2D( Collider2D other )
@@ -135,7 +135,6 @@ public class PlayerController : MonoBehaviour {
     {
         string w = isHaveBlade() ? "_Blade" : "_Gun";
         string i = IsAim ? "" : "_Idle";
-
         /* 暫時做法，因為不想多拉拿槍動態的animation */
         if (w == "_Gun") i = "_Idle";
 
