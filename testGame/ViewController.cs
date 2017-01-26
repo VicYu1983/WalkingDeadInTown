@@ -39,6 +39,14 @@ public class ViewController : MonoBehaviour {
         return ObjectContainer.transform.FindChild(name).gameObject;
     }
 
+    public void ClearEnemy()
+    {
+        for( int i = Enemys.Count - 1; i > 0; --i)
+        {
+            DestoryEnemy(Enemys[i].gameObject);
+        }
+    }
+
     public GameObject CreateEnemy( Vector3 pos )
     {
         GameObject e = GameObjectFactory(PrefabName.ENEMY);
@@ -305,11 +313,22 @@ public class ViewController : MonoBehaviour {
         if (other.name.IndexOf("Aim") != -1)
         {
             CreateExplodeEffect(enemy.GetComponent<PlayerController>().Position, enemy.GetComponent<PlayerController>().color);
+            DestoryEnemy(enemy);
+            /*
             Destroy(enemy);
             Enemys.Remove(enemy.GetComponent<PlayerController>());
             playersAimCount.Remove(enemy.GetComponent<PlayerController>());
             ForSortingZ.Remove(enemy);
+            */
         }
+    }
+
+    void DestoryEnemy( GameObject enemy )
+    {
+        Destroy(enemy);
+        Enemys.Remove(enemy.GetComponent<PlayerController>());
+        playersAimCount.Remove(enemy.GetComponent<PlayerController>());
+        ForSortingZ.Remove(enemy);
     }
 
     void Update () {

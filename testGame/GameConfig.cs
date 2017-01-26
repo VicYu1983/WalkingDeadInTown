@@ -5,9 +5,9 @@ using System.Text;
 
 class GameConfig
 {
-    public static float MoveSpeed = 50.0f;
-    public static float DodgeSpeed = 5000.0f;
-    public static int LongMoveDistance = 500;
+    public static float MoveSpeed = 1.0f;
+    public static float DodgeSpeed = 100.0f;
+    public static int LongMoveDistance = 200;
     public static float AimOffsetY = 0.0f;
 
     /*

@@ -23,6 +23,19 @@ public class GameController : MonoBehaviour {
     bool isFlicked = false;
 
     bool showConfig = false;
+
+    
+    public void ReStart()
+    {
+        vc.Player.Position = new Vector3();
+        vc.ClearEnemy();
+        for (int i = 0; i < 5; ++i)
+        {
+            CreateEnemy();
+        }
+    }
+
+    /*
     public void ToggleConfig( bool toggle )
     {
         showConfig = toggle;
@@ -32,15 +45,8 @@ public class GameController : MonoBehaviour {
             UsingConfig();
         }
     }
-
-    public void CreateEnemys()
-    {
-        for (int i = 0; i < 5; ++i)
-        {
-            CreateEnemy();
-        }
-    }
-
+    */
+    /*
     public void SetPlayerWeapons( int value )
     {
         string[] ews = uc.GetWeaponListFromUI();
@@ -89,9 +95,9 @@ public class GameController : MonoBehaviour {
             }
         }
     }
-
-	// Use this for initialization
-	void Start () {
+    */
+    // Use this for initialization
+    void Start () {
         ke.OnFClick += OnFClick;
         ke.OnSpaceClick += OnSpaceClick;
         ke.OnFPress += OnFPress;
@@ -106,24 +112,7 @@ public class GameController : MonoBehaviour {
         vc.GamePage.GetComponent<FlickGesture>().Flicked += OnGamePageFlicked;
         vc.GamePage.GetComponent<DoubleFlickedGesture>().OnDoubleFlickedEvent += OnGamePageDoubleFlicked;
 
-       // foreach (PlayerController e in vc.Enemys) e.GetComponent<TapGesture>().Tapped += OnEnemyTapped;
-        /*
-        foreach (PlayerController p in vc.Enemys)
-        {
-            BasicWeapon w = new HalfAutoWeapon(p, vc, GameConfig.WeaponConfig[5]);
-            w.enemys = new List<PlayerController>() { vc.Player };
-            p.weapons.Add(w);
-
-            AIBasic aiw = new AIWeapon();
-            
-            aiw.ViewController = vc;
-            aiw.PlayerController = p;
-            p.AIWeapons.Add(aiw);
-
-            p.UpdateBody();
-        }
-        */
-        
+        ReStart();
 
     }
 
