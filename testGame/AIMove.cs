@@ -8,18 +8,18 @@ public class AIMove : AIBasic
 {
     public override void Update()
     {
-        Vector3 targetPos = _pc.Position;
-        targetPos += GetPlayerMoveTarget(_pc, _vc.Player, 100, TrackAndKeepMethod);
+        Vector3 targetPos = PlayerController.Position;
+        targetPos += GetPlayerMoveTarget(PlayerController, ViewController.Player, 100, TrackAndKeepMethod);
 
-        List<PlayerController> mates = _vc.Enemys;
+        List<PlayerController> mates = ViewController.Enemys;
         foreach (PlayerController m in mates)
         {
-            if (_pc != m)
+            if (PlayerController != m)
             {
-                targetPos += GetPlayerMoveTarget(_pc, m, 60, KeepMethod);
+                targetPos += GetPlayerMoveTarget(PlayerController, m, 60, KeepMethod);
             }
         }
-        _pc.SetPlayerPosition(targetPos);
+        PlayerController.SetPlayerPosition(targetPos);
     }
 
     delegate bool TrackMethod(Vector3 diff, float distance);

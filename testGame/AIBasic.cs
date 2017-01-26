@@ -5,23 +5,14 @@ using System;
 
 public abstract class AIBasic
 {
-
-    protected ViewController _vc;
     public ViewController ViewController
     {
-        set
-        {
-            _vc = value;
-        }
+        get;set;
     }
-
-    protected PlayerController _pc;
+    
     public PlayerController PlayerController
     {
-        set
-        {
-            _pc = value;
-        }
+        get;set;
     }
 
     public abstract void Update();
