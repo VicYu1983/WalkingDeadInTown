@@ -5,7 +5,7 @@ using System;
 public class KeyboardEvent : MonoBehaviour {
 
     public Action OnFClick;
-    // public Action OnDClick;
+    public Action OnDClick;
     public Action OnSpaceClick;
     public Action OnFPress;
 
@@ -15,11 +15,10 @@ public class KeyboardEvent : MonoBehaviour {
         {
             OnFClick.Invoke();
         }
-        /*
         if (Input.GetKeyUp(KeyCode.D))
         {
             OnDClick.Invoke();
-        }*/
+        }
         if (Input.GetKey(KeyCode.F))
         {
             OnFPress.Invoke();

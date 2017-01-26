@@ -67,6 +67,11 @@ public class PlayerController : MonoBehaviour {
         targetPos = pos;
     }
 
+    public void DodgePlayerByScreenPos(Vector3 dir, float force)
+    {
+        SetPlayerForce((GetMousePositionOnWorld(dir) - Position).normalized, force);
+    }
+
     public void DodgePlayer(Vector3 dir, float force)
     {
         SetPlayerForce(dir, force);

@@ -33,6 +33,14 @@ public class GameController : MonoBehaviour {
         }
     }
 
+    public void CreateEnemys()
+    {
+        for (int i = 0; i < 5; ++i)
+        {
+            CreateEnemy();
+        }
+    }
+
     public void SetPlayerWeapons( int value )
     {
         string[] ews = uc.GetWeaponListFromUI();
@@ -87,6 +95,7 @@ public class GameController : MonoBehaviour {
         ke.OnFClick += OnFClick;
         ke.OnSpaceClick += OnSpaceClick;
         ke.OnFPress += OnFPress;
+        ke.OnDClick += OnDClick;
         
         vc.Player.GetComponent<TapGesture>().Tapped += OnPlayerTapped;
         // vc.Ground.GetComponent<TapGesture>().Tapped += OnTapped;
@@ -96,11 +105,9 @@ public class GameController : MonoBehaviour {
         vc.GamePage.GetComponent<Button>().onClick.AddListener(OnGamePageClick);
         vc.GamePage.GetComponent<FlickGesture>().Flicked += OnGamePageFlicked;
         vc.GamePage.GetComponent<DoubleFlickedGesture>().OnDoubleFlickedEvent += OnGamePageDoubleFlicked;
-        foreach (PlayerController e in vc.Enemys) e.GetComponent<TapGesture>().Tapped += OnEnemyTapped;
 
-        //UsingConfig();
-
-        
+       // foreach (PlayerController e in vc.Enemys) e.GetComponent<TapGesture>().Tapped += OnEnemyTapped;
+        /*
         foreach (PlayerController p in vc.Enemys)
         {
             BasicWeapon w = new HalfAutoWeapon(p, vc, GameConfig.WeaponConfig[5]);
@@ -115,7 +122,18 @@ public class GameController : MonoBehaviour {
 
             p.UpdateBody();
         }
+        */
         
+
+    }
+
+    void CreateEnemy()
+    {
+        Vector3 pos = new Vector3();
+        pos.x = UnityEngine.Random.value * 100;
+        pos.y = UnityEngine.Random.value * -100;
+        pos += vc.Player.Position;
+        vc.CreateEnemy(pos);
     }
 
     private void OnGamePageLongPressed(object sender, EventArgs e)
@@ -242,6 +260,12 @@ public class GameController : MonoBehaviour {
     private void OnFPress()
     {
         vc.Player.SetPlayerPositionByScreenPos( Input.mousePosition );
+    }
+
+
+    private void OnDClick()
+    {
+        vc.Player.DodgePlayerByScreenPos(Input.mousePosition, GameConfig.DodgeSpeed);
     }
 
     private void OnFClick()

@@ -10,7 +10,8 @@ enum PrefabName{
     SPECIAL,
     AIM,
     BODY_EXPLODE,
-    AIM_POINT_0
+    AIM_POINT_0,
+    ENEMY
 }
 
 public class ViewController : MonoBehaviour {
@@ -21,10 +22,9 @@ public class ViewController : MonoBehaviour {
     public PlayerController Player;
     public GameObject Ground;
     public Color EnemyColor;
-    public List<PlayerController> Enemys;
     public List<GameObject> Stuffs;
-
     public GameObject[] Prefabs;
+    public List<PlayerController> Enemys;
 
     [SerializeField]
     private List<GameObject> Bullets;
@@ -37,6 +37,25 @@ public class ViewController : MonoBehaviour {
     public GameObject GetObjectFromObjectContainerByName( string name )
     {
         return ObjectContainer.transform.FindChild(name).gameObject;
+    }
+
+    public GameObject CreateEnemy( Vector3 pos )
+    {
+        GameObject e = GameObjectFactory(PrefabName.ENEMY);
+        e.transform.parent = ObjectContainer.transform;
+        e.transform.position = pos;
+
+        PlayerController ep = e.GetComponent<PlayerController>();
+        Enemys.Add(ep);
+
+        ep.SetColor(EnemyColor);
+        ep.OnHitEvent += OnEnmeyHit;
+        ep.SetAI(this, new AIMove());
+        ForSortingZ.Add(e);
+        playersAimCount.Add(ep, false);
+        ep.UpdateBody();
+
+        return e;
     }
 
     public void CreateBullet( Vector3 from, Vector3 dir, float force )
@@ -214,7 +233,7 @@ public class ViewController : MonoBehaviour {
         Bullets.Add(bullet);
     }
 
-    private void CreateExplodeEffect( Vector3 pos, Color color )
+    private void CreateExplodeEffect(Vector3 pos, Color color)
     {
         GameObject explode = GameObjectFactory(PrefabName.BODY_EXPLODE);
         explode.SetActive(true);
@@ -251,6 +270,8 @@ public class ViewController : MonoBehaviour {
                 return Instantiate(Prefabs[3]);
             case PrefabName.AIM_POINT_0:
                 return Instantiate(Prefabs[4]);
+            case PrefabName.ENEMY:
+                return Instantiate(Prefabs[5]);
         }
         return null;
     }
@@ -260,6 +281,8 @@ public class ViewController : MonoBehaviour {
     {
         playersAimCount.Add(Player, false);
         ForSortingZ.Add(Player.gameObject);
+
+        /*
         foreach (PlayerController e in Enemys)
         {
             e.SetColor(EnemyColor);
@@ -269,8 +292,10 @@ public class ViewController : MonoBehaviour {
             playersAimCount.Add(e, false);
             e.UpdateBody();
         }
-        foreach (GameObject e in Stuffs) ForSortingZ.Add(e);
+        
+        */
 
+        foreach (GameObject e in Stuffs) ForSortingZ.Add(e);
         Player.UpdateBody();
         CheckIsStopAim();
     }
