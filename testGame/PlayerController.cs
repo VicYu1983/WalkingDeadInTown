@@ -125,6 +125,13 @@ public class PlayerController : MonoBehaviour {
     void SetPlayerForce(Vector3 dir, float force)
     {
         GetComponent<Rigidbody2D>().AddForce(dir.normalized * force);
+        //使用數據移動，會喪失一些物理效果，例如會穿過物理物件
+        /*
+        Vector3 newpos = Position;
+        newpos += dir * force * .01f;
+        newpos.z = 0;
+        Position = newpos;
+        */
         GetComponent<PlayerController>().BodyRotateByMoveDir(dir.normalized);
     }
 
