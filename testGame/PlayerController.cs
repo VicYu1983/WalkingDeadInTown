@@ -9,6 +9,25 @@ public class PlayerController : MonoBehaviour {
     public GameObject body;
     public GameObject foot;
     public Color color;
+
+    int _hp = 100;
+    public int HP
+    {
+        get
+        {
+            return _hp;
+        }
+        set
+        {
+            if (value < 0) value = 0;
+            _hp = value;
+        }
+    }
+    
+    public bool IsDead()
+    {
+        return HP <= 0;
+    }
     public Action<GameObject,GameObject> OnHitEvent;
 
     Vector3 normalScale = new Vector3(1, 1, 1);

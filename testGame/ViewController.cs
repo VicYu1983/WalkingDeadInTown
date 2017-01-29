@@ -56,6 +56,7 @@ public class ViewController : MonoBehaviour {
         PlayerController ep = e.GetComponent<PlayerController>();
         Enemys.Add(ep);
 
+        ep.HP = 100;
         ep.SetColor(EnemyColor);
         ep.OnHitEvent += OnEnmeyHit;
         ep.SetAI(this, new AIMove());
@@ -312,7 +313,19 @@ public class ViewController : MonoBehaviour {
     {
         if (other.name.IndexOf("Aim") != -1)
         {
-            MakeEnemyHitEffect(enemy.GetComponent<PlayerController>(), Player.Position);
+            PlayerController e = enemy.GetComponent<PlayerController>();
+            e.HP -= 10;
+
+            if(e.IsDead())
+            {
+                CreateExplodeEffect(enemy.GetComponent<PlayerController>().Position, enemy.GetComponent<PlayerController>().color);
+                DestoryEnemy(enemy);
+            }
+            else
+            {
+                MakeEnemyHitEffect(e, Player.Position);
+            }
+            
         }
     }
 
