@@ -28,6 +28,12 @@ public class AgeCalculator : MonoBehaviour {
         }
     }
 
+    public void ResetAge()
+    {
+        _currentAge = 0;
+        _isDead = false;
+    }
+
 	void Update () {
         if( !IsDead ) {
             if (_currentAge++ > DeadAge)

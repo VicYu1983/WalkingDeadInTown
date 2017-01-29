@@ -8,7 +8,20 @@ public class PlayerController : MonoBehaviour {
     
     public GameObject body;
     public GameObject foot;
+    public Text Bubble;
     public Color color;
+
+    public string SpeakContent
+    {
+        set
+        {
+            Bubble.text = value;
+        }
+        get
+        {
+            return Bubble.text;
+        }
+    }
 
     int _hp = 100;
     public int HP

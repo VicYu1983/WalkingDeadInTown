@@ -25,6 +25,11 @@ public class ViewController : MonoBehaviour {
     public List<GameObject> Stuffs;
     public GameObject[] Prefabs;
     public List<PlayerController> Enemys;
+    public string[] HitSpeaks_100;
+    public string[] HitSpeaks_75;
+    public string[] HitSpeaks_50;
+    public string[] HitSpeaks_25;
+    public string[] HitSpeaks_10;
 
     [SerializeField]
     private List<GameObject> Bullets;
@@ -59,12 +64,21 @@ public class ViewController : MonoBehaviour {
         ep.HP = 100;
         ep.SetColor(EnemyColor);
         ep.OnHitEvent += OnEnmeyHit;
+        ep.GetComponent<AgeCalculator>().DeadAge = Mathf.FloorToInt(UnityEngine.Random.value * 1000) + 500;
+        ep.GetComponent<AgeCalculator>().OnDeadEvent += OnEnemySpeakEvent;
         ep.SetAI(this, new AIMove());
         ForSortingZ.Add(e);
         playersAimCount.Add(ep, false);
         ep.UpdateBody();
 
         return e;
+    }
+
+    private void OnEnemySpeakEvent(AgeCalculator obj)
+    {
+        obj.ResetAge();
+        obj.DeadAge = Mathf.FloorToInt(UnityEngine.Random.value * 1000) + 500;
+        StartCoroutine(DisplayPlayerSpeak(obj.GetComponent<PlayerController>()));
     }
 
     public void CreateBullet( Vector3 from, Vector3 dir, float force )
@@ -341,6 +355,36 @@ public class ViewController : MonoBehaviour {
         p.GetComponent<Rigidbody2D>().AddForce(hitforce.normalized * 10);
         yield return new WaitForSeconds(.05f);
         p.SetColor(EnemyColor);
+    }
+
+    IEnumerator DisplayPlayerSpeak(PlayerController p)
+    {
+        string[] targetSpeaks = null;
+        if( p.HP <= 10)
+        {
+            targetSpeaks = HitSpeaks_10;
+        }
+        else if( p.HP <= 25)
+        {
+            targetSpeaks = HitSpeaks_25;
+        }
+        else if (p.HP <= 50)
+        {
+            targetSpeaks = HitSpeaks_50;
+        }
+        else if (p.HP <= 75)
+        {
+            targetSpeaks = HitSpeaks_75;
+        }
+        else if (p.HP <= 100)
+        {
+            targetSpeaks = HitSpeaks_100;
+        }
+        int choose = Mathf.FloorToInt(UnityEngine.Random.value * targetSpeaks.Length);
+        p.SpeakContent = targetSpeaks[choose];
+        print(p.SpeakContent);
+        yield return new WaitForSeconds(3f);
+        p.SpeakContent = "";
     }
 
     void DestoryEnemy( GameObject enemy )
