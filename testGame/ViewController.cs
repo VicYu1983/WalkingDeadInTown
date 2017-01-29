@@ -312,15 +312,22 @@ public class ViewController : MonoBehaviour {
     {
         if (other.name.IndexOf("Aim") != -1)
         {
-            CreateExplodeEffect(enemy.GetComponent<PlayerController>().Position, enemy.GetComponent<PlayerController>().color);
-            DestoryEnemy(enemy);
-            /*
-            Destroy(enemy);
-            Enemys.Remove(enemy.GetComponent<PlayerController>());
-            playersAimCount.Remove(enemy.GetComponent<PlayerController>());
-            ForSortingZ.Remove(enemy);
-            */
+            MakeEnemyHitEffect(enemy.GetComponent<PlayerController>(), Player.Position);
         }
+    }
+
+    void MakeEnemyHitEffect(PlayerController p, Vector3 hitPos )
+    {
+        StartCoroutine(DisplayHitEffect(p, hitPos));
+    }
+
+    IEnumerator DisplayHitEffect(PlayerController p, Vector3 hitPos)
+    {
+        p.SetColor(Color.red);
+        Vector3 hitforce = p.Position - hitPos;
+        p.GetComponent<Rigidbody2D>().AddForce(hitforce.normalized * 10);
+        yield return new WaitForSeconds(.05f);
+        p.SetColor(EnemyColor);
     }
 
     void DestoryEnemy( GameObject enemy )

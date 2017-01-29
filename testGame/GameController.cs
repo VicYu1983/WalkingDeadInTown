@@ -46,7 +46,7 @@ public class GameController : MonoBehaviour {
         }
     }
     */
-    /*
+    
     public void SetPlayerWeapons( int value )
     {
         string[] ews = uc.GetWeaponListFromUI();
@@ -75,7 +75,7 @@ public class GameController : MonoBehaviour {
         }
         vc.Player.UpdateBody();
     }
-
+    /*
     void UsingConfig()
     {
         foreach (object[] c in GameConfig.WeaponConfig)
