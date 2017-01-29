@@ -318,7 +318,7 @@ public class ViewController : MonoBehaviour {
 
             if(e.IsDead())
             {
-                CreateExplodeEffect(enemy.GetComponent<PlayerController>().Position, enemy.GetComponent<PlayerController>().color);
+                CreateExplodeEffect(enemy.GetComponent<PlayerController>().Position, EnemyColor);
                 DestoryEnemy(enemy);
             }
             else
