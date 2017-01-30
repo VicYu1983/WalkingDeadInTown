@@ -141,7 +141,6 @@ public class GameController : MonoBehaviour {
         else if ( Input.touchCount == 2 ){
             
             isDoubleHold = true;
-            
             uc.SetState("OnGamePageLongPressed: isDoubleHold: " + isDoubleHold);
         }
 #endif
@@ -183,6 +182,18 @@ public class GameController : MonoBehaviour {
 
     private void OnGamePageDoubleFlicked(FlickGesture obj)
     {
+        print("OnGamePageDoubleFlicked");
+
+#if UNITY_EDITOR
+        vc.Player.DodgePlayer(obj.ScreenFlickVector.normalized, GameConfig.DodgeSpeed);
+
+        /* 因為此操作會和單指操作衝突，因此加個flag來決定單指操作是否能觸發 */
+        isDoubleFlicked = true;
+        StartCoroutine(DelayCall(.6f, () =>
+        {
+            isDoubleFlicked = false;
+        }));
+#else
         if ( GetTouchCount() == 2)
         {
           //  uc.SetState("Dodge");
@@ -195,10 +206,30 @@ public class GameController : MonoBehaviour {
                 isDoubleFlicked = false;
             }));
         }
+#endif
+
     }
 
     private void OnGamePageFlicked(object sender, EventArgs e)
     {
+#if UNITY_EDITOR
+        if (!isDoubleFlicked)
+        {
+            Vector3 dir = vc.GamePage.GetComponent<FlickGesture>().ScreenFlickVector.normalized;
+            Vector3 fromVec = vc.Player.GetComponent<RectTransform>().position;
+            vc.Player.SetPlayerPosition(fromVec + dir * GameConfig.LongMoveDistance);
+
+            // uc.SetState("Move Long Distance:" + dir * GameConfig.LongMoveDistance);
+
+            /* 因為此操作會和雙指持續按壓地面的操作衝突，因此加個flag來決定雙指持續按壓地面的操作是否能觸發 */
+            isFlicked = true;
+            StartCoroutine(DelayCall(.6f, () =>
+            {
+                isFlicked = false;
+            }));
+        }
+       
+#else
         if ( GetTouchCount() == 2 && !isDoubleFlicked )
         {
             Vector3 dir = vc.GamePage.GetComponent<FlickGesture>().ScreenFlickVector.normalized;
@@ -214,8 +245,10 @@ public class GameController : MonoBehaviour {
                 isFlicked = false;
             }));
         }
+#endif
+
     }
-    
+
     private void OnEnemyTapped(object sender, EventArgs e)
     {
         string senderName = ((TapGesture)sender).gameObject.name;
@@ -230,13 +263,14 @@ public class GameController : MonoBehaviour {
     private void OnSpaceClick()
     {
         vc.Player.MakePlayerStop();
+        uc.SetState("Stop Player");
     }
 
     private void OnPlayerTapped(object sender, EventArgs e)
     {
-        if ( GetTouchCount() == 2)
+        if ( GetTouchCount() == 2 && GetIsClick() )
         {
-          //  uc.SetState("Stop Player");
+            uc.SetState("Stop Player");
             vc.Player.MakePlayerStop();
         }
     }
@@ -283,6 +317,18 @@ public class GameController : MonoBehaviour {
         return GetComponent<DetectTouchCountByPassTime>().GetAverageTouchPosition();
     }
 
+    Vector3 GetLastTouchPosition()
+    {
+        Vector2 pos = new Vector2();
+        int touchCount = Input.touchCount;
+        foreach( Touch t in Input.touches)
+        {
+            pos += t.position;
+        }
+        pos /= touchCount;
+        return new Vector3(pos.x, pos.y, 0);
+    }
+
     void FireOnce( Vector3 firePos )
     {
         Vector3 fromVec = vc.Player.GetComponent<RectTransform>().position;
@@ -310,7 +356,7 @@ public class GameController : MonoBehaviour {
         
         if ( isDoubleHold && !isFlicked )
         {
-            vc.Player.SetPlayerPositionByScreenPos(GetTouchPosition());
+            vc.Player.SetPlayerPositionByScreenPos(GetLastTouchPosition());
         //    uc.SetState("Normal Move");
         }
 

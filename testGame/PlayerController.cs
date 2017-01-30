@@ -156,14 +156,16 @@ public class PlayerController : MonoBehaviour {
 
     void SetPlayerForce(Vector3 dir, float force)
     {
-        GetComponent<Rigidbody2D>().AddForce(dir.normalized * force);
+        //GetComponent<Rigidbody2D>().AddForce(dir.normalized * force);
+       // GetComponent<Rigidbody2D>().velocity = dir.normalized * force * 100;
+
         //使用數據移動，會喪失一些物理效果，例如會穿過物理物件
-        /*
+        
         Vector3 newpos = Position;
-        newpos += dir * force * .01f;
+        newpos += dir.normalized * force * 2;
         newpos.z = 0;
         Position = newpos;
-        */
+        
         GetComponent<PlayerController>().BodyRotateByMoveDir(dir.normalized);
     }
 
@@ -262,7 +264,7 @@ public class PlayerController : MonoBehaviour {
         if (targetPos != null)
         {
             Vector3 diffVec = (Vector3)targetPos - Position;
-            if (diffVec.magnitude < 40)
+            if (diffVec.magnitude < 10)
             {
                 targetPos = null;
             }
