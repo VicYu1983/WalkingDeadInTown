@@ -55,6 +55,18 @@ public class PlayerController : MonoBehaviour {
     public AIBasic AIMove;
     public List<AIBasic> AIWeapons = new List<AIBasic>();
     
+    public Vector3 Scale
+    {
+        set
+        {
+            this.body.transform.localScale = value;
+        }
+        get
+        {
+            return this.body.transform.localScale;
+
+        }
+    }
     public Vector3 Position
     {
         set
@@ -87,6 +99,35 @@ public class PlayerController : MonoBehaviour {
         {
             _isBlade = value;
         }
+    }
+
+    void DrawSprite(Texture2D canvas, Texture2D drawTarget, bool ignoreAlpha = false )
+    {
+        for (int y = 0; y < canvas.height; y++)
+        {
+            for (int x = 0; x < canvas.width; x++)
+            {
+                Color color = drawTarget.GetPixel(x, y);
+                if(ignoreAlpha)
+                {
+                    if (color.a != 0) canvas.SetPixel(x, y, color);
+                }
+                else
+                {
+                    canvas.SetPixel(x, y, color);
+                }
+                
+            }
+        }
+    }
+
+    public Sprite GetPlayerImage()
+    {
+        Texture2D texture = new Texture2D(32, 32);
+        DrawSprite(texture, foot.GetComponent<Image>().sprite.texture);
+        DrawSprite(texture, body.GetComponent<Image>().sprite.texture, true);
+        texture.Apply();
+        return Sprite.Create(texture, new Rect(0, 0, 32, 32), new Vector2()); ;
     }
 
     public void SetPlayerPositionByScreenPos(Vector3 screenPos)
@@ -202,7 +243,7 @@ public class PlayerController : MonoBehaviour {
     {
         if (dir.x > .2f)
         {
-            body.transform.localScale = normalScale;
+            Scale = normalScale;
             if (dir.y > .2f)
             {
                 SetAnimation(GetAnimationStr("Right_Up"));
@@ -218,7 +259,7 @@ public class PlayerController : MonoBehaviour {
         }
         else if (dir.x < -.2f)
         {
-            body.transform.localScale = flipScale;
+            Scale = flipScale;
             if (dir.y > .2f)
             {
                 SetAnimation(GetAnimationStr("Right_Up"));
@@ -234,7 +275,7 @@ public class PlayerController : MonoBehaviour {
         }
         else
         {
-            body.transform.localScale = normalScale;
+            Scale = normalScale;
             if (dir.y > .2f)
             {
                 SetAnimation(GetAnimationStr("Up"));

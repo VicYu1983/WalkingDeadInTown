@@ -11,7 +11,8 @@ enum PrefabName{
     AIM,
     BODY_EXPLODE,
     AIM_POINT_0,
-    ENEMY
+    ENEMY,
+    SPEED_SHADOW
 }
 
 public class ViewController : MonoBehaviour {
@@ -79,6 +80,15 @@ public class ViewController : MonoBehaviour {
         obj.ResetAge();
         obj.DeadAge = Mathf.FloorToInt(UnityEngine.Random.value * 1000) + 500;
         StartCoroutine(DisplayPlayerSpeak(obj.GetComponent<PlayerController>()));
+    }
+
+    public void CreateShadow(Vector3 pos, Vector3 scale)
+    {
+        GameObject s = GameObjectFactory(PrefabName.SPEED_SHADOW);
+        s.transform.parent = ObjectContainer.transform;
+        s.GetComponent<RectTransform>().position = pos;
+        s.GetComponent<RectTransform>().localScale = scale;
+        s.GetComponent<SpeedShadowController>().SetImage(Player.GetPlayerImage());
     }
 
     public void CreateBullet( Vector3 from, Vector3 dir, float force )
@@ -295,6 +305,8 @@ public class ViewController : MonoBehaviour {
                 return Instantiate(Prefabs[4]);
             case PrefabName.ENEMY:
                 return Instantiate(Prefabs[5]);
+            case PrefabName.SPEED_SHADOW:
+                return Instantiate(Prefabs[6]);
         }
         return null;
     }

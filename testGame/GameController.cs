@@ -184,7 +184,19 @@ public class GameController : MonoBehaviour {
     private void OnGamePageDoubleFlicked(FlickGesture obj)
     {
 #if UNITY_EDITOR
-        vc.Player.DodgePlayer(obj.ScreenFlickVector.normalized, GameConfig.DodgeSpeed);
+        DodgePlayer(obj.ScreenFlickVector.normalized);
+#else
+        if ( GetTouchCount() == 2)
+        {
+            DodgePlayer( obj.ScreenFlickVector.normalized );
+        }
+#endif
+    }
+
+    void DodgePlayer(Vector3 dir)
+    {
+        uc.SetState("Dodge");
+        vc.Player.DodgePlayer(dir, GameConfig.DodgeSpeed);
 
         /* 因為此操作會和單指操作衝突，因此加個flag來決定單指操作是否能觸發 */
         isDoubleFlicked = true;
@@ -192,21 +204,6 @@ public class GameController : MonoBehaviour {
         {
             isDoubleFlicked = false;
         }));
-#else
-        if ( GetTouchCount() == 2)
-        {
-            uc.SetState("Dodge");
-            vc.Player.DodgePlayer(obj.ScreenFlickVector.normalized, GameConfig.DodgeSpeed);
-
-            /* 因為此操作會和單指操作衝突，因此加個flag來決定單指操作是否能觸發 */
-            isDoubleFlicked = true;
-            StartCoroutine(DelayCall(.6f, () =>
-            {
-                isDoubleFlicked = false;
-            }));
-        }
-#endif
-
     }
 
     private void OnGamePageFlicked(object sender, EventArgs e)
@@ -346,6 +343,7 @@ public class GameController : MonoBehaviour {
     
     void Update () {
 
+        /* 是點擊、非swipe、非連續swipe、兩指在屏上才會觸發 */
 	    if( GetTouchCount() == 2 && GetIsClick() && !isFlicked && !isDoubleFlicked)
         {
             vc.Player.SetPlayerPositionByScreenPos(GetTouchPosition());
@@ -357,6 +355,11 @@ public class GameController : MonoBehaviour {
         {
             vc.Player.SetPlayerPositionByScreenPos(GetLastTouchPosition());
             uc.SetState("Normal Move");
+        }
+
+        if( isDoubleFlicked)
+        {
+            vc.CreateShadow(vc.Player.Position, vc.Player.Scale);
         }
 
         //uc.SetState("isDoubleHold: " + isDoubleHold);

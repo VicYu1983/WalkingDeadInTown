@@ -28,6 +28,11 @@ public class AgeCalculator : MonoBehaviour {
         }
     }
 
+    public float GetPercent()
+    {
+        return (_currentAge + 0.0f) / (DeadAge + 0.0f);
+    }
+
     public void ResetAge()
     {
         _currentAge = 0;
