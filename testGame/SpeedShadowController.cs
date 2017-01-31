@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class SpeedShadowController : MonoBehaviour {
+
+    public bool EnableAlpha = false;
     
 	void Start () {
         GetComponent<AgeCalculator>().OnDeadEvent += OnDeadEvent;
@@ -23,6 +25,6 @@ public class SpeedShadowController : MonoBehaviour {
 
     void Update()
     {
-        GetComponent<Image>().color = new Color(1, 1, 1, 1.0f - GetComponent<AgeCalculator>().GetPercent());
+        if(EnableAlpha) GetComponent<Image>().color = new Color(1, 1, 1, 1.0f - GetComponent<AgeCalculator>().GetPercent());
     }
 }

@@ -12,6 +12,9 @@ public class GameController : MonoBehaviour {
     public ViewController vc;
     public UIController uc;
 
+    public bool EnableShadow = true;
+    public bool StopPlayerWhenTowFingerRelease = false;
+
     bool isDoubleHold = false;
 
     bool isClicked = false;
@@ -33,6 +36,11 @@ public class GameController : MonoBehaviour {
         {
             CreateEnemy();
         }
+    }
+
+    public void SetEnableShadow( bool e)
+    {
+        EnableShadow = e;
     }
 
     /*
@@ -157,10 +165,13 @@ public class GameController : MonoBehaviour {
         //uc.SetState("OnGamePageReleased: isDoubleHold: " + isDoubleHold);
         foreach (IWeapon w in vc.Player.weapons) w.EndAim();
 
-        if (GetTouchCount() == 2)
+        if (StopPlayerWhenTowFingerRelease)
         {
-            vc.Player.StopMove();
-            uc.SetState("StopMove");
+            if (GetTouchCount() == 2)
+            {
+                vc.Player.StopMove();
+                uc.SetState("StopMove");
+            }
         }
     }
 
@@ -200,7 +211,7 @@ public class GameController : MonoBehaviour {
 
         /* 因為此操作會和單指操作衝突，因此加個flag來決定單指操作是否能觸發 */
         isDoubleFlicked = true;
-        StartCoroutine(DelayCall(.6f, () =>
+        StartCoroutine(DelayCall(.3f, () =>
         {
             isDoubleFlicked = false;
         }));
@@ -357,9 +368,9 @@ public class GameController : MonoBehaviour {
             uc.SetState("Normal Move");
         }
 
-        if( isDoubleFlicked)
+        if( EnableShadow )
         {
-            vc.CreateShadow(vc.Player.Position, vc.Player.Scale);
+            if(isDoubleFlicked) vc.CreateShadow(vc.Player.Position, vc.Player.Scale);
         }
 
         //uc.SetState("isDoubleHold: " + isDoubleHold);
