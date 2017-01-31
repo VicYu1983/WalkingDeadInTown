@@ -26,7 +26,7 @@ public class UIController : MonoBehaviour {
 
     public void ShowRightPanel( bool show )
     {
-        //RightPanel.SetActive(show);
+        /* 這邊本來是用 setActive(show)，但是不知道為什麼會影響到點擊ui的事件，導致有些ui不能點，因此改為用scale來決定要不要顯示 */
         if( show)
         {
             RightPanel.GetComponent<RectTransform>().localScale = new Vector3(3, 3, 1);
@@ -61,8 +61,4 @@ public class UIController : MonoBehaviour {
         }
     }
 	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }

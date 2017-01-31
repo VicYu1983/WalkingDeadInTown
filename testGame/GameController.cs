@@ -107,7 +107,10 @@ public class GameController : MonoBehaviour {
         // vc.Ground.GetComponent<TapGesture>().Tapped += OnTapped;
         //vc.GamePage.GetComponent<PressGesture>().Pressed += OnGamePagePressed;
         vc.GamePage.GetComponent<LongPressGesture>().LongPressed += OnGamePageLongPressed;
+
+        /* 有時會因為gesture彼此間的衝突而不會觸發此事件，因此改用click比較穩 */
         //vc.GamePage.GetComponent<ReleaseGesture>().Released += OnGamePageReleased;
+
         vc.GamePage.GetComponent<Button>().onClick.AddListener(OnGamePageClick);
         vc.GamePage.GetComponent<FlickGesture>().Flicked += OnGamePageFlicked;
         vc.GamePage.GetComponent<DoubleFlickedGesture>().OnDoubleFlickedEvent += OnGamePageDoubleFlicked;
@@ -160,21 +163,7 @@ public class GameController : MonoBehaviour {
             uc.SetState("StopMove");
         }
     }
-    /*
-    private void OnGamePageReleased(object sender, EventArgs e)
-    {
-        isDoubleHold = false;
 
-       // uc.SetState("OnGamePageReleased: isDoubleHold: " + isDoubleHold);
-        foreach (IWeapon w in vc.Player.weapons) w.EndAim();
-
-        if( GetTouchCount() == 2)
-        {
-            vc.Player.StopMove();
-            uc.SetState("StopMove");
-        }
-    }
-    */
     private void OnGamePagePressed(object sender, EventArgs e)
     {
 #if UNITY_EDITOR
