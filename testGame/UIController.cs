@@ -26,7 +26,14 @@ public class UIController : MonoBehaviour {
 
     public void ShowRightPanel( bool show )
     {
-        RightPanel.SetActive(show);
+        //RightPanel.SetActive(show);
+        if( show)
+        {
+            RightPanel.GetComponent<RectTransform>().localScale = new Vector3(3, 3, 1);
+        }else
+        {
+            RightPanel.GetComponent<RectTransform>().localScale = new Vector3(0, 0, 1);
+        }
     }
 
 	// Use this for initialization

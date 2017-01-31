@@ -118,6 +118,11 @@ public class PlayerController : MonoBehaviour {
         targetPos = null;
     }
 
+    public void StopMove()
+    {
+        targetPos = null;
+    }
+
     public void BodyRotateByAimDir ( Vector3 dir ){
         currentDir = dir;
         _isAim = true;

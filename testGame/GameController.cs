@@ -153,16 +153,28 @@ public class GameController : MonoBehaviour {
 
         //uc.SetState("OnGamePageReleased: isDoubleHold: " + isDoubleHold);
         foreach (IWeapon w in vc.Player.weapons) w.EndAim();
-    }
 
+        if (GetTouchCount() == 2)
+        {
+            vc.Player.StopMove();
+            uc.SetState("StopMove");
+        }
+    }
+    /*
     private void OnGamePageReleased(object sender, EventArgs e)
     {
         isDoubleHold = false;
 
        // uc.SetState("OnGamePageReleased: isDoubleHold: " + isDoubleHold);
         foreach (IWeapon w in vc.Player.weapons) w.EndAim();
-    }
 
+        if( GetTouchCount() == 2)
+        {
+            vc.Player.StopMove();
+            uc.SetState("StopMove");
+        }
+    }
+    */
     private void OnGamePagePressed(object sender, EventArgs e)
     {
 #if UNITY_EDITOR
