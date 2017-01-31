@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class UIController : MonoBehaviour {
 
     public GameObject txt_state;
+    public GameObject RightPanel;
     public Dropdown dpd_halfAutoWeapons;
     public Dropdown dpd_halfAutoDelayWeapons;
     public Dropdown dpd_autoWeapons;
@@ -21,6 +22,11 @@ public class UIController : MonoBehaviour {
         string equipBName = dpd_autoWeapons.options[dpd_autoWeapons.value].text;
         string equipCName = dpd_halfAutoDelayWeapons.options[dpd_halfAutoDelayWeapons.value].text;
         return new string[] { equipAName, equipBName, equipCName };
+    }
+
+    public void ShowRightPanel( bool show )
+    {
+        RightPanel.SetActive(show);
     }
 
 	// Use this for initialization
