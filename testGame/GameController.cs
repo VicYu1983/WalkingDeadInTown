@@ -141,17 +141,17 @@ public class GameController : MonoBehaviour {
         else if ( Input.touchCount == 2 ){
             
             isDoubleHold = true;
-            uc.SetState("OnGamePageLongPressed: isDoubleHold: " + isDoubleHold);
+           // uc.SetState("OnGamePageLongPressed: isDoubleHold: " + isDoubleHold);
         }
 #endif
-       // uc.SetState("OnGamePageLongPressed");
+        uc.SetState("OnGamePageLongPressed");
     }
 
     private void OnGamePageClick()
     {
         isDoubleHold = false;
 
-        uc.SetState("OnGamePageReleased: isDoubleHold: " + isDoubleHold);
+        //uc.SetState("OnGamePageReleased: isDoubleHold: " + isDoubleHold);
         foreach (IWeapon w in vc.Player.weapons) w.EndAim();
     }
 
@@ -159,7 +159,7 @@ public class GameController : MonoBehaviour {
     {
         isDoubleHold = false;
 
-        uc.SetState("OnGamePageReleased: isDoubleHold: " + isDoubleHold);
+       // uc.SetState("OnGamePageReleased: isDoubleHold: " + isDoubleHold);
         foreach (IWeapon w in vc.Player.weapons) w.EndAim();
     }
 
@@ -177,13 +177,11 @@ public class GameController : MonoBehaviour {
 #else
         }
 #endif
-       // uc.SetState("OnGamePagePressed");
+        uc.SetState("OnGamePagePressed");
     }
 
     private void OnGamePageDoubleFlicked(FlickGesture obj)
     {
-        print("OnGamePageDoubleFlicked");
-
 #if UNITY_EDITOR
         vc.Player.DodgePlayer(obj.ScreenFlickVector.normalized, GameConfig.DodgeSpeed);
 
@@ -196,7 +194,7 @@ public class GameController : MonoBehaviour {
 #else
         if ( GetTouchCount() == 2)
         {
-          //  uc.SetState("Dodge");
+            uc.SetState("Dodge");
             vc.Player.DodgePlayer(obj.ScreenFlickVector.normalized, GameConfig.DodgeSpeed);
 
             /* 因為此操作會和單指操作衝突，因此加個flag來決定單指操作是否能觸發 */
@@ -219,7 +217,7 @@ public class GameController : MonoBehaviour {
             Vector3 fromVec = vc.Player.GetComponent<RectTransform>().position;
             vc.Player.SetPlayerPosition(fromVec + dir * GameConfig.LongMoveDistance);
 
-            // uc.SetState("Move Long Distance:" + dir * GameConfig.LongMoveDistance);
+            uc.SetState("Move Long Distance:" + dir * GameConfig.LongMoveDistance);
 
             /* 因為此操作會和雙指持續按壓地面的操作衝突，因此加個flag來決定雙指持續按壓地面的操作是否能觸發 */
             isFlicked = true;
@@ -228,7 +226,7 @@ public class GameController : MonoBehaviour {
                 isFlicked = false;
             }));
         }
-       
+
 #else
         if ( GetTouchCount() == 2 && !isDoubleFlicked )
         {
@@ -236,7 +234,7 @@ public class GameController : MonoBehaviour {
             Vector3 fromVec = vc.Player.GetComponent<RectTransform>().position;
             vc.Player.SetPlayerPosition(fromVec + dir * GameConfig.LongMoveDistance);
 
-           // uc.SetState("Move Long Distance:" + dir * GameConfig.LongMoveDistance);
+            uc.SetState("Move Long Distance:" + dir * GameConfig.LongMoveDistance);
 
             /* 因為此操作會和雙指持續按壓地面的操作衝突，因此加個flag來決定雙指持續按壓地面的操作是否能觸發 */
             isFlicked = true;
@@ -277,7 +275,7 @@ public class GameController : MonoBehaviour {
     
     private void OnTapped(object sender, EventArgs e)
     {
-        //uc.SetState("OnGroundTapped");
+        uc.SetState("OnGroundTapped");
     }
 
     private void OnFPress()
@@ -347,17 +345,17 @@ public class GameController : MonoBehaviour {
     
     void Update () {
 
-        /* 如果單指有劃過，就不觸動持續移動的功能 */
-	    if( GetTouchCount() == 2 && GetIsClick() && !isFlicked )
+	    if( GetTouchCount() == 2 && GetIsClick() && !isFlicked && !isDoubleFlicked)
         {
             vc.Player.SetPlayerPositionByScreenPos(GetTouchPosition());
-        //    uc.SetState( "Normal Move" );
+            uc.SetState( "Normal Move" );
         }
-        
-        if ( isDoubleHold && !isFlicked )
+
+        /* 如果單指有劃過，就不觸動持續移動的功能 */
+        if ( isDoubleHold && !isFlicked && !isDoubleFlicked)
         {
             vc.Player.SetPlayerPositionByScreenPos(GetLastTouchPosition());
-        //    uc.SetState("Normal Move");
+            uc.SetState("Normal Move");
         }
 
         //uc.SetState("isDoubleHold: " + isDoubleHold);

@@ -382,7 +382,6 @@ public class ViewController : MonoBehaviour {
         }
         int choose = Mathf.FloorToInt(UnityEngine.Random.value * targetSpeaks.Length);
         p.SpeakContent = targetSpeaks[choose];
-        print(p.SpeakContent);
         yield return new WaitForSeconds(3f);
         p.SpeakContent = "";
     }
