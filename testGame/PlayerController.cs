@@ -71,6 +71,7 @@ public class PlayerController : MonoBehaviour {
     {
         set
         {
+            value.z = 4;
             this.GetComponent<RectTransform>().position = value;
         }
         get
