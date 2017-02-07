@@ -56,7 +56,7 @@ public class ViewController : MonoBehaviour {
     public GameObject CreateEnemy( Vector3 pos )
     {
         GameObject e = GameObjectFactory(PrefabName.ENEMY);
-        e.transform.parent = ObjectContainer.transform;
+        e.transform.SetParent(ObjectContainer.transform);
         e.transform.position = pos;
 
         PlayerController ep = e.GetComponent<PlayerController>();
