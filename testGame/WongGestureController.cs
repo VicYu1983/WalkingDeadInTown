@@ -16,6 +16,7 @@ public class WongGestureController : MonoBehaviour {
     public Action OnEachFingerUp;
     public Action<Vector3> OnOneFingerClicked;
     public Action<Vector3> OnOneFingerMove;
+    public Action<Vector3> OnOneFingerMoveAfterHold;
     public Action<Vector3> OnTwoFingerClicked;
     public Action<Vector3> OnTwoFingerMove;
     public Action<Vector3> OnTwoFingerFlicked;
@@ -64,7 +65,8 @@ public class WongGestureController : MonoBehaviour {
         if (GetTouchCount() == 1 )
         {
             //foreach (IWeapon w in vc.Player.weapons) w.MoveAim(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-            if( GetIsClick() )
+            if (OnOneFingerMove != null) OnOneFingerMove.Invoke(Camera.main.ScreenToWorldPoint(GetTouchPosition()));
+            if ( GetIsClick() )
             {
                 if( !isClicked ){
                     isClicked = true;
@@ -85,7 +87,7 @@ public class WongGestureController : MonoBehaviour {
                   //  Vector3 firePos = Camera.main.ScreenToWorldPoint(GetTouchPosition());
                   //  foreach (IWeapon w in vc.Player.weapons) w.KeepStartAim(firePos);
 
-                    if (OnOneFingerMove != null) OnOneFingerMove.Invoke(Camera.main.ScreenToWorldPoint(GetTouchPosition()));
+                    if (OnOneFingerMoveAfterHold != null) OnOneFingerMoveAfterHold.Invoke(Camera.main.ScreenToWorldPoint(GetTouchPosition()));
                 }
             }
         }else{
@@ -145,16 +147,22 @@ public class WongGestureController : MonoBehaviour {
 
     private void OnGamePageFlicked(object sender, EventArgs e)
     {
+#if UNITY_EDITOR
+        Vector3 dir = TouchScreen.GetComponent<FlickGesture>().ScreenFlickVector.normalized;
+        if (OnTwoFingerFlicked != null) OnTwoFingerFlicked.Invoke(dir);
+
+        /* 因為此操作會和雙指持續按壓地面的操作衝突，因此加個flag來決定雙指持續按壓地面的操作是否能觸發 */
+        isFlicked = true;
+        StartCoroutine(DelayCall(.6f, () =>
+        {
+            isFlicked = false;
+        }));
+#else
         if ( GetTouchCount() == 2 && !isDoubleFlicked )
         {
             Vector3 dir = TouchScreen.GetComponent<FlickGesture>().ScreenFlickVector.normalized;
             if (OnTwoFingerFlicked != null) OnTwoFingerFlicked.Invoke(dir);
-            /*
-            Vector3 fromVec = vc.Player.GetComponent<RectTransform>().position;
-            vc.Player.SetPlayerPosition(fromVec + dir * GameConfig.LongMoveDistance);
 
-            uc.SetState("Move Long Distance:" + dir * GameConfig.LongMoveDistance);
-            */
             /* 因為此操作會和雙指持續按壓地面的操作衝突，因此加個flag來決定雙指持續按壓地面的操作是否能觸發 */
             isFlicked = true;
             StartCoroutine(DelayCall( .6f, () =>
@@ -162,16 +170,20 @@ public class WongGestureController : MonoBehaviour {
                 isFlicked = false;
             }));
         }
+#endif
     }
 
 
     private void OnGamePageDoubleFlicked(FlickGesture obj)
     {
+#if UNITY_EDITOR
+        if (OnDoubleTwoFingerFlicked != null) OnDoubleTwoFingerFlicked.Invoke(obj.ScreenFlickVector);
+#else
         if ( GetTouchCount() == 2)
         {
-            //DodgePlayer( obj.ScreenFlickVector.normalized );
             if (OnDoubleTwoFingerFlicked != null) OnDoubleTwoFingerFlicked.Invoke(obj.ScreenFlickVector);
         }
+#endif
     }
 
     int GetTouchCount()

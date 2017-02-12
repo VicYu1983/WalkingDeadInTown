@@ -13,6 +13,7 @@ public class UIController : MonoBehaviour {
 
     public void SetState( string msg )
     {
+        print(msg);
         txt_state.GetComponent<Text>().text = msg;
     }
 

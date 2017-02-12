@@ -149,6 +149,7 @@ public class PlayerController : MonoBehaviour {
 
     public void DodgePlayer(Vector3 dir, float force)
     {
+        print(dir.normalized * force * 100);
         SetPlayerForce(dir, force);
         targetPos = null;
     }
@@ -207,7 +208,7 @@ public class PlayerController : MonoBehaviour {
     {
        // GetComponent<Rigidbody2D>().AddForce(dir.normalized * force);
         GetComponent<Rigidbody2D>().velocity = dir.normalized * force * 100;
-
+        
         //使用數據移動，會喪失一些物理效果，例如會穿過物理物件
         /*
         Vector3 newpos = Position;

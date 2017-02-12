@@ -116,6 +116,7 @@ public class GameController : MonoBehaviour {
         GetComponent<WongGestureController>().OnEachFingerUp += OnEachFingerUp;
         GetComponent<WongGestureController>().OnOneFingerClicked += OnOneFingerClicked;
         GetComponent<WongGestureController>().OnOneFingerDown += OnOneFingerDown;
+        GetComponent<WongGestureController>().OnOneFingerMoveAfterHold += OnOneFingerMoveAfterHold;
         GetComponent<WongGestureController>().OnOneFingerMove += OnOneFingerMove;
         GetComponent<WongGestureController>().OnTwoFingerClicked += OnTwoFingerClicked;
         GetComponent<WongGestureController>().OnTwoFingerFlicked += OnTwoFingerFlicked;
@@ -131,6 +132,11 @@ public class GameController : MonoBehaviour {
         */
         ReStart();
 
+    }
+
+    private void OnOneFingerMoveAfterHold(Vector3 obj)
+    {
+        foreach (IWeapon w in vc.Player.weapons) w.KeepStartAim(obj);
     }
 
     private void OnTwoFingerMove(Vector3 obj)
@@ -152,7 +158,7 @@ public class GameController : MonoBehaviour {
 
     private void OnOneFingerMove(Vector3 obj)
     {
-        foreach (IWeapon w in vc.Player.weapons) w.KeepStartAim(obj);
+        foreach (IWeapon w in vc.Player.weapons) w.MoveAim(obj);
     }
 
     private void OnOneFingerDown(Vector3 obj)
