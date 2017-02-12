@@ -6,6 +6,7 @@ using VicScript;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using VicScript.WongGesture;
+using VicScript.WongWeaponSystem;
 
 public class GameController : MonoBehaviour {
 
@@ -73,12 +74,12 @@ public class GameController : MonoBehaviour {
                 {
                     if(halfAutoDelayName == "遲發動(不裝備)")
                     {
-                        vc.Player.weapons.Add(new AutoWeapon(vc.Player, vc, c));
+                        vc.Player.weapons.Add(new AutoWeapon(vc.Player, vc.GetComponent<AimViewController>(), c));
                     }
                 }
                 else
                 {
-                    vc.Player.weapons.Add(new HalfAutoWeapon(vc.Player, vc, c));
+                    vc.Player.weapons.Add(new HalfAutoWeapon(vc.Player, vc.GetComponent<AimViewController>(), c));
                 }
             }
         }

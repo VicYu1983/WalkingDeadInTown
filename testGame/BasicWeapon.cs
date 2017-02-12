@@ -2,17 +2,18 @@
 using System.Collections;
 using System;
 using System.Collections.Generic;
+using VicScript.WongWeaponSystem;
 
 public class BasicWeapon : IWeapon {
 
-    protected ViewController vc;
+    protected AimViewController vc;
     protected object[] config;
     public PlayerController owner;
     public List<PlayerController> enemys = null;
 
     List<int> _ids = new List<int>();
 
-    public BasicWeapon(PlayerController owner, ViewController vc, object[] config )
+    public BasicWeapon(PlayerController owner, AimViewController vc, object[] config )
     {
         this.vc = vc;
         this.owner = owner;
@@ -55,7 +56,7 @@ public class BasicWeapon : IWeapon {
         }
     }
 
-    protected ViewController GetViewController()
+    protected AimViewController GetViewController()
     {
         return vc;
     }

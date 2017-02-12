@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.Events;
 using System;
 using UnityEngine.UI;
+using VicScript.WongWeaponSystem;
 
 enum PrefabName{
     BULLET,
@@ -69,7 +70,7 @@ public class ViewController : MonoBehaviour {
         ep.GetComponent<AgeCalculator>().OnDeadEvent += OnEnemySpeakEvent;
         ep.SetAI(this, new AIMove());
         ForSortingZ.Add(e);
-        playersAimCount.Add(ep, false);
+     //   playersAimCount.Add(ep, false);
         ep.UpdateBody();
 
         return e;
@@ -100,7 +101,7 @@ public class ViewController : MonoBehaviour {
     {
         CreateOneBullet(PrefabName.SPECIAL, from, dir, force);
     }
-
+    /*
     public void CreateAimPoint( int type, Vector3 pos)
     {
         GameObject ap;
@@ -151,13 +152,13 @@ public class ViewController : MonoBehaviour {
         attacker.IsBlade = isBlade;
         return aimsId;
     }
-
+    */
     private void BodyRotateByAimDir( PlayerController attacker, Vector3 aimPos )
     {
         Vector3 aimDir = (aimPos - attacker.Position).normalized;
         attacker.BodyRotateByAimDir(aimDir);
     }
-
+    /*
     private void OnAimDeadEvent(AgeCalculator obj)
     {
         obj.OnDeadEvent -= OnAimDeadEvent;
@@ -179,7 +180,7 @@ public class ViewController : MonoBehaviour {
         }
         CheckIsStopAim();
     }
-
+    
     public void DragAimsByIds(int[] ids, Vector3 pos)
     {
         foreach( int id in ids)
@@ -254,7 +255,7 @@ public class ViewController : MonoBehaviour {
         }
         
     }
-    
+    */
     private void CreateOneBullet(PrefabName bulletName, Vector3 from, Vector3 dir, float force)
     {
         GameObject bullet = GameObjectFactory(bulletName);
@@ -311,10 +312,10 @@ public class ViewController : MonoBehaviour {
         return null;
     }
 
-    Dictionary<PlayerController, bool> playersAimCount = new Dictionary<PlayerController, bool>();
+   // Dictionary<PlayerController, bool> playersAimCount = new Dictionary<PlayerController, bool>();
     void Start()
     {
-        playersAimCount.Add(Player, false);
+    //    playersAimCount.Add(Player, false);
         ForSortingZ.Add(Player.gameObject);
 
         /*
@@ -332,7 +333,27 @@ public class ViewController : MonoBehaviour {
 
         foreach (GameObject e in Stuffs) ForSortingZ.Add(e);
         Player.UpdateBody();
-        CheckIsStopAim();
+
+        GetComponent<AimViewController>().OnDragAim += OnDragAim;
+        GetComponent<AimViewController>().OnCreateAim += OnCreateAim;
+        GetComponent<AimViewController>().OnAimEmpty += OnAimEmpty;
+   //     CheckIsStopAim();
+    }
+
+    private void OnAimEmpty()
+    {
+        Player.IsAim = false;
+        Player.UpdateBody();
+    }
+
+    private void OnCreateAim(Vector3 arg1, object[] arg2)
+    {
+        BodyRotateByAimDir(Player, arg1);
+    }
+
+    private void OnDragAim(Vector3 obj)
+    {
+        BodyRotateByAimDir(Player, obj);
     }
 
     private void OnEnmeyHit(GameObject enemy, GameObject other )
@@ -402,7 +423,7 @@ public class ViewController : MonoBehaviour {
     {
         Destroy(enemy);
         Enemys.Remove(enemy.GetComponent<PlayerController>());
-        playersAimCount.Remove(enemy.GetComponent<PlayerController>());
+   //     playersAimCount.Remove(enemy.GetComponent<PlayerController>());
         ForSortingZ.Remove(enemy);
     }
 

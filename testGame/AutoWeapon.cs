@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
+using VicScript.WongWeaponSystem;
 
 public class AutoWeapon : BasicWeapon, IWeapon {
-    public AutoWeapon(PlayerController owner, ViewController vc, object[] config) : base(owner, vc, config)
+    public AutoWeapon(PlayerController owner, AimViewController vc, object[] config) : base(owner, vc, config)
     {
 
     }
