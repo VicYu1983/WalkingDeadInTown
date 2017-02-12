@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
+using VicScript.WongWeaponSystem;
 
 public class PlayerController : MonoBehaviour {
     

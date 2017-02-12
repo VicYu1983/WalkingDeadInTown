@@ -74,12 +74,12 @@ public class GameController : MonoBehaviour {
                 {
                     if(halfAutoDelayName == "遲發動(不裝備)")
                     {
-                        vc.Player.weapons.Add(new AutoWeapon(vc.Player, vc.GetComponent<AimViewController>(), c));
+                        vc.Player.weapons.Add(new AutoWeapon(vc.GetComponent<AimViewController>(), c));
                     }
                 }
                 else
                 {
-                    vc.Player.weapons.Add(new HalfAutoWeapon(vc.Player, vc.GetComponent<AimViewController>(), c));
+                    vc.Player.weapons.Add(new HalfAutoWeapon(vc.GetComponent<AimViewController>(), c));
                 }
             }
         }

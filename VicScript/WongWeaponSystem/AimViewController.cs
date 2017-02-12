@@ -9,18 +9,18 @@ namespace VicScript.WongWeaponSystem
 {
     public class AimViewController : MonoBehaviour
     {
-
         public GameObject ObjectContainer;
         public GameObject Prefab;
 
         public Action<Vector3, object[]> OnCreateAim;
         public Action<Vector3> OnDragAim;
+        public Action<Vector3> OnDestroyAim;
         public Action OnAimEmpty;
 
         Dictionary<int, List<AimController>> Aims = new Dictionary<int, List<AimController>>();
         int aimsId = 0;
 
-        public int CreateAim(PlayerController attacker, Vector3 pos, object[] config)
+        public int CreateAim(Vector3 pos, object[] config)
         {
             int age = (int)config[1];
             float size = (float)config[2];
@@ -45,7 +45,6 @@ namespace VicScript.WongWeaponSystem
                 aim.transform.parent = ObjectContainer.transform;
                 aim.GetComponent<AimController>().SetConfig(age, size, startSize, dragable, expandSpeed, delay);
                 Vector3 offset = new Vector3(UnityEngine.Random.Range(-1.0f, 1.0f) * seperateRange, UnityEngine.Random.Range(-1.0f, 1.0f) * seperateRange, 0);
-                aim.GetComponent<AimController>().owner = attacker;
                 aim.GetComponent<AimController>().Offset = offset;
                 aim.GetComponent<AimController>().SetPosition(pos);
                 aim.GetComponent<AimController>().GroupId = aimsId;
