@@ -148,15 +148,19 @@ public class WongGestureController : MonoBehaviour {
     private void OnGamePageFlicked(object sender, EventArgs e)
     {
 #if UNITY_EDITOR
-        Vector3 dir = TouchScreen.GetComponent<FlickGesture>().ScreenFlickVector.normalized;
-        if (OnTwoFingerFlicked != null) OnTwoFingerFlicked.Invoke(dir);
 
-        /* 因為此操作會和雙指持續按壓地面的操作衝突，因此加個flag來決定雙指持續按壓地面的操作是否能觸發 */
-        isFlicked = true;
-        StartCoroutine(DelayCall(.6f, () =>
+        if (!isDoubleFlicked)
         {
-            isFlicked = false;
-        }));
+            Vector3 dir = TouchScreen.GetComponent<FlickGesture>().ScreenFlickVector.normalized;
+            if (OnTwoFingerFlicked != null) OnTwoFingerFlicked.Invoke(dir);
+
+            /* 因為此操作會和雙指持續按壓地面的操作衝突，因此加個flag來決定雙指持續按壓地面的操作是否能觸發 */
+            isFlicked = true;
+            StartCoroutine(DelayCall(.6f, () =>
+            {
+                isFlicked = false;
+            }));
+        }
 #else
         if ( GetTouchCount() == 2 && !isDoubleFlicked )
         {
@@ -177,11 +181,26 @@ public class WongGestureController : MonoBehaviour {
     private void OnGamePageDoubleFlicked(FlickGesture obj)
     {
 #if UNITY_EDITOR
-        if (OnDoubleTwoFingerFlicked != null) OnDoubleTwoFingerFlicked.Invoke(obj.ScreenFlickVector);
+        if (OnDoubleTwoFingerFlicked != null)
+        {
+            OnDoubleTwoFingerFlicked.Invoke(obj.ScreenFlickVector);
+            /* 因為此操作會和單指操作衝突，因此加個flag來決定單指操作是否能觸發 */
+            isDoubleFlicked = true;
+            StartCoroutine(DelayCall(.3f, () =>
+            {
+                isDoubleFlicked = false;
+            }));
+        }
 #else
         if ( GetTouchCount() == 2)
         {
             if (OnDoubleTwoFingerFlicked != null) OnDoubleTwoFingerFlicked.Invoke(obj.ScreenFlickVector);
+            /* 因為此操作會和單指操作衝突，因此加個flag來決定單指操作是否能觸發 */
+            isDoubleFlicked = true;
+            StartCoroutine(DelayCall(.3f, () =>
+            {
+                isDoubleFlicked = false;
+            }));
         }
 #endif
     }
