@@ -110,21 +110,69 @@ public class GameController : MonoBehaviour {
         ke.OnSpaceClick += OnSpaceClick;
         ke.OnFPress += OnFPress;
         ke.OnDClick += OnDClick;
-        
-        vc.Player.GetComponent<TapGesture>().Tapped += OnPlayerTapped;
-        // vc.Ground.GetComponent<TapGesture>().Tapped += OnTapped;
-        //vc.GamePage.GetComponent<PressGesture>().Pressed += OnGamePagePressed;
-        vc.GamePage.GetComponent<LongPressGesture>().LongPressed += OnGamePageLongPressed;
 
-        /* 有時會因為gesture彼此間的衝突而不會觸發此事件，因此改用click比較穩 */
-        //vc.GamePage.GetComponent<ReleaseGesture>().Released += OnGamePageReleased;
+
+        GetComponent<WongGestureController>().OnDoubleTwoFingerFlicked += OnDoubleTwoFingerFlicked;
+        GetComponent<WongGestureController>().OnEachFingerUp += OnEachFingerUp;
+        GetComponent<WongGestureController>().OnOneFingerClicked += OnOneFingerClicked;
+        GetComponent<WongGestureController>().OnOneFingerDown += OnOneFingerDown;
+        GetComponent<WongGestureController>().OnOneFingerMove += OnOneFingerMove;
+        GetComponent<WongGestureController>().OnTwoFingerClicked += OnTwoFingerClicked;
+        GetComponent<WongGestureController>().OnTwoFingerFlicked += OnTwoFingerFlicked;
+        GetComponent<WongGestureController>().OnTwoFingerMove += OnTwoFingerMove;
+
+        /*
+        vc.Player.GetComponent<TapGesture>().Tapped += OnPlayerTapped;
+        vc.GamePage.GetComponent<LongPressGesture>().LongPressed += OnGamePageLongPressed;
 
         vc.GamePage.GetComponent<Button>().onClick.AddListener(OnGamePageClick);
         vc.GamePage.GetComponent<FlickGesture>().Flicked += OnGamePageFlicked;
         vc.GamePage.GetComponent<DoubleFlickedGesture>().OnDoubleFlickedEvent += OnGamePageDoubleFlicked;
-
+        */
         ReStart();
 
+    }
+
+    private void OnTwoFingerMove(Vector3 obj)
+    {
+        vc.Player.SetPlayerPosition(obj);
+    }
+
+    private void OnTwoFingerFlicked(Vector3 obj)
+    {
+        Vector3 dir = obj.normalized;
+        Vector3 fromVec = vc.Player.GetComponent<RectTransform>().position;
+        vc.Player.SetPlayerPosition(fromVec + dir * GameConfig.LongMoveDistance);
+    }
+
+    private void OnTwoFingerClicked(Vector3 obj)
+    {
+        vc.Player.SetPlayerPosition(obj);
+    }
+
+    private void OnOneFingerMove(Vector3 obj)
+    {
+        foreach (IWeapon w in vc.Player.weapons) w.KeepStartAim(obj);
+    }
+
+    private void OnOneFingerDown(Vector3 obj)
+    {
+        foreach (IWeapon w in vc.Player.weapons) w.StartAim(obj);
+    }
+
+    private void OnOneFingerClicked(Vector3 obj)
+    {
+        foreach (IWeapon w in vc.Player.weapons) w.AimOnce(obj);
+    }
+
+    private void OnEachFingerUp()
+    {
+        foreach (IWeapon w in vc.Player.weapons) w.EndAim();
+    }
+
+    private void OnDoubleTwoFingerFlicked(Vector3 obj)
+    {
+        DodgePlayer( obj.normalized );
     }
 
     void CreateEnemy()
@@ -353,6 +401,8 @@ public class GameController : MonoBehaviour {
     int judgeIsHoldTime = 0;
     
     void Update () {
+
+        return;
 
         /* 是點擊、非swipe、非連續swipe、兩指在屏上才會觸發 */
 	    if( GetTouchCount() == 2 && GetIsClick() && !isFlicked && !isDoubleFlicked)
