@@ -49,7 +49,7 @@ public class PlayerController : MonoBehaviour {
     Vector3 currentDir = new Vector3(0, -1, 0);
 
     /* 持有武器 */
-    public List<IWeapon> weapons = new List<IWeapon>();
+   // public List<IWeapon> weapons = new List<IWeapon>();
 
     Vector3? targetPos;
 

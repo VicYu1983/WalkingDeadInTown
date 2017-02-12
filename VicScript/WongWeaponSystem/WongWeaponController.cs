@@ -6,33 +6,61 @@ namespace VicScript.WongWeaponSystem
 {
     public class WongWeaponController : MonoBehaviour
     {
-
-        public bool IsAim = false;
+        public AimViewController AimViewController;
         public List<IWeapon> weapons = new List<IWeapon>();
-        /*
-        public void AddWeapon( object[] config )
+        
+        public int AddWeapon( object[] config )
         {
-                bool autoWeapon = (bool)config[10];
-                if (autoWeapon)
-                {
-                    weapons.Add(new AutoWeapon(config));
-                }
-                else
-                {
-                    weapons.Add(new HalfAutoWeapon(config));
-                }
-        }
-        */
-        // Use this for initialization
-        void Start()
-        {
-
+            bool autoWeapon = (bool)config[10];
+            if (autoWeapon)
+            {
+                weapons.Add(new AutoWeapon(AimViewController, config));
+            }
+            else
+            {
+                weapons.Add(new HalfAutoWeapon(AimViewController, config));
+            }
+            return weapons.Count - 1;
         }
 
-        // Update is called once per frame
+        public void RemoveWeaponById( int id )
+        {
+            weapons.RemoveAt(id);
+        }
+
+        public void ClearWeapons()
+        {
+            weapons.Clear();
+        }
+
+        public void MoveAim(Vector3 obj)
+        {
+            foreach (IWeapon w in weapons) w.MoveAim(obj);
+        }
+
+        public void StartAim(Vector3 obj)
+        {
+            foreach (IWeapon w in weapons) w.StartAim(obj);
+        }
+
+        public void AimOnce(Vector3 obj)
+        {
+            foreach (IWeapon w in weapons) w.AimOnce(obj);
+        }
+
+        public void EndAim()
+        {
+            foreach (IWeapon w in weapons) w.EndAim();
+        }
+
+        public void KeepStartAim(Vector3 obj)
+        {
+            foreach (IWeapon w in weapons) w.KeepStartAim(obj);
+        }
+
         void Update()
         {
-
+            foreach (IWeapon w in weapons) w.Update();
         }
     }
 }

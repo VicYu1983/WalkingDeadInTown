@@ -60,7 +60,8 @@ public class GameController : MonoBehaviour {
     public void SetPlayerWeapons( int value )
     {
         string[] ews = uc.GetWeaponListFromUI();
-        vc.Player.weapons.Clear();
+        vc.Player.GetComponent<WongWeaponController>().ClearWeapons();
+        //vc.Player.weapons.Clear();
         foreach (object[] c in GameConfig.WeaponConfig)
         {
             string wsName = c[0].ToString();
@@ -74,12 +75,12 @@ public class GameController : MonoBehaviour {
                 {
                     if(halfAutoDelayName == "遲發動(不裝備)")
                     {
-                        vc.Player.weapons.Add(new AutoWeapon(vc.GetComponent<AimViewController>(), c));
+                        vc.Player.GetComponent<WongWeaponController>().AddWeapon(c);
                     }
                 }
                 else
                 {
-                    vc.Player.weapons.Add(new HalfAutoWeapon(vc.GetComponent<AimViewController>(), c));
+                    vc.Player.GetComponent<WongWeaponController>().AddWeapon(c);
                 }
             }
         }
@@ -130,7 +131,8 @@ public class GameController : MonoBehaviour {
 
     private void OnOneFingerMoveAfterHold(Vector3 obj)
     {
-        foreach (IWeapon w in vc.Player.weapons) w.KeepStartAim(obj);
+        vc.Player.GetComponent<WongWeaponController>().KeepStartAim(obj);
+      //  foreach (IWeapon w in vc.Player.weapons) w.KeepStartAim(obj);
     }
 
     private void OnTwoFingerMove(Vector3 obj)
@@ -152,22 +154,26 @@ public class GameController : MonoBehaviour {
 
     private void OnOneFingerMove(Vector3 obj)
     {
-        foreach (IWeapon w in vc.Player.weapons) w.MoveAim(obj);
+       // foreach (IWeapon w in vc.Player.weapons) w.MoveAim(obj);
+        vc.Player.GetComponent<WongWeaponController>().MoveAim(obj);
     }
 
     private void OnOneFingerDown(Vector3 obj)
     {
-        foreach (IWeapon w in vc.Player.weapons) w.StartAim(obj);
+      //  foreach (IWeapon w in vc.Player.weapons) w.StartAim(obj);
+        vc.Player.GetComponent<WongWeaponController>().StartAim(obj);
     }
 
     private void OnOneFingerClicked(Vector3 obj)
     {
-        foreach (IWeapon w in vc.Player.weapons) w.AimOnce(obj);
+      //  foreach (IWeapon w in vc.Player.weapons) w.AimOnce(obj);
+        vc.Player.GetComponent<WongWeaponController>().AimOnce(obj);
     }
 
     private void OnEachFingerUp()
     {
-        foreach (IWeapon w in vc.Player.weapons) w.EndAim();
+      //  foreach (IWeapon w in vc.Player.weapons) w.EndAim();
+        vc.Player.GetComponent<WongWeaponController>().EndAim();
     }
 
     private void OnDoubleTwoFingerFlicked(Vector3 obj)
@@ -197,7 +203,8 @@ public class GameController : MonoBehaviour {
         if (senderObject != null)
         {
             Vector3 firePos = senderObject.GetComponent<RectTransform>().position;
-            foreach (IWeapon w in vc.Player.weapons) w.AimOnce(firePos);
+            vc.Player.GetComponent<WongWeaponController>().AimOnce(firePos);
+          //  foreach (IWeapon w in vc.Player.weapons) w.AimOnce(firePos);
         }
     }
 
@@ -258,7 +265,8 @@ public class GameController : MonoBehaviour {
             if (isDoubleFlicked) vc.CreateShadow(vc.Player.Position, vc.Player.Scale);
         }
         */
-        foreach (IWeapon w in vc.Player.weapons) w.Update();
+       // vc.Player.GetComponent<WongWeaponController>().AimOnce(firePos);
+      //  foreach (IWeapon w in vc.Player.weapons) w.Update();
         
     }
 }
