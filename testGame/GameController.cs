@@ -5,6 +5,7 @@ using TouchScript.Gestures;
 using VicScript;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using VicScript.WongGesture;
 
 public class GameController : MonoBehaviour {
 

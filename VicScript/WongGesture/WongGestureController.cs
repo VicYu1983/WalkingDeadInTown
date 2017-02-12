@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using VicScript;
 
-namespace VicScript
+namespace VicScript.WongGesture
 {
     public class WongGestureController : MonoBehaviour
     {
