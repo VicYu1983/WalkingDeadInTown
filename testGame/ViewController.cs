@@ -348,6 +348,8 @@ public class ViewController : MonoBehaviour {
 
     private void OnCreateAim(Vector3 arg1, object[] arg2)
     {
+        bool isBlade = (bool)arg2[12];
+        Player.IsBlade = isBlade;
         BodyRotateByAimDir(Player, arg1);
     }
 
