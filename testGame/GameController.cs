@@ -187,7 +187,20 @@ public class GameController : MonoBehaviour {
         pos.x = UnityEngine.Random.value * 100;
         pos.y = UnityEngine.Random.value * -100;
         pos += vc.Player.Position;
-        vc.CreateEnemy(pos);
+        GameObject enemy = vc.CreateEnemy(pos);
+        PlayerController ep = enemy.GetComponent<PlayerController>();
+        ep.HP = 100;
+        ep.OnHitEvent += OnEnmeyHit;
+        ep.GetComponent<AgeCalculator>().DeadAge = Mathf.FloorToInt(UnityEngine.Random.value * 1000) + 500;
+        ep.GetComponent<AgeCalculator>().OnDeadEvent += OnEnemySpeakEvent;
+        ep.SetAI(vc, new AIMove());
+    }
+
+    private void OnEnemySpeakEvent(AgeCalculator obj)
+    {
+        obj.ResetAge();
+        obj.DeadAge = Mathf.FloorToInt(UnityEngine.Random.value * 1000) + 500;
+        StartCoroutine(vc.DisplayPlayerSpeak(obj.GetComponent<PlayerController>()));
     }
 
     void DodgePlayer(Vector3 dir, float force)
@@ -201,6 +214,38 @@ public class GameController : MonoBehaviour {
             isDoubleFlicked = false;
         }));
     }
+
+    private void OnEnmeyHit(GameObject enemy, GameObject other)
+    {
+        if (other.name.IndexOf("Aim") != -1)
+        {
+            PlayerController e = enemy.GetComponent<PlayerController>();
+            e.HP -= 10;
+
+            Vector3 aimPos = other.GetComponent<RectTransform>().localPosition;
+
+            if (vc.Player.IsBlade)
+            {
+                DodgePlayer(e.Position - vc.Player.Position, GameConfig.DodgeSpeed * 1.4f);
+            }
+            else
+            {
+                vc.CreateRayLine(vc.Player.Position, aimPos);
+            }
+
+            if (e.IsDead())
+            {
+                vc.CreateExplodeEffect(enemy.GetComponent<PlayerController>().Position, vc.EnemyColor);
+                vc.DestoryEnemy(enemy);
+            }
+            else
+            {
+                vc.MakeEnemyHitEffect(e, vc.Player.Position, aimPos, vc.Player.IsBlade ? .1f : 0.0f );
+            }
+
+        }
+    }
+
 
     private void OnEnemyTapped(object sender, EventArgs e)
     {

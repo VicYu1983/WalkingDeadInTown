@@ -64,25 +64,26 @@ public class ViewController : MonoBehaviour {
         PlayerController ep = e.GetComponent<PlayerController>();
         Enemys.Add(ep);
 
-        ep.HP = 100;
         ep.SetColor(EnemyColor);
+        ForSortingZ.Add(e);
+        ep.UpdateBody();
+        /*
+        ep.HP = 100;
         ep.OnHitEvent += OnEnmeyHit;
         ep.GetComponent<AgeCalculator>().DeadAge = Mathf.FloorToInt(UnityEngine.Random.value * 1000) + 500;
         ep.GetComponent<AgeCalculator>().OnDeadEvent += OnEnemySpeakEvent;
         ep.SetAI(this, new AIMove());
-        ForSortingZ.Add(e);
-        ep.UpdateBody();
-
+        */
         return e;
     }
-
+    /*
     private void OnEnemySpeakEvent(AgeCalculator obj)
     {
         obj.ResetAge();
         obj.DeadAge = Mathf.FloorToInt(UnityEngine.Random.value * 1000) + 500;
         StartCoroutine(DisplayPlayerSpeak(obj.GetComponent<PlayerController>()));
     }
-
+    */
     public void CreateRayLine( Vector3 from, Vector3 target )
     {
         GameObject s = GameObjectFactory(PrefabName.RAYLINE);
@@ -276,7 +277,7 @@ public class ViewController : MonoBehaviour {
         Bullets.Add(bullet);
     }
 
-    private void CreateExplodeEffect(Vector3 pos, Color color)
+    public void CreateExplodeEffect(Vector3 pos, Color color)
     {
         GameObject explode = GameObjectFactory(PrefabName.BODY_EXPLODE);
         explode.SetActive(true);
@@ -366,7 +367,7 @@ public class ViewController : MonoBehaviour {
     {
         BodyRotateByAimDir(Player, obj);
     }
-
+    /*
     private void OnEnmeyHit(GameObject enemy, GameObject other )
     {
         if (other.name.IndexOf("Aim") != -1)
@@ -397,22 +398,25 @@ public class ViewController : MonoBehaviour {
             
         }
     }
+    */
 
-    void MakeEnemyHitEffect(PlayerController p, Vector3 hitPos, Vector3 aimPos)
+    public void MakeEnemyHitEffect(PlayerController p, Vector3 hitPos, Vector3 aimPos, float delay = 0)
     {
-        StartCoroutine(DisplayHitEffect(p, hitPos, aimPos));
+        StartCoroutine(DisplayHitEffect(p, hitPos, aimPos, delay));
     }
 
-    IEnumerator DisplayHitEffect(PlayerController p, Vector3 hitPos, Vector3 aimPos)
+    IEnumerator DisplayHitEffect(PlayerController p, Vector3 hitPos, Vector3 aimPos, float delay = 0)
     {
+        Vector3 tempP = new Vector3(p.Position.x, p.Position.y, 0);
+        yield return new WaitForSeconds(delay);
         p.SetColor(Color.red);
-        Vector3 hitforce = p.Position - hitPos;
-        p.GetComponent<Rigidbody2D>().AddForce(hitforce.normalized * 20);
+        Vector3 hitforce = tempP - hitPos;
+        p.GetComponent<Rigidbody2D>().AddForce(hitforce.normalized * 30);
         yield return new WaitForSeconds(.05f);
         p.SetColor(EnemyColor);
     }
 
-    IEnumerator DisplayPlayerSpeak(PlayerController p)
+    public IEnumerator DisplayPlayerSpeak(PlayerController p)
     {
         string[] targetSpeaks = null;
         if( p.HP <= 10)
@@ -441,7 +445,7 @@ public class ViewController : MonoBehaviour {
         p.SpeakContent = "";
     }
 
-    void DestoryEnemy( GameObject enemy )
+    public void DestoryEnemy( GameObject enemy )
     {
         Destroy(enemy);
         Enemys.Remove(enemy.GetComponent<PlayerController>());
