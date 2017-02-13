@@ -178,7 +178,7 @@ public class GameController : MonoBehaviour {
 
     private void OnDoubleTwoFingerFlicked(Vector3 obj)
     {
-        DodgePlayer( obj.normalized );
+        DodgePlayer( obj.normalized, GameConfig.DodgeSpeed );
     }
 
     void CreateEnemy()
@@ -190,10 +190,16 @@ public class GameController : MonoBehaviour {
         vc.CreateEnemy(pos);
     }
 
-    void DodgePlayer(Vector3 dir)
+    void DodgePlayer(Vector3 dir, float force)
     {
         uc.SetState("Dodge");
-        vc.Player.DodgePlayer(dir, GameConfig.DodgeSpeed);
+        vc.Player.DodgePlayer(dir, force);
+
+        isDoubleFlicked = true;
+        StartCoroutine(DelayCall(.3f, () =>
+        {
+            isDoubleFlicked = false;
+        }));
     }
 
     private void OnEnemyTapped(object sender, EventArgs e)
@@ -259,14 +265,20 @@ public class GameController : MonoBehaviour {
     }
     
     void Update () {
-        /*
+        
         if (EnableShadow)
         {
             if (isDoubleFlicked) vc.CreateShadow(vc.Player.Position, vc.Player.Scale);
         }
-        */
+        
        // vc.Player.GetComponent<WongWeaponController>().AimOnce(firePos);
       //  foreach (IWeapon w in vc.Player.weapons) w.Update();
         
+    }
+
+    IEnumerator DelayCall(float time, Action doAction)
+    {
+        yield return new WaitForSeconds(time);
+        doAction();
     }
 }

@@ -55,14 +55,14 @@ namespace VicScript
             {
                 currentPos += dir.normalized * speed;
 
-                if (movePercent < .2f)
+                if (movePercent < .3f)
                 {
-                    _scaleFac = movePercent / .2f;
+                    _scaleFac = movePercent / .3f;
                 }
-                else if (movePercent > .8f)
+                else if (movePercent > .7f)
                 {
-                    float sync = movePercent - .8f;
-                    _scaleFac = 1 - sync / .2f;
+                    float sync = movePercent - .7f;
+                    _scaleFac = 1 - sync / .3f;
                 }
                 else
                 {

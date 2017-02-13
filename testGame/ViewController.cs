@@ -375,7 +375,15 @@ public class ViewController : MonoBehaviour {
             e.HP -= 10;
 
             Vector3 aimPos = other.GetComponent<RectTransform>().localPosition;
-            CreateRayLine(Player.Position, aimPos);
+            
+            if( Player.IsBlade )
+            {
+                Player.DodgePlayer(e.Position - Player.Position, GameConfig.DodgeSpeed * 2);
+            }
+            else
+            {
+                CreateRayLine(Player.Position, aimPos);
+            }
 
             if (e.IsDead())
             {
@@ -399,7 +407,7 @@ public class ViewController : MonoBehaviour {
     {
         p.SetColor(Color.red);
         Vector3 hitforce = p.Position - hitPos;
-        p.GetComponent<Rigidbody2D>().AddForce(hitforce.normalized * 10);
+        p.GetComponent<Rigidbody2D>().AddForce(hitforce.normalized * 20);
         yield return new WaitForSeconds(.05f);
         p.SetColor(EnemyColor);
     }

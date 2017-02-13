@@ -101,6 +101,10 @@ public class PlayerController : MonoBehaviour {
         {
             _isBlade = value;
         }
+        get
+        {
+            return _isBlade;
+        }
     }
 
     void DrawSprite(Texture2D canvas, Texture2D drawTarget, bool ignoreAlpha = false )
