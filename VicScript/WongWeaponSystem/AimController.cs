@@ -8,8 +8,7 @@ namespace VicScript.WongWeaponSystem
     {
 
         public int GroupId;
-
-        public PlayerController owner;
+        
         public float ExpandSpeed = 1.0f;
         public float Size = 1.0f;
         public bool Dragable = true;
@@ -46,7 +45,6 @@ namespace VicScript.WongWeaponSystem
         public void SetPosition(Vector3 pos)
         {
             pos.z = 0;
-            pos.y += GameConfig.AimOffsetY;
             GetComponent<RectTransform>().position = pos + _offset;
         }
 

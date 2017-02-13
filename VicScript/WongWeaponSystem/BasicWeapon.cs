@@ -11,7 +11,6 @@ namespace VicScript.WongWeaponSystem
 
         protected AimViewController vc;
         protected object[] config;
-        public List<PlayerController> enemys = null;
 
         List<int> _ids = new List<int>();
 

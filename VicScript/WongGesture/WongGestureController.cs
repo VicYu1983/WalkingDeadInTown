@@ -5,12 +5,12 @@ using TouchScript.Gestures;
 using UnityEngine;
 using UnityEngine.UI;
 using VicScript;
+using VicScript.WongWeaponSystem;
 
 namespace VicScript.WongGesture
 {
     public class WongGestureController : MonoBehaviour
     {
-        public GameObject TouchScreen;
         public Action<Vector3> OnOneFingerDown;
         public Action OnEachFingerUp;
         public Action<Vector3> OnOneFingerClicked;
@@ -29,10 +29,10 @@ namespace VicScript.WongGesture
 
         void Awake()
         {
-            TouchScreen.GetComponent<LongPressGesture>().LongPressed += OnGamePageLongPressed;
-            TouchScreen.GetComponent<Button>().onClick.AddListener(OnGamePageClick);
-            TouchScreen.GetComponent<FlickGesture>().Flicked += OnGamePageFlicked;
-            TouchScreen.GetComponent<DoubleFlickedGesture>().OnDoubleFlickedEvent += OnGamePageDoubleFlicked;
+            GetComponent<LongPressGesture>().LongPressed += OnGamePageLongPressed;
+            GetComponent<TriggerMouseUp>().OnTriggerMouseUp += OnGamePageClick;
+            GetComponent<FlickGesture>().Flicked += OnGamePageFlicked;
+            GetComponent<DoubleFlickedGesture>().OnDoubleFlickedEvent += OnGamePageDoubleFlicked;
         }
 
         void Update()
@@ -84,7 +84,7 @@ namespace VicScript.WongGesture
         {
             if (Input.touchCount == 1)
             {
-                Vector3 touchPos = TouchScreen.GetComponent<LongPressGesture>().ScreenPosition;
+                Vector3 touchPos = GetComponent<LongPressGesture>().ScreenPosition;
                 if (OnOneFingerDown != null) OnOneFingerDown(Camera.main.ScreenToWorldPoint(touchPos));
             }
             else if (Input.touchCount == 2)
@@ -93,7 +93,7 @@ namespace VicScript.WongGesture
             }
         }
 
-        private void OnGamePageClick()
+        private void OnGamePageClick( Vector3 pos)
         {
             isDoubleHold = false;
             if (OnEachFingerUp != null) OnEachFingerUp.Invoke();
@@ -102,10 +102,9 @@ namespace VicScript.WongGesture
         private void OnGamePageFlicked(object sender, EventArgs e)
         {
 #if UNITY_EDITOR
-
             if (!isDoubleFlicked)
             {
-                Vector3 dir = TouchScreen.GetComponent<FlickGesture>().ScreenFlickVector.normalized;
+                Vector3 dir = GetComponent<FlickGesture>().ScreenFlickVector.normalized;
                 if (OnTwoFingerFlicked != null) OnTwoFingerFlicked.Invoke(dir);
 
                 /* 因為此操作會和雙指持續按壓地面的操作衝突，因此加個flag來決定雙指持續按壓地面的操作是否能觸發 */
@@ -118,7 +117,7 @@ namespace VicScript.WongGesture
 #else
         if ( GetTouchCount() == 2 && !isDoubleFlicked )
         {
-            Vector3 dir = TouchScreen.GetComponent<FlickGesture>().ScreenFlickVector.normalized;
+            Vector3 dir = GetComponent<FlickGesture>().ScreenFlickVector.normalized;
             if (OnTwoFingerFlicked != null) OnTwoFingerFlicked.Invoke(dir);
 
             /* 因為此操作會和雙指持續按壓地面的操作衝突，因此加個flag來決定雙指持續按壓地面的操作是否能觸發 */

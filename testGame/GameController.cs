@@ -13,6 +13,7 @@ public class GameController : MonoBehaviour {
     public KeyboardEvent ke;
     public ViewController vc;
     public UIController uc;
+    public WongGestureController wgc;
 
     public bool EnableShadow = true;
     public bool StopPlayerWhenTowFingerRelease = false;
@@ -115,15 +116,15 @@ public class GameController : MonoBehaviour {
         ke.OnDClick += OnDClick;
 
 
-        GetComponent<WongGestureController>().OnDoubleTwoFingerFlicked += OnDoubleTwoFingerFlicked;
-        GetComponent<WongGestureController>().OnEachFingerUp += OnEachFingerUp;
-        GetComponent<WongGestureController>().OnOneFingerClicked += OnOneFingerClicked;
-        GetComponent<WongGestureController>().OnOneFingerDown += OnOneFingerDown;
-        GetComponent<WongGestureController>().OnOneFingerMoveAfterHold += OnOneFingerMoveAfterHold;
-        GetComponent<WongGestureController>().OnOneFingerMove += OnOneFingerMove;
-        GetComponent<WongGestureController>().OnTwoFingerClicked += OnTwoFingerClicked;
-        GetComponent<WongGestureController>().OnTwoFingerFlicked += OnTwoFingerFlicked;
-        GetComponent<WongGestureController>().OnTwoFingerMove += OnTwoFingerMove;
+        wgc.OnDoubleTwoFingerFlicked += OnDoubleTwoFingerFlicked;
+        wgc.OnEachFingerUp += OnEachFingerUp;
+        wgc.OnOneFingerClicked += OnOneFingerClicked;
+        wgc.OnOneFingerDown += OnOneFingerDown;
+        wgc.OnOneFingerMoveAfterHold += OnOneFingerMoveAfterHold;
+        wgc.OnOneFingerMove += OnOneFingerMove;
+        wgc.OnTwoFingerClicked += OnTwoFingerClicked;
+        wgc.OnTwoFingerFlicked += OnTwoFingerFlicked;
+        wgc.OnTwoFingerMove += OnTwoFingerMove;
         
         ReStart();
 
