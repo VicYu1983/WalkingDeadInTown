@@ -10,8 +10,8 @@ public class DrawPlayer : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        target.sprite = p.GetPlayerImage();
-        target.color = new Color(1, 1, 1, .5f);
+      //  target.sprite = p.GetPlayerImage();
+     //   target.color = new Color(1, 1, 1, .5f);
     }
 	
 	// Update is called once per frame

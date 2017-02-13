@@ -150,7 +150,6 @@ public class PlayerController : MonoBehaviour {
 
     public void DodgePlayer(Vector3 dir, float force)
     {
-        print(dir.normalized * force * 100);
         SetPlayerForce(dir, force);
         targetPos = null;
     }

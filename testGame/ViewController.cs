@@ -5,11 +5,12 @@ using UnityEngine.Events;
 using System;
 using UnityEngine.UI;
 using VicScript.WongWeaponSystem;
+using VicScript;
 
 enum PrefabName{
     BULLET,
     SPECIAL,
-    AIM,
+    RAYLINE,
     BODY_EXPLODE,
     AIM_POINT_0,
     ENEMY,
@@ -70,7 +71,6 @@ public class ViewController : MonoBehaviour {
         ep.GetComponent<AgeCalculator>().OnDeadEvent += OnEnemySpeakEvent;
         ep.SetAI(this, new AIMove());
         ForSortingZ.Add(e);
-     //   playersAimCount.Add(ep, false);
         ep.UpdateBody();
 
         return e;
@@ -81,6 +81,15 @@ public class ViewController : MonoBehaviour {
         obj.ResetAge();
         obj.DeadAge = Mathf.FloorToInt(UnityEngine.Random.value * 1000) + 500;
         StartCoroutine(DisplayPlayerSpeak(obj.GetComponent<PlayerController>()));
+    }
+
+    public void CreateRayLine( Vector3 from, Vector3 target )
+    {
+        GameObject s = GameObjectFactory(PrefabName.RAYLINE);
+        s.GetComponent<RaylineModel>().fromPos = from;
+        s.GetComponent<RaylineModel>().targetPos = target;
+        s.GetComponent<RaylineModel>().speed = 12;
+        s.transform.SetParent(ObjectContainer.transform);
     }
 
     public void CreateShadow(Vector3 pos, Vector3 scale)
@@ -298,7 +307,7 @@ public class ViewController : MonoBehaviour {
                 return Instantiate(Prefabs[0]);
             case PrefabName.SPECIAL:
                 return Instantiate(Prefabs[1]);
-            case PrefabName.AIM:
+            case PrefabName.RAYLINE:
                 return Instantiate(Prefabs[2]);
             case PrefabName.BODY_EXPLODE:
                 return Instantiate(Prefabs[3]);
@@ -365,25 +374,28 @@ public class ViewController : MonoBehaviour {
             PlayerController e = enemy.GetComponent<PlayerController>();
             e.HP -= 10;
 
-            if(e.IsDead())
+            Vector3 aimPos = other.GetComponent<RectTransform>().localPosition;
+            CreateRayLine(Player.Position, aimPos);
+
+            if (e.IsDead())
             {
                 CreateExplodeEffect(enemy.GetComponent<PlayerController>().Position, EnemyColor);
                 DestoryEnemy(enemy);
             }
             else
             {
-                MakeEnemyHitEffect(e, Player.Position);
+                MakeEnemyHitEffect(e, Player.Position, aimPos);
             }
             
         }
     }
 
-    void MakeEnemyHitEffect(PlayerController p, Vector3 hitPos )
+    void MakeEnemyHitEffect(PlayerController p, Vector3 hitPos, Vector3 aimPos)
     {
-        StartCoroutine(DisplayHitEffect(p, hitPos));
+        StartCoroutine(DisplayHitEffect(p, hitPos, aimPos));
     }
 
-    IEnumerator DisplayHitEffect(PlayerController p, Vector3 hitPos)
+    IEnumerator DisplayHitEffect(PlayerController p, Vector3 hitPos, Vector3 aimPos)
     {
         p.SetColor(Color.red);
         Vector3 hitforce = p.Position - hitPos;

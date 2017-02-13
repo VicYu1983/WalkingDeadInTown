@@ -115,7 +115,6 @@ public class GameController : MonoBehaviour {
         ke.OnFPress += OnFPress;
         ke.OnDClick += OnDClick;
 
-
         wgc.OnDoubleTwoFingerFlicked += OnDoubleTwoFingerFlicked;
         wgc.OnEachFingerUp += OnEachFingerUp;
         wgc.OnOneFingerClicked += OnOneFingerClicked;
