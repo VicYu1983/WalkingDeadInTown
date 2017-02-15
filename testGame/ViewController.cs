@@ -347,16 +347,16 @@ public class ViewController : MonoBehaviour {
 
         GetComponent<AimViewController>().OnDragAim += OnDragAim;
         GetComponent<AimViewController>().OnCreateAim += OnCreateAim;
-        GetComponent<AimViewController>().OnAimEmpty += OnAimEmpty;
+      //  GetComponent<AimViewController>().OnAimEmpty += OnAimEmpty;
    //     CheckIsStopAim();
     }
-
+    /*
     private void OnAimEmpty()
     {
         Player.IsAim = false;
         Player.UpdateBody();
     }
-
+    */
     private void OnCreateAim(WongWeaponController owner, Vector3 to, object[] config)
     {
         bool isBlade = (bool)config[12];
