@@ -22,8 +22,11 @@ namespace VicScript.WongWeaponSystem
         Dictionary<int, List<AimController>> Aims = new Dictionary<int, List<AimController>>();
         int aimsId = 0;
 
-        public int CreateAim(WongWeaponController owner, Vector3 pos, object[] config)
+        public int CreateAim(IWeapon weapon, Vector3 pos)
         {
+            object[] config = weapon.Config;
+            WongWeaponController owner = weapon.Owner;
+
             int age = (int)config[1];
             int count = (int)config[4];
             float seperateRange = (float)config[5];
@@ -99,7 +102,7 @@ namespace VicScript.WongWeaponSystem
             CheckIsStopAim();
         }
 
-        public void DragAimsByIds(int[] ids, Vector3 pos, WongWeaponController owner, object[] config)
+        public void DragAimsByIds(int[] ids, IWeapon weapon, Vector3 pos )
         {
             foreach (int id in ids)
             {
@@ -111,7 +114,7 @@ namespace VicScript.WongWeaponSystem
                         if (a.Dragable)
                         {
                             a.GetComponent<AimController>().Position = pos;
-                            if (OnDragAim != null) OnDragAim.Invoke(owner, pos, config);
+                            if (OnDragAim != null) OnDragAim.Invoke(weapon.Owner, pos, weapon.Config);
                         }
                     }
                 }

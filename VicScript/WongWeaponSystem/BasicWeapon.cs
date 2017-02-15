@@ -76,12 +76,12 @@ namespace VicScript.WongWeaponSystem
 
         protected void DoMoveAim(Vector3 pos)
         {
-            AimViewController.DragAimsByIds(_ids.ToArray(), pos, Owner, Config);
+            AimViewController.DragAimsByIds(_ids.ToArray(), this, pos);
         }
 
         protected void DoKeepStartAim(Vector3 pos)
         {
-            _ids.Add( AimViewController.CreateAim( Owner, pos, Config));
+            _ids.Add( AimViewController.CreateAim( this, pos ));
         }
 
         protected void DoEndAim()
@@ -101,7 +101,7 @@ namespace VicScript.WongWeaponSystem
         void Shooting(Vector3 pos)
         {
             _ids.Clear();
-            _ids.Add( AimViewController.CreateAim(Owner, pos, Config));
+            _ids.Add( AimViewController.CreateAim(this, pos));
 
             startShootingPos = pos;
             keepShootTime = 0;
