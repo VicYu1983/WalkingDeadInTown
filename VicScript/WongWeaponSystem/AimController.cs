@@ -14,7 +14,7 @@ namespace VicScript.WongWeaponSystem
         public bool Dragable = true;
         public bool Delay = false;
 
-        public WongWeaponController Owner
+        public IWeapon Weapon
         {
             set;get;
         }

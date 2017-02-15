@@ -12,10 +12,10 @@ namespace VicScript.WongWeaponSystem
         public GameObject ObjectContainer;
         public GameObject Prefab;
 
-        public Action<WongWeaponController, Vector3, object[]> OnCreateAim;
-        public Action<WongWeaponController, Vector3, object[]> OnDragAim;
-        public Action<WongWeaponController, Vector3, object[]> OnDestroyAim;
-        public Action<WongWeaponController, Vector3, object[]> OnWeaponFireOnce;
+        public Action<IWeapon, Vector3> OnCreateAim;
+        public Action<IWeapon, Vector3> OnDragAim;
+        public Action<IWeapon, Vector3> OnDestroyAim;
+        public Action<IWeapon, Vector3> OnWeaponFireOnce;
 
         public Action OnAimEmpty;
 
@@ -47,7 +47,7 @@ namespace VicScript.WongWeaponSystem
 
                 AimController aimController = aim.GetComponent<AimController>();
                 aimController.Config = config;
-                aimController.Owner = owner;
+                aimController.Weapon = weapon;
                 aimController.Offset = offset;
                 aimController.Position = pos;
                 aimController.GroupId = aimsId;
@@ -59,14 +59,14 @@ namespace VicScript.WongWeaponSystem
 
                 if (OnCreateAim != null)
                 {
-                    OnCreateAim.Invoke(owner, pos + offset, config);
+                    OnCreateAim.Invoke(weapon, pos + offset);
                 }
 
                 if(!aimController.Delay)
                 {
                     if (OnWeaponFireOnce != null)
                     {
-                        OnWeaponFireOnce.Invoke(owner, pos + offset, config);
+                        OnWeaponFireOnce.Invoke(weapon, pos + offset);
                     }
                 }
             }
@@ -85,7 +85,7 @@ namespace VicScript.WongWeaponSystem
                 AimController aim = aimSender.GetComponent<AimController>();
                 if (aim.Delay)
                 {
-                    if (OnWeaponFireOnce != null) OnWeaponFireOnce.Invoke(aim.Owner, aim.Position, aim.Config);
+                    if (OnWeaponFireOnce != null) OnWeaponFireOnce.Invoke(aim.Weapon, aim.Position);
                 }
 
                 nowAims.Remove( aim );
@@ -114,7 +114,7 @@ namespace VicScript.WongWeaponSystem
                         if (a.Dragable)
                         {
                             a.GetComponent<AimController>().Position = pos;
-                            if (OnDragAim != null) OnDragAim.Invoke(weapon.Owner, pos, weapon.Config);
+                            if (OnDragAim != null) OnDragAim.Invoke(weapon, pos);
                         }
                     }
                 }

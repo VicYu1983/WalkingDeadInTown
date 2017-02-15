@@ -122,9 +122,9 @@ public class GameController : MonoBehaviour {
 
     }
 
-    private void OnWeaponFireOnce(WongWeaponController owner, Vector3 to, object[] config)
+    private void OnWeaponFireOnce(IWeapon weapon, Vector3 to)
     {
-        Vector3 fromPos = owner.gameObject.GetComponent<PlayerController>().Position;
+        Vector3 fromPos = weapon.Owner.gameObject.GetComponent<PlayerController>().Position;
         vc.CreateRayLine(fromPos, to);
     }
 
