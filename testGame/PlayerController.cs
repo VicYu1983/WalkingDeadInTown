@@ -52,9 +52,15 @@ public class PlayerController : MonoBehaviour {
    // public List<IWeapon> weapons = new List<IWeapon>();
 
     Vector3? targetPos;
-
-    public AIBasic AIMove;
-    public List<AIBasic> AIWeapons = new List<AIBasic>();
+    
+    public AIBasic AIMove
+    {
+        set;get;
+    }
+    public AIBasic AIWeapon
+    {
+        set;get;
+    }
     
     public Vector3 Scale
     {
@@ -189,14 +195,14 @@ public class PlayerController : MonoBehaviour {
         foreach (Image c in cs) c.color = color;
         this.color = color;
     }
-
+    /*
     public void SetAI( ViewController vc, AIBasic ai)
     {
         AIMove = ai;
         AIMove.ViewController = vc;
         AIMove.PlayerController = this;
     }
-
+    */
     public void UpdateBody()
     {
         SetBodyImage(currentDir);
@@ -303,14 +309,13 @@ public class PlayerController : MonoBehaviour {
         foot.GetComponent<Animator>().SetFloat("Speed", GetComponent<Rigidbody2D>().velocity.magnitude);
         UpdatePosition();
         if (AIMove != null) AIMove.Update();
-        if(AIWeapons!= null) foreach (AIBasic aiw in AIWeapons) aiw.Update();
+        if( AIWeapon != null) AIWeapon.Update();
     }
 
     void OnDestroy()
     {
         AIMove = null;
-        AIWeapons.Clear();
-        AIWeapons = null;
+        AIWeapon = null;
     }
 
     void UpdatePosition()

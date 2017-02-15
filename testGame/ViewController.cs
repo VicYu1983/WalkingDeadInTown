@@ -21,7 +21,7 @@ public class ViewController : MonoBehaviour {
 
     public GameObject GamePage;
     public GameObject ObjectContainer;
-    public AimViewController AimController;
+    public AimViewController AimViewController;
     public PlayerController Player;
     public GameObject Ground;
     public Color EnemyColor;

@@ -116,7 +116,7 @@ public class GameController : MonoBehaviour {
         wgc.OnTwoFingerFlicked += OnTwoFingerFlicked;
         wgc.OnTwoFingerMove += OnTwoFingerMove;
 
-        vc.AimController.OnWeaponFireOnce += OnWeaponFireOnce;
+        vc.AimViewController.OnWeaponFireOnce += OnWeaponFireOnce;
 
         ReStart();
 
@@ -191,7 +191,21 @@ public class GameController : MonoBehaviour {
         ep.OnHitEvent += OnEnmeyHit;
         ep.GetComponent<AgeCalculator>().DeadAge = Mathf.FloorToInt(UnityEngine.Random.value * 1000) + 500;
         ep.GetComponent<AgeCalculator>().OnDeadEvent += OnEnemySpeakEvent;
-        ep.SetAI(vc, new AIMove());
+
+        AIMove moveAi = new AIMove();
+        moveAi.PlayerController = ep;
+        moveAi.ViewController = vc;
+        ep.AIMove = moveAi;
+
+        WongWeaponController wwc = enemy.GetComponent<WongWeaponController>();
+        wwc.AimViewController = vc.AimViewController;
+        wwc.AddWeapon(UnityEngine.Random.value > .5f ? GameConfig.WeaponConfig[0] : GameConfig.WeaponConfig[5]);
+
+        AIWeapon weaponAI = new AIWeapon();
+        weaponAI.PlayerController = ep;
+        weaponAI.WongWeaponController = wwc;
+        weaponAI.ViewController = vc;
+        ep.AIWeapon = weaponAI;
     }
 
     private void OnEnemySpeakEvent(AgeCalculator obj)

@@ -14,7 +14,7 @@ public class AIWeapon : AIBasic
             {
                 if (UnityEngine.Random.value > .995f)
                 {
-                   // PlayerController.weapons[0].AimOnce(ViewController.Player.Position);
+                    WongWeaponController.weapons[0].AimOnce(ViewController.Player.Position);
                 }
             }
         }
