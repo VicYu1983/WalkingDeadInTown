@@ -24,7 +24,6 @@ public class GameController : MonoBehaviour {
     
     public void ReStart()
     {
-       // vc.Player.Position = new Vector3();
         vc.ClearPlayer();
         vc.ClearEnemy();
         for (int i = 0; i < 5; ++i)
@@ -33,6 +32,7 @@ public class GameController : MonoBehaviour {
         }
         CreatePlayer();
         SetPlayerWeapons(0);
+        
     }
 
     public void SetEnableShadow( bool e)
@@ -129,7 +129,6 @@ public class GameController : MonoBehaviour {
         }
         else
         {
-            fromPos += (to - fromPos).normalized * 7;
             vc.CreateRayLine(weapon, fromPos, to);
         }
     }
@@ -280,8 +279,15 @@ public class GameController : MonoBehaviour {
         {
             RaylineModel rm = other.GetComponent<RaylineModel>();
             RayLineView rv = other.GetComponent<RayLineView>();
-
-            if (rv.Weapon.Owner.GetComponent<PlayerController>() == beenHit) return;
+            try
+            {
+                if (rv.Weapon.Owner.GetComponent<PlayerController>() == beenHit) return;
+            }
+            catch
+            {
+                //maybe player die now!
+            }
+            
 
             Vector3 dir = rm.targetPos - rm.fromPos;
             beenHit.Hit(dir, rm.speed, 10);

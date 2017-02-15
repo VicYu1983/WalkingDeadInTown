@@ -108,11 +108,13 @@ public class ViewController : MonoBehaviour {
     public void CreateRayLine( IWeapon weapon, Vector3 from, Vector3 target, bool symbol = false )
     {
         GameObject s = GameObjectFactory(PrefabName.RAYLINE);
+        s.transform.SetParent(ObjectContainer.transform);
         s.GetComponent<RayLineView>().Weapon = weapon;
         s.GetComponent<RaylineModel>().fromPos = from;
         s.GetComponent<RaylineModel>().targetPos = target;
         s.GetComponent<RaylineModel>().speed = 12;
-        s.transform.SetParent(ObjectContainer.transform);
+        s.GetComponent<RaylineModel>().CurrentPos = from;
+
 
         if (symbol) s.GetComponent<Image>().color = new Color(0, 0, 0, 0);
     }

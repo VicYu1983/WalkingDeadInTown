@@ -18,6 +18,10 @@ namespace VicScript
             {
                 return currentPos;
             }
+            set
+            {
+                currentPos = value;
+            }
         }
         float maxLength;
         float degree;
