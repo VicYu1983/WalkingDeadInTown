@@ -138,6 +138,7 @@ public class GameController : MonoBehaviour {
 
     void ProcessPlayerAttack(PlayerController owner, IWeapon weapon, Vector3 to)
     {
+        if (owner == null) return;
         Vector3 fromPos = owner.Position;
 
         if (weapon.IsBlade())
@@ -220,6 +221,9 @@ public class GameController : MonoBehaviour {
     {
         GameObject player = vc.CreatePlayer();
         vc.Player.OnHitEvent += OnEnemyHit;
+
+        WongWeaponController wwc = player.GetComponent<WongWeaponController>();
+        wwc.AimViewController = vc.AimViewController;
     }
 
     void CreateEnemy()
@@ -227,7 +231,6 @@ public class GameController : MonoBehaviour {
         Vector3 pos = new Vector3();
         pos.x = UnityEngine.Random.value * 100;
         pos.y = UnityEngine.Random.value * -100;
-       // pos += vc.Player.Position;
         GameObject enemy = vc.CreateEnemy(pos);
         PlayerController ep = enemy.GetComponent<PlayerController>();
         ep.HP = 100;
@@ -270,7 +273,15 @@ public class GameController : MonoBehaviour {
         {
             obj.ResetAge();
             obj.DeadAge = Mathf.FloorToInt(UnityEngine.Random.value * 1000) + 500;
-            StartCoroutine(vc.DisplayPlayerSpeak(obj.GetComponent<PlayerController>()));
+
+            try
+            {
+                StartCoroutine(vc.DisplayPlayerSpeak(obj.GetComponent<PlayerController>()));
+            }
+            catch( Exception e)
+            {
+                
+            }
         }
     }
 
@@ -301,9 +312,20 @@ public class GameController : MonoBehaviour {
             {
                 beenHit.OnHitEvent = null;
                 beenHit.GetComponent<AgeCalculator>().OnDeadEvent = null;
-
-                vc.CreateExplodeEffect(beenHit.Position, vc.EnemyColor);
+                vc.CreateExplodeEffect(beenHit.Position, beenHit.color);
                 vc.DestoryEnemy(beenHit.gameObject);
+            }
+            else
+            {
+                if( beenHit == vc.Player)
+                {
+                    vc.MakeEnemyHitEffect(beenHit, Color.white );
+                }
+                else
+                {
+                    vc.MakeEnemyHitEffect(beenHit, vc.EnemyColor);
+                }
+                
             }
             /*
 

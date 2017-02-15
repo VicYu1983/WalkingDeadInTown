@@ -30,5 +30,10 @@ namespace VicScript.WongWeaponSystem
         {
             /* 全自動武器不可以移動準星 */
         }
+
+        public override void AimOnce(Vector3 pos)
+        {
+            
+        }
     }
 }

@@ -298,13 +298,14 @@ public class ViewController : MonoBehaviour {
         Bullets.Add(bullet);
     }
 
-    public void CreateExplodeEffect(Vector3 pos, Color color)
+    public void CreateExplodeEffect(Vector3 pos, Color color )
     {
         GameObject explode = GameObjectFactory(PrefabName.BODY_EXPLODE);
         explode.SetActive(true);
         explode.transform.parent = ObjectContainer.transform;
         explode.GetComponent<RectTransform>().position = pos;
         explode.GetComponent<EffectTimeEvent>().OnEffectEndEvent += OnEffectEndEvent;
+        
         explode.GetComponent<Image>().color = color;
     }
 
@@ -409,20 +410,23 @@ public class ViewController : MonoBehaviour {
     }
     */
 
-    public void MakeEnemyHitEffect(PlayerController p, Vector3 hitPos, Vector3 aimPos, float delay = 0)
+    public void MakeEnemyHitEffect(PlayerController p, Color color )
     {
-        StartCoroutine(DisplayHitEffect(p, hitPos, aimPos, delay));
+        try
+        {
+            StartCoroutine(DisplayHitEffect(p, color));
+        }
+        catch( Exception e)
+        {
+            //maybe die now!
+        }
     }
 
-    IEnumerator DisplayHitEffect(PlayerController p, Vector3 hitPos, Vector3 aimPos, float delay = 0)
+    IEnumerator DisplayHitEffect(PlayerController p, Color color)
     {
-        Vector3 tempP = new Vector3(p.Position.x, p.Position.y, 0);
-        yield return new WaitForSeconds(delay);
         p.SetColor(Color.red);
-        Vector3 hitforce = tempP - hitPos;
-        p.GetComponent<Rigidbody2D>().AddForce(hitforce.normalized * 30);
         yield return new WaitForSeconds(.05f);
-        p.SetColor(EnemyColor);
+        p.SetColor(color);
     }
 
     public IEnumerator DisplayPlayerSpeak(PlayerController p)
@@ -449,6 +453,7 @@ public class ViewController : MonoBehaviour {
             targetSpeaks = HitSpeaks_100;
         }
         int choose = Mathf.FloorToInt(UnityEngine.Random.value * targetSpeaks.Length);
+
         p.SpeakContent = targetSpeaks[choose];
         yield return new WaitForSeconds(3f);
         p.SpeakContent = "";

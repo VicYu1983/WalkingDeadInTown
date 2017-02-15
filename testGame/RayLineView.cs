@@ -15,7 +15,8 @@ public class RayLineView : MonoBehaviour {
         rm.OnDeadEvent += OnDeadEvent;
         trans = GetComponent<RectTransform>();
 
-        if( rm.targetPos.y - rm.fromPos.y < 0)
+        trans.localPosition = rm.CurrentPos;
+        if ( rm.targetPos.y - rm.fromPos.y < 0)
         {
             trans.rotation = Quaternion.Euler(new Vector3(0, 0, -rm.Degree));
         }else

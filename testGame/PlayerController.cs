@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 using System;
-using System.Collections.Generic;
-using VicScript.WongWeaponSystem;
 
 public class PlayerController : MonoBehaviour {
     
@@ -24,7 +21,7 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    int _hp = 100;
+    int _hp = 30;
     public int HP
     {
         get
@@ -198,9 +195,16 @@ public class PlayerController : MonoBehaviour {
 
     public void SetColor( Color color )
     {
-        Image[] cs = GetComponentsInChildren<Image>();
-        foreach (Image c in cs) c.color = color;
-        this.color = color;
+        try
+        {
+            Image[] cs = GetComponentsInChildren<Image>();
+            foreach (Image c in cs) c.color = color;
+            this.color = color;
+        }
+        catch( Exception e)
+        {
+            //maybe die now!
+        }
     }
     /*
     public void SetAI( ViewController vc, AIBasic ai)
