@@ -8,15 +8,16 @@ namespace VicScript.WongWeaponSystem
 {
     public class BasicWeapon : IWeapon
     {
-
+        private WongWeaponController wwc;
         protected AimViewController vc;
         protected object[] config;
 
         List<int> _ids = new List<int>();
-
-        public BasicWeapon(AimViewController vc, object[] config)
+        
+        public BasicWeapon(AimViewController vc, WongWeaponController wwc, object[] config)
         {
             this.vc = vc;
+            this.wwc = wwc;
             this.config = config;
         }
 
@@ -78,7 +79,7 @@ namespace VicScript.WongWeaponSystem
 
         protected void DoKeepStartAim(Vector3 pos)
         {
-            _ids.Add(GetViewController().CreateAim(pos, GetConfig()));
+            _ids.Add(GetViewController().CreateAim( wwc, pos, GetConfig()));
         }
 
         protected void DoEndAim()
@@ -98,7 +99,7 @@ namespace VicScript.WongWeaponSystem
         void Shooting(Vector3 pos)
         {
             _ids.Clear();
-            _ids.Add(GetViewController().CreateAim(pos, GetConfig()));
+            _ids.Add(GetViewController().CreateAim(wwc, pos, GetConfig()));
 
             startShootingPos = pos;
             keepShootTime = 0;

@@ -357,11 +357,15 @@ public class ViewController : MonoBehaviour {
         Player.UpdateBody();
     }
 
-    private void OnCreateAim(Vector3 arg1, object[] arg2)
+    private void OnCreateAim(WongWeaponController owner, Vector3 to, object[] config)
     {
-        bool isBlade = (bool)arg2[12];
-        Player.IsBlade = isBlade;
-        BodyRotateByAimDir(Player, arg1);
+        bool isBlade = (bool)config[12];
+        PlayerController p = owner.GetComponent<PlayerController>();
+        p.IsBlade = isBlade;
+        BodyRotateByAimDir(p, to);
+
+        //  Player.IsBlade = isBlade;
+        //  BodyRotateByAimDir(Player, to);
     }
 
     private void OnDragAim(Vector3 obj)

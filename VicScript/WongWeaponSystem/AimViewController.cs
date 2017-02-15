@@ -12,7 +12,7 @@ namespace VicScript.WongWeaponSystem
         public GameObject ObjectContainer;
         public GameObject Prefab;
 
-        public Action<Vector3, object[]> OnCreateAim;
+        public Action<WongWeaponController, Vector3, object[]> OnCreateAim;
         public Action<Vector3> OnDragAim;
         public Action<Vector3> OnDestroyAim;
         public Action OnAimEmpty;
@@ -20,7 +20,7 @@ namespace VicScript.WongWeaponSystem
         Dictionary<int, List<AimController>> Aims = new Dictionary<int, List<AimController>>();
         int aimsId = 0;
 
-        public int CreateAim(Vector3 pos, object[] config)
+        public int CreateAim(WongWeaponController owner, Vector3 pos, object[] config)
         {
             int age = (int)config[1];
             float size = (float)config[2];
@@ -53,7 +53,7 @@ namespace VicScript.WongWeaponSystem
 
                 if (OnCreateAim != null)
                 {
-                    OnCreateAim.Invoke(pos + offset, config);
+                    OnCreateAim.Invoke(owner, pos + offset, config);
                 }
             }
             

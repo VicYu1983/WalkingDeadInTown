@@ -122,9 +122,10 @@ public class GameController : MonoBehaviour {
 
     }
 
-    private void OnCreateAim(Vector3 arg1, object[] arg2)
+    private void OnCreateAim(WongWeaponController owner, Vector3 to, object[] config)
     {
-        vc.CreateRayLine(vc.Player.Position, arg1);
+        Vector3 fromPos = owner.gameObject.GetComponent<PlayerController>().Position;
+        vc.CreateRayLine(fromPos, to);
     }
 
     private void OnOneFingerMoveAfterHold(Vector3 obj)

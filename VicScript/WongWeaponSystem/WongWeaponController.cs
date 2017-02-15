@@ -14,11 +14,11 @@ namespace VicScript.WongWeaponSystem
             bool autoWeapon = (bool)config[10];
             if (autoWeapon)
             {
-                weapons.Add(new AutoWeapon(AimViewController, config));
+                weapons.Add(new AutoWeapon(AimViewController, this, config));
             }
             else
             {
-                weapons.Add(new HalfAutoWeapon(AimViewController, config));
+                weapons.Add(new HalfAutoWeapon(AimViewController, this, config));
             }
             return weapons.Count - 1;
         }
