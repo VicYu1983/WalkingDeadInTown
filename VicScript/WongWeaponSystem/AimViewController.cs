@@ -46,7 +46,6 @@ namespace VicScript.WongWeaponSystem
                 Vector3 offset = new Vector3(UnityEngine.Random.Range(-1.0f, 1.0f) * seperateRange, UnityEngine.Random.Range(-1.0f, 1.0f) * seperateRange, 0);
 
                 AimController aimController = aim.GetComponent<AimController>();
-                aimController.Config = config;
                 aimController.Weapon = weapon;
                 aimController.Offset = offset;
                 aimController.Position = pos;

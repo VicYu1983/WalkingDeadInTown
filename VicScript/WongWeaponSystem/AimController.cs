@@ -14,9 +14,28 @@ namespace VicScript.WongWeaponSystem
         public bool Dragable = true;
         public bool Delay = false;
 
+        IWeapon weapon;
         public IWeapon Weapon
         {
-            set;get;
+            set
+            {
+                object[] config = value.Config;
+                float startSize = (float)config[8];
+
+                this.Size = (float)config[2];
+                this.Dragable = (bool)config[3];
+                this.ExpandSpeed = (float)config[6];
+                this.Delay = (bool)config[7];
+                this.currentSize = new Vector2
+                (
+                    ori_size.x * startSize, ori_size.y * startSize
+                );
+                weapon = value;
+            }
+            get
+            {
+                return weapon;
+            }
         }
 
         public Vector3 Position
@@ -30,30 +49,6 @@ namespace VicScript.WongWeaponSystem
             {
                 return GetComponent<RectTransform>().position;
             }
-        }
-
-        object[] config;
-        public object[] Config
-        {
-            set{
-                config = value;
-
-                float startSize = (float)config[8];
-
-                this.Size = (float)config[2];
-                this.Dragable = (bool)config[3];
-                this.ExpandSpeed = (float)config[6];
-                this.Delay = (bool)config[7];
-                this.currentSize = new Vector2
-                (
-                    ori_size.x * startSize, ori_size.y * startSize
-                );
-                
-            }
-            get{
-                return config;
-            }
-            
         }
 
         Vector3 _offset = new Vector3();
