@@ -13,7 +13,14 @@ public class PlayerController : MonoBehaviour {
     {
         set
         {
-            Bubble.text = value;
+            try
+            {
+                Bubble.text = value;
+            }
+            catch
+            {
+                //maybe die now!
+            }
         }
         get
         {
@@ -21,7 +28,7 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
-    int _hp = 30;
+    int _hp = 100;
     public int HP
     {
         get

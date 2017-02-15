@@ -32,6 +32,7 @@ public class GameController : MonoBehaviour {
             CreateEnemy();
         }
         CreatePlayer();
+        SetPlayerWeapons(0);
     }
 
     public void SetEnableShadow( bool e)
@@ -56,7 +57,6 @@ public class GameController : MonoBehaviour {
         if (vc.IsGameOver) return;
         string[] ews = uc.GetWeaponListFromUI();
         vc.Player.GetComponent<WongWeaponController>().ClearWeapons();
-        //vc.Player.weapons.Clear();
         foreach (object[] c in GameConfig.WeaponConfig)
         {
             string wsName = c[0].ToString();
@@ -81,27 +81,7 @@ public class GameController : MonoBehaviour {
         }
         vc.Player.UpdateBody();
     }
-    /*
-    void UsingConfig()
-    {
-        foreach (object[] c in GameConfig.WeaponConfig)
-        {
-            bool usingWeapon = (bool)c[13];
-            if (usingWeapon)
-            {
-                bool autoWeapon = (bool)c[10];
-                if (autoWeapon)
-                {
-                    vc.Player.weapons.Add(new AutoWeapon(vc.Player, vc, c));
-                }
-                else
-                {
-                    vc.Player.weapons.Add(new HalfAutoWeapon(vc.Player, vc, c));
-                }
-            }
-        }
-    }
-    */
+
     // Use this for initialization
     void Start () {
         ke.OnFClick += OnFClick;
@@ -144,11 +124,13 @@ public class GameController : MonoBehaviour {
         if (weapon.IsBlade())
         {
             Vector3 diff = to - owner.Position;
-            owner.Dodge(diff, GameConfig.DodgeSpeed);
+            owner.Dodge(diff, GameConfig.DodgeSpeed * 1.2f);
+            vc.CreateRayLine(weapon, fromPos, to, true);
         }
         else
         {
-            vc.CreateRayLine(fromPos, to);
+            fromPos += (to - fromPos).normalized * 7;
+            vc.CreateRayLine(weapon, fromPos, to);
         }
     }
 
@@ -273,15 +255,8 @@ public class GameController : MonoBehaviour {
         {
             obj.ResetAge();
             obj.DeadAge = Mathf.FloorToInt(UnityEngine.Random.value * 1000) + 500;
-
-            try
-            {
-                StartCoroutine(vc.DisplayPlayerSpeak(obj.GetComponent<PlayerController>()));
-            }
-            catch( Exception e)
-            {
-                
-            }
+            
+            StartCoroutine(vc.DisplayPlayerSpeak(obj.GetComponent<PlayerController>()));
         }
     }
 
@@ -304,8 +279,11 @@ public class GameController : MonoBehaviour {
         if (other.name.IndexOf("RayLineObject") != -1)
         {
             RaylineModel rm = other.GetComponent<RaylineModel>();
-            Vector3 dir = rm.targetPos - rm.fromPos;
+            RayLineView rv = other.GetComponent<RayLineView>();
 
+            if (rv.Weapon.Owner.GetComponent<PlayerController>() == beenHit) return;
+
+            Vector3 dir = rm.targetPos - rm.fromPos;
             beenHit.Hit(dir, rm.speed, 10);
             
             if( beenHit.HP == 0)
@@ -327,32 +305,8 @@ public class GameController : MonoBehaviour {
                 }
                 
             }
-            /*
 
-            PlayerController e = enemy.GetComponent<PlayerController>();
-            e.HP -= 10;
-
-            Vector3 aimPos = other.GetComponent<RectTransform>().localPosition;
-
-            if (vc.Player.IsBlade)
-            {
-                DodgePlayer(e.Position - vc.Player.Position, GameConfig.DodgeSpeed * 1.4f);
-            }
-            else
-            {
-                vc.CreateRayLine(vc.Player.Position, aimPos);
-            }
-
-            if (e.IsDead())
-            {
-                vc.CreateExplodeEffect(enemy.GetComponent<PlayerController>().Position, vc.EnemyColor);
-                vc.DestoryEnemy(enemy);
-            }
-            else
-            {
-                vc.MakeEnemyHitEffect(e, vc.Player.Position, aimPos, vc.Player.IsBlade ? .1f : 0.0f );
-            }
-            */
+            Destroy(other.gameObject);
         }
         
     }
@@ -429,6 +383,7 @@ public class GameController : MonoBehaviour {
         
         if (EnableShadow)
         {
+            if (vc.Player == null) return;
             if (isDoubleFlicked) vc.CreateShadow(vc.Player.Position, vc.Player.Scale);
         }
     }

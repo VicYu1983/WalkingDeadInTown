@@ -7,7 +7,6 @@ namespace VicScript
 {
     public class RaylineModel : MonoBehaviour
     {
-
         public Vector3 fromPos;
         public Vector3 targetPos;
         public float speed;

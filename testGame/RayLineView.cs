@@ -3,8 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using VicScript;
+using VicScript.WongWeaponSystem;
 
 public class RayLineView : MonoBehaviour {
+
+    public IWeapon Weapon
+    {
+        set;get;
+    }
 
     RaylineModel rm;
     RectTransform trans;
@@ -28,6 +34,11 @@ public class RayLineView : MonoBehaviour {
     private void OnDeadEvent(Vector3 obj)
     {
         Destroy(this.gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        rm.OnDeadEvent -= OnDeadEvent;
     }
 
     // Update is called once per frame
