@@ -158,7 +158,7 @@ public class PlayerController : MonoBehaviour {
         targetPos = null;
     }
 
-    public void DodgePlayer(Vector3 dir, float force)
+    public void Dodge(Vector3 dir, float force)
     {
         SetPlayerForce(dir, force);
         targetPos = null;

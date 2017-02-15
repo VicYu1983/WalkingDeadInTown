@@ -124,8 +124,18 @@ public class GameController : MonoBehaviour {
 
     private void OnWeaponFireOnce(IWeapon weapon, Vector3 to)
     {
-        Vector3 fromPos = weapon.Owner.gameObject.GetComponent<PlayerController>().Position;
-        vc.CreateRayLine(fromPos, to);
+        PlayerController owner = weapon.Owner.GetComponent<PlayerController>();
+        Vector3 fromPos = owner.Position;
+        
+        if( weapon.IsBlade())
+        {
+            Vector3 diff = to - owner.Position;
+            owner.Dodge( diff, GameConfig.DodgeSpeed );
+        }
+        else
+        {
+            vc.CreateRayLine(fromPos, to);
+        }
     }
 
     private void OnOneFingerMoveAfterHold(Vector3 obj)
@@ -218,7 +228,7 @@ public class GameController : MonoBehaviour {
     void DodgePlayer(Vector3 dir, float force)
     {
         uc.SetState("Dodge");
-        vc.Player.DodgePlayer(dir, force);
+        vc.Player.Dodge(dir, force);
 
         isDoubleFlicked = true;
         StartCoroutine(DelayCall(.3f, () =>
