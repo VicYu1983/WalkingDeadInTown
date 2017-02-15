@@ -24,12 +24,14 @@ public class GameController : MonoBehaviour {
     
     public void ReStart()
     {
-        vc.Player.Position = new Vector3();
+       // vc.Player.Position = new Vector3();
+        vc.ClearPlayer();
         vc.ClearEnemy();
         for (int i = 0; i < 5; ++i)
         {
             CreateEnemy();
         }
+        CreatePlayer();
     }
 
     public void SetEnableShadow( bool e)
@@ -51,6 +53,7 @@ public class GameController : MonoBehaviour {
     
     public void SetPlayerWeapons( int value )
     {
+        if (vc.IsGameOver) return;
         string[] ews = uc.GetWeaponListFromUI();
         vc.Player.GetComponent<WongWeaponController>().ClearWeapons();
         //vc.Player.weapons.Clear();
@@ -156,16 +159,19 @@ public class GameController : MonoBehaviour {
 
     private void OnOneFingerMoveAfterHold(Vector3 obj)
     {
+        if (vc.IsGameOver) return;
         vc.Player.GetComponent<WongWeaponController>().KeepStartAim(obj);
     }
 
     private void OnTwoFingerMove(Vector3 obj)
     {
+        if (vc.IsGameOver) return;
         vc.Player.SetPlayerPosition(obj);
     }
 
     private void OnTwoFingerFlicked(Vector3 obj)
     {
+        if (vc.IsGameOver) return;
         Vector3 dir = obj.normalized;
         Vector3 fromVec = vc.Player.GetComponent<RectTransform>().position;
         vc.Player.SetPlayerPosition(fromVec + dir * GameConfig.LongMoveDistance);
@@ -173,26 +179,31 @@ public class GameController : MonoBehaviour {
 
     private void OnTwoFingerClicked(Vector3 obj)
     {
+        if (vc.IsGameOver) return;
         vc.Player.SetPlayerPosition(obj);
     }
 
     private void OnOneFingerMove(Vector3 obj)
     {
+        if (vc.IsGameOver) return;
         vc.Player.GetComponent<WongWeaponController>().MoveAim(obj);
     }
 
     private void OnOneFingerDown(Vector3 obj)
     {
+        if (vc.IsGameOver) return;
         vc.Player.GetComponent<WongWeaponController>().StartAim(obj);
     }
 
     private void OnOneFingerClicked(Vector3 obj)
     {
+        if (vc.IsGameOver) return;
         vc.Player.GetComponent<WongWeaponController>().AimOnce(obj);
     }
 
     private void OnEachFingerUp(Vector3 pos)
     {
+        if (vc.IsGameOver) return;
 #if UNITY_EDITOR
         vc.Player.GetComponent<WongWeaponController>().AimOnce(pos);
 #else
@@ -205,16 +216,22 @@ public class GameController : MonoBehaviour {
         DodgePlayer( obj.normalized, GameConfig.DodgeSpeed );
     }
 
+    void CreatePlayer()
+    {
+        GameObject player = vc.CreatePlayer();
+        vc.Player.OnHitEvent += OnEnemyHit;
+    }
+
     void CreateEnemy()
     {
         Vector3 pos = new Vector3();
         pos.x = UnityEngine.Random.value * 100;
         pos.y = UnityEngine.Random.value * -100;
-        pos += vc.Player.Position;
+       // pos += vc.Player.Position;
         GameObject enemy = vc.CreateEnemy(pos);
         PlayerController ep = enemy.GetComponent<PlayerController>();
         ep.HP = 100;
-        ep.OnHitEvent += OnEnmeyHit;
+        ep.OnHitEvent += OnEnemyHit;
         ep.GetComponent<AgeCalculator>().DeadAge = Mathf.FloorToInt(UnityEngine.Random.value * 1000) + 500;
         ep.GetComponent<AgeCalculator>().OnDeadEvent += OnEnemySpeakEvent;
 
@@ -249,13 +266,18 @@ public class GameController : MonoBehaviour {
 
     private void OnEnemySpeakEvent(AgeCalculator obj)
     {
-        obj.ResetAge();
-        obj.DeadAge = Mathf.FloorToInt(UnityEngine.Random.value * 1000) + 500;
-        StartCoroutine(vc.DisplayPlayerSpeak(obj.GetComponent<PlayerController>()));
+        if( obj != null)
+        {
+            obj.ResetAge();
+            obj.DeadAge = Mathf.FloorToInt(UnityEngine.Random.value * 1000) + 500;
+            StartCoroutine(vc.DisplayPlayerSpeak(obj.GetComponent<PlayerController>()));
+        }
     }
 
     void DodgePlayer(Vector3 dir, float force)
     {
+        if (vc.IsGameOver) return;
+
         uc.SetState("Dodge");
         vc.Player.Dodge(dir, force);
 
@@ -266,12 +288,25 @@ public class GameController : MonoBehaviour {
         }));
     }
 
-    private void OnEnmeyHit(GameObject enemy, GameObject other)
+    private void OnEnemyHit(PlayerController beenHit, GameObject other)
     {
-
-        /*
-        if (other.name.IndexOf("Aim") != -1)
+        if (other.name.IndexOf("RayLineObject") != -1)
         {
+            RaylineModel rm = other.GetComponent<RaylineModel>();
+            Vector3 dir = rm.targetPos - rm.fromPos;
+
+            beenHit.Hit(dir, rm.speed, 10);
+            
+            if( beenHit.HP == 0)
+            {
+                beenHit.OnHitEvent = null;
+                beenHit.GetComponent<AgeCalculator>().OnDeadEvent = null;
+
+                vc.CreateExplodeEffect(beenHit.Position, vc.EnemyColor);
+                vc.DestoryEnemy(beenHit.gameObject);
+            }
+            /*
+
             PlayerController e = enemy.GetComponent<PlayerController>();
             e.HP -= 10;
 
@@ -295,12 +330,12 @@ public class GameController : MonoBehaviour {
             {
                 vc.MakeEnemyHitEffect(e, vc.Player.Position, aimPos, vc.Player.IsBlade ? .1f : 0.0f );
             }
-
+            */
         }
-        */
+        
     }
 
-
+    /*
     private void OnEnemyTapped(object sender, EventArgs e)
     {
         string senderName = ((TapGesture)sender).gameObject.name;
@@ -312,9 +347,10 @@ public class GameController : MonoBehaviour {
           //  foreach (IWeapon w in vc.Player.weapons) w.AimOnce(firePos);
         }
     }
-
+    */
     private void OnSpaceClick()
     {
+        if (vc.IsGameOver) return;
         vc.Player.MakePlayerStop();
         uc.SetState("Stop Player");
     }
@@ -335,44 +371,44 @@ public class GameController : MonoBehaviour {
 
     private void OnFPress()
     {
+        if (vc.IsGameOver) return;
         vc.Player.SetPlayerPositionByScreenPos( Input.mousePosition );
     }
 
 
     private void OnDClick()
     {
+        if (vc.IsGameOver) return;
         vc.Player.DodgePlayerByScreenPos(Input.mousePosition, GameConfig.DodgeSpeed);
     }
 
     private void OnFClick()
     {
+        if (vc.IsGameOver) return;
         vc.Player.SetPlayerPositionByScreenPos( Input.mousePosition );
     }
-
+    /*
     void FireOnce( Vector3 firePos )
     {
         Vector3 fromVec = vc.Player.GetComponent<RectTransform>().position;
         Vector3 dir = (firePos - fromVec).normalized;
         vc.CreateBullet(fromVec + dir * 50, dir, 100);
     }
-
+    */
+    /*
     void FireSpecialOnce(Vector3 firePos)
     {
         Vector3 fromVec = vc.Player.GetComponent<RectTransform>().position;
         Vector3 dir = (firePos - fromVec).normalized;
         vc.CreateSpecialBullet(fromVec + dir * 50, dir, 100);
     }
-    
+    */
     void Update () {
         
         if (EnableShadow)
         {
             if (isDoubleFlicked) vc.CreateShadow(vc.Player.Position, vc.Player.Scale);
         }
-        
-       // vc.Player.GetComponent<WongWeaponController>().AimOnce(firePos);
-      //  foreach (IWeapon w in vc.Player.weapons) w.Update();
-        
     }
 
     IEnumerator DelayCall(float time, Action doAction)

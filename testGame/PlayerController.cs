@@ -42,7 +42,7 @@ public class PlayerController : MonoBehaviour {
     {
         return HP <= 0;
     }
-    public Action<GameObject,GameObject> OnHitEvent;
+    public Action<PlayerController,GameObject> OnHitEvent;
 
     Vector3 normalScale = new Vector3(1, 1, 1);
     Vector3 flipScale = new Vector3(-1, 1, 1);
@@ -133,6 +133,13 @@ public class PlayerController : MonoBehaviour {
         }
     }
 
+    public void Hit( Vector3 dir, float force, int damage )
+    {
+        GetComponent<Rigidbody2D>().AddForce(dir.normalized * force);
+        HP -= damage;
+        if (HP < 0) HP = 0;
+    }
+
     public Sprite GetPlayerImage()
     {
         Texture2D texture = new Texture2D(32, 32);
@@ -211,7 +218,7 @@ public class PlayerController : MonoBehaviour {
     void OnTriggerEnter2D( Collider2D other )
     {
         if(OnHitEvent != null)
-            OnHitEvent(this.gameObject,other.gameObject);
+            OnHitEvent(this,other.gameObject);
     }
 
     void SetPlayerForce(Vector3 dir, float force)

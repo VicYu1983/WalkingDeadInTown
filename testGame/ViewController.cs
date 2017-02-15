@@ -35,6 +35,14 @@ public class ViewController : MonoBehaviour {
     public string[] HitSpeaks_25;
     public string[] HitSpeaks_10;
 
+    public bool IsGameOver
+    {
+        get
+        {
+            return Player == null;
+        }
+    }
+
     [SerializeField]
     private List<GameObject> Bullets;
     private List<GameObject> ForSortingZ = new List<GameObject>();
@@ -48,6 +56,11 @@ public class ViewController : MonoBehaviour {
         return ObjectContainer.transform.FindChild(name).gameObject;
     }
 
+    public void ClearPlayer()
+    {
+        if (Player != null) DestoryEnemy(Player.gameObject);
+    }
+
     public void ClearEnemy()
     {
         for( int i = Enemys.Count - 1; i > 0; --i)
@@ -56,6 +69,19 @@ public class ViewController : MonoBehaviour {
         }
     }
 
+    public GameObject CreatePlayer()
+    {
+        GameObject e = GameObjectFactory(PrefabName.ENEMY);
+        e.transform.SetParent(ObjectContainer.transform);
+        e.transform.position = new Vector3();
+
+        PlayerController ep = e.GetComponent<PlayerController>();
+        ep.UpdateBody();
+        ForSortingZ.Add(e);
+
+        Player = ep;
+        return e;
+    }
     public GameObject CreateEnemy( Vector3 pos )
     {
         GameObject e = GameObjectFactory(PrefabName.ENEMY);
@@ -66,15 +92,9 @@ public class ViewController : MonoBehaviour {
         Enemys.Add(ep);
 
         ep.SetColor(EnemyColor);
-        ForSortingZ.Add(e);
         ep.UpdateBody();
-        /*
-        ep.HP = 100;
-        ep.OnHitEvent += OnEnmeyHit;
-        ep.GetComponent<AgeCalculator>().DeadAge = Mathf.FloorToInt(UnityEngine.Random.value * 1000) + 500;
-        ep.GetComponent<AgeCalculator>().OnDeadEvent += OnEnemySpeakEvent;
-        ep.SetAI(this, new AIMove());
-        */
+        ForSortingZ.Add(e);
+
         return e;
     }
     /*
@@ -326,29 +346,14 @@ public class ViewController : MonoBehaviour {
    // Dictionary<PlayerController, bool> playersAimCount = new Dictionary<PlayerController, bool>();
     void Start()
     {
-    //    playersAimCount.Add(Player, false);
-        ForSortingZ.Add(Player.gameObject);
-
         /*
-        foreach (PlayerController e in Enemys)
-        {
-            e.SetColor(EnemyColor);
-            e.OnHitEvent += OnEnmeyHit;
-            e.SetAI(this, new AIMove());
-            ForSortingZ.Add(e.gameObject);
-            playersAimCount.Add(e, false);
-            e.UpdateBody();
-        }
+        ForSortingZ.Add(Player.gameObject);
         
-        */
-
         foreach (GameObject e in Stuffs) ForSortingZ.Add(e);
         Player.UpdateBody();
-
+        */
         GetComponent<AimViewController>().OnDragAim += OnDragAim;
         GetComponent<AimViewController>().OnCreateAim += OnCreateAim;
-      //  GetComponent<AimViewController>().OnAimEmpty += OnAimEmpty;
-   //     CheckIsStopAim();
     }
     /*
     private void OnAimEmpty()
@@ -451,13 +456,24 @@ public class ViewController : MonoBehaviour {
 
     public void DestoryEnemy( GameObject enemy )
     {
-        Destroy(enemy);
-        Enemys.Remove(enemy.GetComponent<PlayerController>());
-   //     playersAimCount.Remove(enemy.GetComponent<PlayerController>());
+        PlayerController p = enemy.GetComponent<PlayerController>();
+        if( p == Player)
+        {
+            Player = null;
+        }
+        else
+        {
+            Enemys.Remove(p);
+        }
+
         ForSortingZ.Remove(enemy);
+        Destroy(enemy);
+        
+        //playersAimCount.Remove(enemy.GetComponent<PlayerController>());
     }
 
     void Update () {
+        if (IsGameOver) return;
         Vector3 cameraPos = Camera.main.transform.localPosition;
         cameraPos.x = Player.Position.x;
         cameraPos.y = Player.Position.y;
