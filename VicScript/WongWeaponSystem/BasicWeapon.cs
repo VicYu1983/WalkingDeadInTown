@@ -74,7 +74,7 @@ namespace VicScript.WongWeaponSystem
 
         protected void DoMoveAim(Vector3 pos)
         {
-            GetViewController().DragAimsByIds(_ids.ToArray(), pos);
+            GetViewController().DragAimsByIds(_ids.ToArray(), pos, wwc, GetConfig());
         }
 
         protected void DoKeepStartAim(Vector3 pos)

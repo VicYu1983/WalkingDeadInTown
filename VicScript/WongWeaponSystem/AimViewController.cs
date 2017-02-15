@@ -13,8 +13,8 @@ namespace VicScript.WongWeaponSystem
         public GameObject Prefab;
 
         public Action<WongWeaponController, Vector3, object[]> OnCreateAim;
-        public Action<Vector3> OnDragAim;
-        public Action<Vector3> OnDestroyAim;
+        public Action<WongWeaponController, Vector3, object[]> OnDragAim;
+        public Action<WongWeaponController, Vector3, object[]> OnDestroyAim;
         public Action OnAimEmpty;
 
         Dictionary<int, List<AimController>> Aims = new Dictionary<int, List<AimController>>();
@@ -82,7 +82,7 @@ namespace VicScript.WongWeaponSystem
             CheckIsStopAim();
         }
 
-        public void DragAimsByIds(int[] ids, Vector3 pos)
+        public void DragAimsByIds(int[] ids, Vector3 pos, WongWeaponController owner, object[] config)
         {
             foreach (int id in ids)
             {
@@ -94,7 +94,7 @@ namespace VicScript.WongWeaponSystem
                         if (a.Dragable)
                         {
                             a.GetComponent<AimController>().SetPosition(pos);
-                            if (OnDragAim != null) OnDragAim.Invoke(pos);
+                            if (OnDragAim != null) OnDragAim.Invoke(owner, pos, config);
                         }
                     }
                 }

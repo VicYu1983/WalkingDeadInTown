@@ -368,9 +368,10 @@ public class ViewController : MonoBehaviour {
         //  BodyRotateByAimDir(Player, to);
     }
 
-    private void OnDragAim(Vector3 obj)
+    private void OnDragAim(WongWeaponController owner, Vector3 pos, object[] config)
     {
-        BodyRotateByAimDir(Player, obj);
+        PlayerController p = owner.GetComponent<PlayerController>();
+        BodyRotateByAimDir(p, pos);
     }
     /*
     private void OnEnmeyHit(GameObject enemy, GameObject other )
