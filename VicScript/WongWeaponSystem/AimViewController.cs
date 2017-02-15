@@ -24,6 +24,7 @@ namespace VicScript.WongWeaponSystem
 
         public int CreateAim(WongWeaponController owner, Vector3 pos, object[] config)
         {
+            int age = (int)config[1];
             int count = (int)config[4];
             float seperateRange = (float)config[5];
 
@@ -48,14 +49,9 @@ namespace VicScript.WongWeaponSystem
                 aimController.Position = pos;
                 aimController.GroupId = aimsId;
 
-                aim.GetComponent<AgeCalculator>().OnDeadEvent += OnAimDeadEvent;
-                // aim.GetComponent<AimController>().SetConfig(age, size, startSize, dragable, expandSpeed, delay);
-                //  aim.GetComponent<AimController>().owner = owner;
-
-                // aim.GetComponent<AimController>().Offset = offset;
-                // aim.GetComponent<AimController>().SetPosition(pos);
-                // aim.GetComponent<AimController>().GroupId = aimsId;
-                //  aim.GetComponent<AgeCalculator>().OnDeadEvent += OnAimDeadEvent;
+                AgeCalculator ageCalculator = GetComponent<AgeCalculator>();
+                ageCalculator.DeadAge = age;
+                ageCalculator.OnDeadEvent += OnAimDeadEvent;
                 Aims[aimsId].Add(aimController);
 
                 if (OnCreateAim != null)
