@@ -10,12 +10,9 @@ public class AIWeapon : AIBasic
     {
         if (PlayerController != null) {
             Vector3 diff = ViewController.Player.Position - PlayerController.Position;
-            if (diff.magnitude < 100)
+            if (UnityEngine.Random.value > .995f)
             {
-                if (UnityEngine.Random.value > .995f)
-                {
-                    WongWeaponController.weapons[0].AimOnce(ViewController.Player.Position);
-                }
+                WongWeaponController.weapons[0].AimOnce(ViewController.Player.Position);
             }
         }
     }

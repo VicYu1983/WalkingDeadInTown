@@ -125,17 +125,33 @@ public class GameController : MonoBehaviour {
     private void OnWeaponFireOnce(IWeapon weapon, Vector3 to)
     {
         PlayerController owner = weapon.Owner.GetComponent<PlayerController>();
+        if( owner == vc.Player) {
+            ProcessPlayerAttack(owner, weapon, to);
+        }else
+        {
+            StartCoroutine(DelayProcessPlayerAttack(owner, weapon, to));
+        }
+    }
+
+    void ProcessPlayerAttack(PlayerController owner, IWeapon weapon, Vector3 to)
+    {
         Vector3 fromPos = owner.Position;
-        
-        if( weapon.IsBlade())
+
+        if (weapon.IsBlade())
         {
             Vector3 diff = to - owner.Position;
-            owner.Dodge( diff, GameConfig.DodgeSpeed );
+            owner.Dodge(diff, GameConfig.DodgeSpeed);
         }
         else
         {
             vc.CreateRayLine(fromPos, to);
         }
+    }
+
+    IEnumerator DelayProcessPlayerAttack(PlayerController owner, IWeapon weapon, Vector3 to)
+    {
+        yield return new WaitForSeconds(1);
+        ProcessPlayerAttack(owner, weapon, to);
     }
 
     private void OnOneFingerMoveAfterHold(Vector3 obj)
@@ -209,7 +225,20 @@ public class GameController : MonoBehaviour {
 
         WongWeaponController wwc = enemy.GetComponent<WongWeaponController>();
         wwc.AimViewController = vc.AimViewController;
-        wwc.AddWeapon(UnityEngine.Random.value > .5f ? GameConfig.WeaponConfig[0] : GameConfig.WeaponConfig[5]);
+
+        float wid = UnityEngine.Random.value;
+        if( wid < .6f)
+        {
+            wwc.AddWeapon(GameConfig.WeaponConfig[1]);
+        }
+        else if( wid < .8f)
+        {
+            wwc.AddWeapon(GameConfig.WeaponConfig[5]);
+        }
+        else
+        {
+            wwc.AddWeapon(GameConfig.WeaponConfig[0]);
+        }
 
         AIWeapon weaponAI = new AIWeapon();
         weaponAI.PlayerController = ep;
