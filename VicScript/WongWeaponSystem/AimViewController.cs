@@ -80,13 +80,13 @@ namespace VicScript.WongWeaponSystem
             if (nowAims != null)
             {
                 AimController aim = aimSender.GetComponent<AimController>();
-                nowAims.Remove( aim );
-                Destroy(aimSender);
-
                 if (aim.Delay)
                 {
-                    OnWeaponFireOnce.Invoke(aim.Owner, aim.Position, aim.Config);
+                    if (OnWeaponFireOnce != null) OnWeaponFireOnce.Invoke(aim.Owner, aim.Position, aim.Config);
                 }
+
+                nowAims.Remove( aim );
+                Destroy(aimSender);
 
                 if (nowAims.Count == 0)
                 {
@@ -136,7 +136,9 @@ namespace VicScript.WongWeaponSystem
                 {
                     foreach (AimController a in nowAims)
                     {
-                        a.GetComponent<AgeCalculator>().OnDeadEvent -= OnAimDeadEvent;
+                        AgeCalculator agec = a.GetComponent<AgeCalculator>();
+                        if (agec.OnDeadEvent != null) agec.OnDeadEvent.Invoke(agec);
+                        agec.OnDeadEvent -= OnAimDeadEvent;
                         Destroy(a.gameObject);
                     }
                     nowAims.Clear();
