@@ -15,6 +15,8 @@ namespace VicScript.WongWeaponSystem
         public Action<WongWeaponController, Vector3, object[]> OnCreateAim;
         public Action<WongWeaponController, Vector3, object[]> OnDragAim;
         public Action<WongWeaponController, Vector3, object[]> OnDestroyAim;
+        public Action<WongWeaponController, Vector3, object[]> OnWeaponFireOnce;
+
         public Action OnAimEmpty;
 
         Dictionary<int, List<AimController>> Aims = new Dictionary<int, List<AimController>>();
@@ -22,15 +24,8 @@ namespace VicScript.WongWeaponSystem
 
         public int CreateAim(WongWeaponController owner, Vector3 pos, object[] config)
         {
-            int age = (int)config[1];
-            float size = (float)config[2];
-            bool dragable = (bool)config[3];
             int count = (int)config[4];
             float seperateRange = (float)config[5];
-            float expandSpeed = (float)config[6];
-            bool delay = (bool)config[7];
-            float startSize = (float)config[8];
-            bool isBlade = (bool)config[12];
 
             aimsId++;
             if (!Aims.ContainsKey(aimsId))
@@ -43,17 +38,34 @@ namespace VicScript.WongWeaponSystem
                 GameObject aim = Instantiate(Prefab);
                 aim.SetActive(true);
                 aim.transform.parent = ObjectContainer.transform;
-                aim.GetComponent<AimController>().SetConfig(age, size, startSize, dragable, expandSpeed, delay);
+
                 Vector3 offset = new Vector3(UnityEngine.Random.Range(-1.0f, 1.0f) * seperateRange, UnityEngine.Random.Range(-1.0f, 1.0f) * seperateRange, 0);
-                aim.GetComponent<AimController>().Offset = offset;
-                aim.GetComponent<AimController>().SetPosition(pos);
-                aim.GetComponent<AimController>().GroupId = aimsId;
+
+                AimController aimController = aim.GetComponent<AimController>();
+                aimController.Config = config;
+                aimController.Owner = owner;
+                aimController.Offset = offset;
+                aimController.Position = pos;
+                aimController.GroupId = aimsId;
+
                 aim.GetComponent<AgeCalculator>().OnDeadEvent += OnAimDeadEvent;
-                Aims[aimsId].Add(aim.GetComponent<AimController>());
+                // aim.GetComponent<AimController>().SetConfig(age, size, startSize, dragable, expandSpeed, delay);
+                //  aim.GetComponent<AimController>().owner = owner;
+
+                // aim.GetComponent<AimController>().Offset = offset;
+                // aim.GetComponent<AimController>().SetPosition(pos);
+                // aim.GetComponent<AimController>().GroupId = aimsId;
+                //  aim.GetComponent<AgeCalculator>().OnDeadEvent += OnAimDeadEvent;
+                Aims[aimsId].Add(aimController);
 
                 if (OnCreateAim != null)
                 {
                     OnCreateAim.Invoke(owner, pos + offset, config);
+                }
+
+                if(!aimController.Delay)
+                {
+                    if (OnWeaponFireOnce != null) OnWeaponFireOnce(owner, pos + offset, config);
                 }
             }
             
@@ -68,8 +80,14 @@ namespace VicScript.WongWeaponSystem
             List<AimController> nowAims = GetAimById(groupId);
             if (nowAims != null)
             {
-                nowAims.Remove(aimSender.GetComponent<AimController>());
+                AimController aim = aimSender.GetComponent<AimController>();
+                nowAims.Remove( aim );
                 Destroy(aimSender);
+
+                if (aim.Delay)
+                {
+                    OnWeaponFireOnce(aim.Owner, aim.Position, aim.Config);
+                }
 
                 if (nowAims.Count == 0)
                 {
@@ -93,7 +111,7 @@ namespace VicScript.WongWeaponSystem
                     {
                         if (a.Dragable)
                         {
-                            a.GetComponent<AimController>().SetPosition(pos);
+                            a.GetComponent<AimController>().Position = pos;
                             if (OnDragAim != null) OnDragAim.Invoke(owner, pos, config);
                         }
                     }
