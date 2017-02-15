@@ -116,13 +116,13 @@ public class GameController : MonoBehaviour {
         wgc.OnTwoFingerFlicked += OnTwoFingerFlicked;
         wgc.OnTwoFingerMove += OnTwoFingerMove;
 
-        vc.AimController.OnCreateAim += OnCreateAim;
+        vc.AimController.OnWeaponFireOnce += OnWeaponFireOnce;
 
         ReStart();
 
     }
 
-    private void OnCreateAim(WongWeaponController owner, Vector3 to, object[] config)
+    private void OnWeaponFireOnce(WongWeaponController owner, Vector3 to, object[] config)
     {
         Vector3 fromPos = owner.gameObject.GetComponent<PlayerController>().Position;
         vc.CreateRayLine(fromPos, to);

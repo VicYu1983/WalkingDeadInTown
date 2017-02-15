@@ -360,6 +360,7 @@ public class ViewController : MonoBehaviour {
     private void OnCreateAim(WongWeaponController owner, Vector3 to, object[] config)
     {
         bool isBlade = (bool)config[12];
+
         PlayerController p = owner.GetComponent<PlayerController>();
         p.IsBlade = isBlade;
         BodyRotateByAimDir(p, to);

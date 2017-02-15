@@ -49,7 +49,7 @@ namespace VicScript.WongWeaponSystem
                 aimController.Position = pos;
                 aimController.GroupId = aimsId;
 
-                AgeCalculator ageCalculator = GetComponent<AgeCalculator>();
+                AgeCalculator ageCalculator = aim.GetComponent<AgeCalculator>();
                 ageCalculator.DeadAge = age;
                 ageCalculator.OnDeadEvent += OnAimDeadEvent;
                 Aims[aimsId].Add(aimController);
@@ -61,7 +61,10 @@ namespace VicScript.WongWeaponSystem
 
                 if(!aimController.Delay)
                 {
-                    if (OnWeaponFireOnce != null) OnWeaponFireOnce(owner, pos + offset, config);
+                    if (OnWeaponFireOnce != null)
+                    {
+                        OnWeaponFireOnce.Invoke(owner, pos + offset, config);
+                    }
                 }
             }
             
@@ -82,7 +85,7 @@ namespace VicScript.WongWeaponSystem
 
                 if (aim.Delay)
                 {
-                    OnWeaponFireOnce(aim.Owner, aim.Position, aim.Config);
+                    OnWeaponFireOnce.Invoke(aim.Owner, aim.Position, aim.Config);
                 }
 
                 if (nowAims.Count == 0)
