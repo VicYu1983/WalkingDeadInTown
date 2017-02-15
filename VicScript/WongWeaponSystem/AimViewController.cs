@@ -50,12 +50,13 @@ namespace VicScript.WongWeaponSystem
                 aim.GetComponent<AimController>().GroupId = aimsId;
                 aim.GetComponent<AgeCalculator>().OnDeadEvent += OnAimDeadEvent;
                 Aims[aimsId].Add(aim.GetComponent<AimController>());
-            }
 
-            if (OnCreateAim != null)
-            {
-                OnCreateAim.Invoke(pos, config);
+                if (OnCreateAim != null)
+                {
+                    OnCreateAim.Invoke(pos + offset, config);
+                }
             }
+            
             return aimsId;
         }
 

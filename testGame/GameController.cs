@@ -124,13 +124,12 @@ public class GameController : MonoBehaviour {
 
     private void OnCreateAim(Vector3 arg1, object[] arg2)
     {
-        print(arg1);
+        vc.CreateRayLine(vc.Player.Position, arg1);
     }
 
     private void OnOneFingerMoveAfterHold(Vector3 obj)
     {
         vc.Player.GetComponent<WongWeaponController>().KeepStartAim(obj);
-      //  foreach (IWeapon w in vc.Player.weapons) w.KeepStartAim(obj);
     }
 
     private void OnTwoFingerMove(Vector3 obj)
