@@ -12,14 +12,19 @@ namespace VicScript.WongWeaponSystem
         public int AddWeapon( object[] config )
         {
             bool autoWeapon = (bool)config[10];
+            IWeapon weapon;
             if (autoWeapon)
             {
-                weapons.Add(new AutoWeapon(AimViewController, this, config));
+                weapon = new AutoWeapon();
             }
             else
             {
-                weapons.Add(new HalfAutoWeapon(AimViewController, this, config));
+                weapon = new HalfAutoWeapon();
             }
+            weapon.Owner = this;
+            weapon.Config = config;
+            weapon.AimViewController = AimViewController;
+            weapons.Add(weapon);
             return weapons.Count - 1;
         }
 

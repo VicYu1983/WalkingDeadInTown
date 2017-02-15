@@ -6,7 +6,7 @@ namespace VicScript.WongWeaponSystem
 {
     public class HalfAutoWeapon : BasicWeapon, IWeapon
     {
-        public HalfAutoWeapon(AimViewController vc, WongWeaponController wwc, object[] config) : base(vc, wwc, config)
+        public HalfAutoWeapon()
         {
 
         }

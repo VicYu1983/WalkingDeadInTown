@@ -6,7 +6,7 @@ namespace VicScript.WongWeaponSystem
 {
     public class AutoWeapon : BasicWeapon, IWeapon
     {
-        public AutoWeapon(AimViewController vc, WongWeaponController wwc, object[] config) : base(vc, wwc, config)
+        public AutoWeapon()
         {
 
         }

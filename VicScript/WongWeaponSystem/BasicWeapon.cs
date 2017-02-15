@@ -8,17 +8,24 @@ namespace VicScript.WongWeaponSystem
 {
     public class BasicWeapon : IWeapon
     {
-        private WongWeaponController wwc;
-        protected AimViewController vc;
-        protected object[] config;
+        public AimViewController AimViewController
+        {
+            get;set;
+        }
+        public WongWeaponController Owner
+        {
+            set;get;
+        }
+        public object[] Config
+        {
+            set;get;
+        }
 
         List<int> _ids = new List<int>();
         
-        public BasicWeapon(AimViewController vc, WongWeaponController wwc, object[] config)
+        public BasicWeapon()
         {
-            this.vc = vc;
-            this.wwc = wwc;
-            this.config = config;
+            
         }
 
         public virtual void StartAim(Vector3 pos)
@@ -45,7 +52,7 @@ namespace VicScript.WongWeaponSystem
 
         public bool IsBlade()
         {
-            return (bool)GetConfig()[12];
+            return (bool)Config[12];
         }
 
         public virtual void Update()
@@ -55,11 +62,6 @@ namespace VicScript.WongWeaponSystem
             {
                 DoKeepStartAim(startShootingPos);
             }
-        }
-
-        protected AimViewController GetViewController()
-        {
-            return vc;
         }
 
         Vector3 startShootingPos;
@@ -74,18 +76,18 @@ namespace VicScript.WongWeaponSystem
 
         protected void DoMoveAim(Vector3 pos)
         {
-            GetViewController().DragAimsByIds(_ids.ToArray(), pos, wwc, GetConfig());
+            AimViewController.DragAimsByIds(_ids.ToArray(), pos, Owner, Config);
         }
 
         protected void DoKeepStartAim(Vector3 pos)
         {
-            _ids.Add(GetViewController().CreateAim( wwc, pos, GetConfig()));
+            _ids.Add( AimViewController.CreateAim( Owner, pos, Config));
         }
 
         protected void DoEndAim()
         {
             if (IsClearWhenRelease())
-                GetViewController().ClearAimsByIds(_ids.ToArray());
+                AimViewController.ClearAimsByIds(_ids.ToArray());
         }
 
         protected void DoAimOnce(Vector3 pos)
@@ -99,7 +101,7 @@ namespace VicScript.WongWeaponSystem
         void Shooting(Vector3 pos)
         {
             _ids.Clear();
-            _ids.Add(GetViewController().CreateAim(wwc, pos, GetConfig()));
+            _ids.Add( AimViewController.CreateAim(Owner, pos, Config));
 
             startShootingPos = pos;
             keepShootTime = 0;
@@ -117,22 +119,18 @@ namespace VicScript.WongWeaponSystem
 
         int GetShootingTime()
         {
-            return (int)GetConfig()[11];
+            return (int)Config[11];
         }
 
         bool IsClearWhenRelease()
         {
-            return (bool)GetConfig()[9];
+            return (bool)Config[9];
         }
 
         bool IsDragable()
         {
-            return (bool)GetConfig()[3];
+            return (bool)Config[3];
         }
 
-        object[] GetConfig()
-        {
-            return this.config;
-        }
     }
 }
