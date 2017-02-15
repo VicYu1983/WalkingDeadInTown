@@ -12,7 +12,7 @@ namespace VicScript.WongGesture
     public class WongGestureController : MonoBehaviour
     {
         public Action<Vector3> OnOneFingerDown;
-        public Action OnEachFingerUp;
+        public Action<Vector3> OnEachFingerUp;
         public Action<Vector3> OnOneFingerClicked;
         public Action<Vector3> OnOneFingerMove;
         public Action<Vector3> OnOneFingerMoveAfterHold;
@@ -96,7 +96,7 @@ namespace VicScript.WongGesture
         private void OnGamePageClick( Vector3 pos)
         {
             isDoubleHold = false;
-            if (OnEachFingerUp != null) OnEachFingerUp.Invoke();
+            if (OnEachFingerUp != null) OnEachFingerUp.Invoke(Camera.main.ScreenToWorldPoint(pos));
         }
 
         private void OnGamePageFlicked(object sender, EventArgs e)

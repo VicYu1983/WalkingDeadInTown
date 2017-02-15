@@ -16,19 +16,10 @@ public class GameController : MonoBehaviour {
     public WongGestureController wgc;
 
     public bool EnableShadow = true;
-    public bool StopPlayerWhenTowFingerRelease = false;
-
-    bool isDoubleHold = false;
-
-    bool isClicked = false;
-
+    
     /* 代表雙指劃過 */
     bool isDoubleFlicked = false;
-
-    /* 代表單指劃過 */
-    bool isFlicked = false;
-
-    bool showConfig = false;
+    
 
     
     public void ReStart()
@@ -124,9 +115,16 @@ public class GameController : MonoBehaviour {
         wgc.OnTwoFingerClicked += OnTwoFingerClicked;
         wgc.OnTwoFingerFlicked += OnTwoFingerFlicked;
         wgc.OnTwoFingerMove += OnTwoFingerMove;
-        
+
+        vc.AimController.OnCreateAim += OnCreateAim;
+
         ReStart();
 
+    }
+
+    private void OnCreateAim(Vector3 arg1, object[] arg2)
+    {
+        print(arg1);
     }
 
     private void OnOneFingerMoveAfterHold(Vector3 obj)
@@ -154,26 +152,26 @@ public class GameController : MonoBehaviour {
 
     private void OnOneFingerMove(Vector3 obj)
     {
-       // foreach (IWeapon w in vc.Player.weapons) w.MoveAim(obj);
         vc.Player.GetComponent<WongWeaponController>().MoveAim(obj);
     }
 
     private void OnOneFingerDown(Vector3 obj)
     {
-      //  foreach (IWeapon w in vc.Player.weapons) w.StartAim(obj);
         vc.Player.GetComponent<WongWeaponController>().StartAim(obj);
     }
 
     private void OnOneFingerClicked(Vector3 obj)
     {
-      //  foreach (IWeapon w in vc.Player.weapons) w.AimOnce(obj);
         vc.Player.GetComponent<WongWeaponController>().AimOnce(obj);
     }
 
-    private void OnEachFingerUp()
+    private void OnEachFingerUp(Vector3 pos)
     {
-      //  foreach (IWeapon w in vc.Player.weapons) w.EndAim();
+#if UNITY_EDITOR
+        vc.Player.GetComponent<WongWeaponController>().AimOnce(pos);
+#else
         vc.Player.GetComponent<WongWeaponController>().EndAim();
+#endif
     }
 
     private void OnDoubleTwoFingerFlicked(Vector3 obj)
@@ -217,6 +215,8 @@ public class GameController : MonoBehaviour {
 
     private void OnEnmeyHit(GameObject enemy, GameObject other)
     {
+
+        /*
         if (other.name.IndexOf("Aim") != -1)
         {
             PlayerController e = enemy.GetComponent<PlayerController>();
@@ -244,6 +244,7 @@ public class GameController : MonoBehaviour {
             }
 
         }
+        */
     }
 
 

@@ -21,13 +21,14 @@ public class ViewController : MonoBehaviour {
 
     public GameObject GamePage;
     public GameObject ObjectContainer;
-    public GameObject AimPointContainer;
+    public AimViewController AimController;
     public PlayerController Player;
     public GameObject Ground;
     public Color EnemyColor;
     public List<GameObject> Stuffs;
     public GameObject[] Prefabs;
     public List<PlayerController> Enemys;
+    
     public string[] HitSpeaks_100;
     public string[] HitSpeaks_75;
     public string[] HitSpeaks_50;
