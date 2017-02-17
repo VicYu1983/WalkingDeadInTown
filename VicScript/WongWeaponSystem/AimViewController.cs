@@ -9,7 +9,6 @@ namespace VicScript.WongWeaponSystem
 {
     public class AimViewController : MonoBehaviour
     {
-        public GameObject ObjectContainer;
         public GameObject Prefab;
 
         public Action<IWeapon, Vector3> OnCreateAim;
@@ -41,7 +40,7 @@ namespace VicScript.WongWeaponSystem
             {
                 GameObject aim = Instantiate(Prefab);
                 aim.SetActive(true);
-                aim.transform.parent = ObjectContainer.transform;
+                aim.transform.parent = gameObject.transform;
 
                 Vector3 offset = new Vector3(UnityEngine.Random.Range(-1.0f, 1.0f) * seperateRange, UnityEngine.Random.Range(-1.0f, 1.0f) * seperateRange, 0);
 

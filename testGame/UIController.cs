@@ -31,9 +31,12 @@ public class UIController : MonoBehaviour {
         if( show)
         {
             RightPanel.GetComponent<RectTransform>().localScale = new Vector3(3, 3, 1);
-        }else
+            Time.timeScale = 0;
+        }
+        else
         {
             RightPanel.GetComponent<RectTransform>().localScale = new Vector3(0, 0, 1);
+            Time.timeScale = 1;
         }
     }
 

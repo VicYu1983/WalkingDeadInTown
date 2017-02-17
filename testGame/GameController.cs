@@ -32,7 +32,6 @@ public class GameController : MonoBehaviour {
         }
         CreatePlayer();
         SetPlayerWeapons(0);
-        
     }
 
     public void SetEnableShadow( bool e)
@@ -102,7 +101,7 @@ public class GameController : MonoBehaviour {
         vc.AimViewController.OnWeaponFireOnce += OnWeaponFireOnce;
 
         ReStart();
-
+        Time.timeScale = 0;
     }
 
     private void OnWeaponFireOnce(IWeapon weapon, Vector3 to)

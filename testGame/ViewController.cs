@@ -358,8 +358,8 @@ public class ViewController : MonoBehaviour {
         foreach (GameObject e in Stuffs) ForSortingZ.Add(e);
         Player.UpdateBody();
         */
-        GetComponent<AimViewController>().OnDragAim += OnDragAim;
-        GetComponent<AimViewController>().OnCreateAim += OnCreateAim;
+        AimViewController.OnDragAim += OnDragAim;
+        AimViewController.OnCreateAim += OnCreateAim;
     }
     /*
     private void OnAimEmpty()
