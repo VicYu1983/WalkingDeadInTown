@@ -11,6 +11,11 @@ namespace VicScript.WongWeaponSystem
     {
         public GameObject Prefab;
 
+        //depends on camera orthographic size = 100
+        //if new scene size = 5
+        //scale will be 5 / 100 or 0.05f
+        public float Scale = 1;
+
         public Action<IWeapon, Vector3> OnCreateAim;
         public Action<IWeapon, Vector3> OnDragAim;
         public Action<IWeapon, Vector3> OnDestroyAim;
@@ -41,8 +46,9 @@ namespace VicScript.WongWeaponSystem
                 GameObject aim = Instantiate(Prefab);
                 aim.SetActive(true);
                 aim.transform.parent = gameObject.transform;
+                aim.transform.localScale = new Vector3(Scale, Scale, 1);
 
-                Vector3 offset = new Vector3(UnityEngine.Random.Range(-1.0f, 1.0f) * seperateRange, UnityEngine.Random.Range(-1.0f, 1.0f) * seperateRange, 0);
+                Vector3 offset = new Vector3(UnityEngine.Random.Range(-1.0f, 1.0f) * seperateRange * Scale, UnityEngine.Random.Range(-1.0f, 1.0f) * seperateRange * Scale, 0);
 
                 AimController aimController = aim.GetComponent<AimController>();
                 aimController.Weapon = weapon;
