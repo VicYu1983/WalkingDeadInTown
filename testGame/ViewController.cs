@@ -28,6 +28,7 @@ public class ViewController : MonoBehaviour {
     public List<GameObject> Stuffs;
     public GameObject[] Prefabs;
     public List<PlayerController> Enemys;
+    public AudioClip[] Audios;
     
     public string[] HitSpeaks_100;
     public string[] HitSpeaks_75;
@@ -361,13 +362,14 @@ public class ViewController : MonoBehaviour {
         AimViewController.OnDragAim += OnDragAim;
         AimViewController.OnCreateAim += OnCreateAim;
     }
+
     /*
-    private void OnAimEmpty()
-    {
-        Player.IsAim = false;
-        Player.UpdateBody();
-    }
-    */
+private void OnAimEmpty()
+{
+   Player.IsAim = false;
+   Player.UpdateBody();
+}
+*/
     private void OnCreateAim(IWeapon weapon, Vector3 to)
     {
         bool isBlade = (bool)weapon.Config[12];
@@ -482,6 +484,16 @@ public class ViewController : MonoBehaviour {
         //playersAimCount.Remove(enemy.GetComponent<PlayerController>());
     }
 
+    public void PlayDongDongDong()
+    {
+        PlaySound(Audios[0]);
+    }
+
+    public void PlayOneShot()
+    {
+        PlaySound(Audios[1], true);
+    }
+
     void Update () {
         if (IsGameOver) return;
         Vector3 cameraPos = Camera.main.transform.localPosition;
@@ -503,5 +515,25 @@ public class ViewController : MonoBehaviour {
         {
             ForSortingZ[i].transform.SetAsFirstSibling();
         }
+    }
+
+    void PlaySound( AudioClip ac, bool oneShot = false )
+    {
+        AudioSource audioSource = GetComponent<AudioSource>();
+        audioSource.clip = ac;
+        if (oneShot)
+        {
+            audioSource.PlayOneShot(ac);
+        }else
+        {
+            audioSource.Play();
+        }
+        
+    }
+
+    public void StopDongDongDong()
+    {
+        AudioSource audioSource = GetComponent<AudioSource>();
+        audioSource.Stop();
     }
 }

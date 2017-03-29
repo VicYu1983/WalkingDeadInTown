@@ -174,12 +174,14 @@ public class GameController : MonoBehaviour {
     {
         if (vc.IsGameOver) return;
         vc.Player.GetComponent<WongWeaponController>().StartAim(obj);
+        vc.PlayDongDongDong();
     }
 
     private void OnOneFingerClicked(Vector3 obj)
     {
         if (vc.IsGameOver) return;
         vc.Player.GetComponent<WongWeaponController>().AimOnce(obj);
+        vc.PlayOneShot();
     }
 
     private void OnEachFingerUp(Vector3 pos)
@@ -189,6 +191,7 @@ public class GameController : MonoBehaviour {
         vc.Player.GetComponent<WongWeaponController>().AimOnce(pos);
 #else
         vc.Player.GetComponent<WongWeaponController>().EndAim();
+        vc.StopDongDongDong();
 #endif
     }
 
@@ -217,6 +220,7 @@ public class GameController : MonoBehaviour {
         ep.OnHitEvent += OnEnemyHit;
         ep.GetComponent<AgeCalculator>().DeadAge = Mathf.FloorToInt(UnityEngine.Random.value * 1000) + 500;
         ep.GetComponent<AgeCalculator>().OnDeadEvent += OnEnemySpeakEvent;
+        ep.gameObject.name = "enemy";
 
         AIMove moveAi = new AIMove();
         moveAi.PlayerController = ep;
