@@ -23,6 +23,7 @@ public class UIController : MonoBehaviour {
         string equipBName = dpd_autoWeapons.options[dpd_autoWeapons.value].text;
         string equipCName = dpd_halfAutoDelayWeapons.options[dpd_halfAutoDelayWeapons.value].text;
         return new string[] { equipAName, equipBName, equipCName };
+        //return new string[] { "雙管散彈槍", "步槍:全自動", "" };
     }
 
     public void ShowRightPanel( bool show )

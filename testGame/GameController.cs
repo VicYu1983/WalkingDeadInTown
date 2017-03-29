@@ -62,6 +62,7 @@ public class GameController : MonoBehaviour {
             string halfAutoName = ews[0];
             string halfAutoDelayName = ews[2];
             string autoName = ews[1];
+            
             if (wsName == halfAutoName || wsName == halfAutoDelayName || wsName == autoName)
             {
                 bool autoWeapon = (bool)c[10];
