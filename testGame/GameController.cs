@@ -230,7 +230,8 @@ public class GameController : MonoBehaviour {
 
         WongWeaponController wwc = enemy.GetComponent<WongWeaponController>();
         wwc.AimViewController = vc.AimViewController;
-
+        wwc.AddWeapon(new object[] { "步槍(半自動)", 10, .6f, false, 5, 30.0f, 0.5f, false, 0.0f, false, false, 5, false, true });
+        /*
         float wid = UnityEngine.Random.value;
         if( wid < .6f)
         {
@@ -244,7 +245,7 @@ public class GameController : MonoBehaviour {
         {
             wwc.AddWeapon(GameConfig.WeaponConfig[0]);
         }
-
+        */
         AIWeapon weaponAI = new AIWeapon();
         weaponAI.PlayerController = ep;
         weaponAI.WongWeaponController = wwc;
@@ -269,6 +270,7 @@ public class GameController : MonoBehaviour {
 
         uc.SetState("Dodge");
         vc.Player.Dodge(dir, force);
+        vc.PlayDodgeSound();
 
         isDoubleFlicked = true;
         StartCoroutine(DelayCall(.3f, () =>

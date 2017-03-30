@@ -29,7 +29,10 @@ public class ViewController : MonoBehaviour {
     public GameObject[] Prefabs;
     public List<PlayerController> Enemys;
     public AudioClip[] Audios;
-    
+    AudioSource AudioDongDongDong;
+    AudioSource AudioDaDaDa;
+    AudioSource AudioOneShot;
+
     public string[] HitSpeaks_100;
     public string[] HitSpeaks_75;
     public string[] HitSpeaks_50;
@@ -361,6 +364,10 @@ public class ViewController : MonoBehaviour {
         */
         AimViewController.OnDragAim += OnDragAim;
         AimViewController.OnCreateAim += OnCreateAim;
+
+        AudioDongDongDong = GetComponents<AudioSource>()[0];
+        AudioDaDaDa = GetComponents<AudioSource>()[1];
+        AudioOneShot = GetComponents<AudioSource>()[2];
     }
 
     /*
@@ -486,13 +493,35 @@ private void OnAimEmpty()
 
     public void PlayDongDongDong()
     {
-        PlaySound(Audios[0]);
+        AudioDongDongDong.Play();
+    }
+
+    public void StopDongDongDong()
+    {
+        AudioDongDongDong.Stop();
     }
 
     public void PlayOneShot()
     {
-        PlaySound(Audios[1], true);
+        PlaySound(Audios[0]);
     }
+
+    public void PlayDodgeSound()
+    {
+        PlaySound(Audios[1]);
+    }
+
+    public void PlayWalkSound()
+    {
+        AudioDaDaDa.Play();
+    }
+
+    public void StopWalkSound()
+    {
+        AudioDaDaDa.Stop();
+    }
+
+    bool isPlayWalkSound = false;
 
     void Update () {
         if (IsGameOver) return;
@@ -501,6 +530,25 @@ private void OnAimEmpty()
         cameraPos.y = Player.Position.y;
         Camera.main.transform.localPosition = cameraPos;
         SortingZ();
+
+        if( Player != null )
+        {
+            if (Player.IsWalk)
+            {
+                if (!isPlayWalkSound)
+                {
+                    isPlayWalkSound = true;
+                    PlayWalkSound();
+                }
+            }else
+            {
+                isPlayWalkSound = false;
+                StopWalkSound();
+            }
+        }else
+        {
+            StopWalkSound();
+        }
     }
 
     void SortingZ()
@@ -517,23 +565,10 @@ private void OnAimEmpty()
         }
     }
 
-    void PlaySound( AudioClip ac, bool oneShot = false )
+    void PlaySound( AudioClip ac )
     {
-        AudioSource audioSource = GetComponent<AudioSource>();
-        audioSource.clip = ac;
-        if (oneShot)
-        {
-            audioSource.PlayOneShot(ac);
-        }else
-        {
-            audioSource.Play();
-        }
-        
+        AudioOneShot.clip = ac;
+        AudioOneShot.PlayOneShot(ac);
     }
-
-    public void StopDongDongDong()
-    {
-        AudioSource audioSource = GetComponent<AudioSource>();
-        audioSource.Stop();
-    }
+    
 }

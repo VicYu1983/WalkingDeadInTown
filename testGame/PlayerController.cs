@@ -9,6 +9,8 @@ public class PlayerController : MonoBehaviour {
     public Text Bubble;
     public Color color;
 
+    public bool IsWalk = false;
+
     public string SpeakContent
     {
         set
@@ -344,11 +346,16 @@ public class PlayerController : MonoBehaviour {
             if (diffVec.magnitude < 20)
             {
                 targetPos = null;
+                IsWalk = false;
             }
             else
             {
                 SetPlayerForce(diffVec, GameConfig.MoveSpeed);
+                IsWalk = true;
             }
+        }else
+        {
+            IsWalk = false;
         }
     }
 
