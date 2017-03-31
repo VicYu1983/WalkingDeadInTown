@@ -102,7 +102,7 @@ public class GameController : MonoBehaviour {
         vc.AimViewController.OnWeaponFireOnce += OnWeaponFireOnce;
 
         ReStart();
-        Time.timeScale = 0;
+        //Time.timeScale = 0;
     }
 
     private void OnWeaponFireOnce(IWeapon weapon, Vector3 to)

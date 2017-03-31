@@ -28,7 +28,6 @@ namespace VicScript.WongWeaponSystem
             weapon.Config = config;
             weapon.AimViewController = AimViewController;
             weapons.Add(weapon);
-            print(config[0]);
             return weapons.Count - 1;
         }
 

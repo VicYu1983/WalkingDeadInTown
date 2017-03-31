@@ -364,10 +364,16 @@ public class ViewController : MonoBehaviour {
         */
         AimViewController.OnDragAim += OnDragAim;
         AimViewController.OnCreateAim += OnCreateAim;
+        AimViewController.OnAimEmpty += OnAimEmpty;
 
         AudioDongDongDong = GetComponents<AudioSource>()[0];
         AudioDaDaDa = GetComponents<AudioSource>()[1];
         AudioOneShot = GetComponents<AudioSource>()[2];
+    }
+
+    private void OnAimEmpty()
+    {
+        Player.IsAim = false;
     }
 
     /*

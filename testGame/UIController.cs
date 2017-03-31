@@ -13,17 +13,20 @@ public class UIController : MonoBehaviour {
 
     public void SetState( string msg )
     {
-        print(msg);
         txt_state.GetComponent<Text>().text = msg;
     }
 
     public string[] GetWeaponListFromUI()
     {
+        
         string equipAName = dpd_halfAutoWeapons.options[dpd_halfAutoWeapons.value].text;
         string equipBName = dpd_autoWeapons.options[dpd_autoWeapons.value].text;
         string equipCName = dpd_halfAutoDelayWeapons.options[dpd_halfAutoDelayWeapons.value].text;
-        return new string[] { equipAName, equipBName, equipCName };
-        //return new string[] { "雙管散彈槍", "步槍:全自動", "" };
+
+        //print(equipAName + '_' + equipBName);
+        //return new string[] { equipAName, equipBName, equipCName };
+
+        return new string[] { "雙管散彈槍", "步槍:全自動", "遲發動(不裝備)" };
     }
 
     public void ShowRightPanel( bool show )
