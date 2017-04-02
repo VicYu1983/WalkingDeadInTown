@@ -497,6 +497,11 @@ private void OnAimEmpty()
         //playersAimCount.Remove(enemy.GetComponent<PlayerController>());
     }
 
+    public void PlayDeadSound()
+    {
+        PlaySound(UnityEngine.Random.value > .5f ? Audios[2] : Audios[3]);
+    }
+
     public void PlayDongDongDong()
     {
         AudioDongDongDong.Play();

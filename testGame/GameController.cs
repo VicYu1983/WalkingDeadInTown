@@ -304,6 +304,7 @@ public class GameController : MonoBehaviour {
                 beenHit.GetComponent<AgeCalculator>().OnDeadEvent = null;
                 vc.CreateExplodeEffect(beenHit.Position, beenHit.color);
                 vc.DestoryEnemy(beenHit.gameObject);
+                vc.PlayDeadSound();
             }
             else
             {
