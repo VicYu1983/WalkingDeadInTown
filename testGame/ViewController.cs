@@ -412,8 +412,18 @@ public class ViewController : MonoBehaviour {
 
     private void OnAimEmpty()
     {
-        if (Player == null) return;
-        Player.IsAim = false;
+        if (Player != null)
+        {
+            Player.IsAim = false;
+        }
+        
+        foreach( PlayerController e in Enemys)
+        {
+            if( e != null)
+            {
+                e.IsAim = false;
+            }
+        }
     }
 
     /*

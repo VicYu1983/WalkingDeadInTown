@@ -6,6 +6,7 @@ public class PlayerController : MonoBehaviour {
     
     public GameObject body;
     public GameObject foot;
+    public GameObject handlight;
     public Text Bubble;
     public Color color;
 
@@ -207,7 +208,11 @@ public class PlayerController : MonoBehaviour {
         try
         {
             Image[] cs = GetComponentsInChildren<Image>();
-            foreach (Image c in cs) c.color = color;
+            foreach (Image c in cs)
+            {
+                if( c.name != "Handlight" )
+                    c.color = color;
+            }
             this.color = color;
         }
         catch( Exception e)
@@ -316,6 +321,26 @@ public class PlayerController : MonoBehaviour {
             {
                 SetAnimation(GetAnimationStr("Down"));
             }
+        }
+        SetHandlightDir(dir);
+    }
+
+    void SetHandlightDir( Vector3 dir )
+    {
+        double radian = Math.Atan2(dir.x, -dir.y);
+        float angle = (float)radian / (float)Math.PI * 180;
+        handlight.GetComponent<RectTransform>().rotation = Quaternion.Euler( 0, 0, angle);
+
+        // 180, 0 wei shang xia
+        float diffA = 180 - Math.Abs(angle);
+        float diffB = Math.Abs(angle);
+        if (diffA < diffB)
+        {
+            handlight.GetComponent<RectTransform>().localScale = new Vector3(1, diffA / 90 * .3f + .7f, 1);
+        }
+        else
+        {
+            handlight.GetComponent<RectTransform>().localScale = new Vector3(1, diffB / 90 * .3f + .7f, 1);
         }
     }
 
