@@ -26,9 +26,14 @@ public class GameController : MonoBehaviour {
     {
         vc.ClearPlayer();
         vc.ClearEnemy();
+        vc.ClearBarrel();
         for (int i = 0; i < 5; ++i)
         {
             CreateEnemy();
+        }
+        for (int i = 0; i < 50; ++i)
+        {
+            CreateBarrels();
         }
         CreatePlayer();
         SetPlayerWeapons(0);
@@ -208,6 +213,22 @@ public class GameController : MonoBehaviour {
 
         WongWeaponController wwc = player.GetComponent<WongWeaponController>();
         wwc.AimViewController = vc.AimViewController;
+    }
+
+    void CreateBarrels()
+    {
+        Vector3 pos = new Vector3();
+        pos.x = UnityEngine.Random.value * 3000 - 1500;
+        pos.y = UnityEngine.Random.value * 3000 - 1500;
+        GameObject barrel = vc.CreateBarrel(pos);
+        BarrelController bc = barrel.GetComponent<BarrelController>();
+        bc.OnHitEvent += OnBarrelHit;
+    }
+
+    private void OnBarrelHit(BarrelController arg1, GameObject arg2)
+    {
+        arg1.OnHitEvent -= OnBarrelHit;
+        arg1.gameObject.GetComponent<Animator>().SetBool("Die", true);
     }
 
     void CreateEnemy()

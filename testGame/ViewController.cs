@@ -14,7 +14,9 @@ enum PrefabName{
     BODY_EXPLODE,
     AIM_POINT_0,
     ENEMY,
-    SPEED_SHADOW
+    SPEED_SHADOW,
+    EXPLODE,
+    BARREL
 }
 
 public class ViewController : MonoBehaviour {
@@ -28,6 +30,7 @@ public class ViewController : MonoBehaviour {
     public List<GameObject> Stuffs;
     public GameObject[] Prefabs;
     public List<PlayerController> Enemys;
+    public List<BarrelController> Barrels;
     public AudioClip[] Audios;
     AudioSource AudioDongDongDong;
     AudioSource AudioDaDaDa;
@@ -65,12 +68,23 @@ public class ViewController : MonoBehaviour {
         if (Player != null) DestoryEnemy(Player.gameObject);
     }
 
+    public void ClearBarrel()
+    {
+        for (int i = Barrels.Count - 1; i > 0; --i)
+        {
+            if (Barrels[i] != null)
+                DestoryEnemy(Barrels[i].gameObject);
+        }
+        Barrels.Clear();
+    }
+
     public void ClearEnemy()
     {
         for( int i = Enemys.Count - 1; i > 0; --i)
         {
             DestoryEnemy(Enemys[i].gameObject);
         }
+        Enemys.Clear();
     }
 
     public GameObject CreatePlayer()
@@ -99,6 +113,19 @@ public class ViewController : MonoBehaviour {
         ep.UpdateBody();
         ForSortingZ.Add(e);
 
+        return e;
+    }
+
+    public GameObject CreateBarrel( Vector3 pos)
+    {
+        GameObject e = GameObjectFactory(PrefabName.BARREL);
+        e.transform.SetParent(ObjectContainer.transform);
+        e.transform.position = pos;
+
+        BarrelController ep = e.GetComponent<BarrelController>();
+        Barrels.Add(ep);
+        
+        ForSortingZ.Add(e);
         return e;
     }
     /*
@@ -318,6 +345,14 @@ public class ViewController : MonoBehaviour {
         explode.GetComponent<Image>().color = color;
     }
 
+    public void CreateBigExplodeEffect( Vector3 pos)
+    {
+        GameObject explode = GameObjectFactory(PrefabName.EXPLODE);
+        explode.SetActive(true);
+        explode.transform.parent = ObjectContainer.transform;
+        explode.GetComponent<RectTransform>().position = pos;
+    }
+
     private void OnEffectEndEvent(GameObject obj)
     {
         obj.GetComponent<EffectTimeEvent>().OnEffectEndEvent -= OnEffectEndEvent;
@@ -349,6 +384,10 @@ public class ViewController : MonoBehaviour {
                 return Instantiate(Prefabs[5]);
             case PrefabName.SPEED_SHADOW:
                 return Instantiate(Prefabs[6]);
+            case PrefabName.EXPLODE:
+                return Instantiate(Prefabs[7]);
+            case PrefabName.BARREL:
+                return Instantiate(Prefabs[7]);
         }
         return null;
     }
@@ -373,6 +412,7 @@ public class ViewController : MonoBehaviour {
 
     private void OnAimEmpty()
     {
+        if (Player == null) return;
         Player.IsAim = false;
     }
 
