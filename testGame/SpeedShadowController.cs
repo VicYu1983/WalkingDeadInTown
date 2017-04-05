@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class SpeedShadowController : MonoBehaviour {
 
-    public bool EnableAlpha = false;
+    public bool EnableAlpha = true;
     
 	void Start () {
         GetComponent<AgeCalculator>().OnDeadEvent += OnDeadEvent;

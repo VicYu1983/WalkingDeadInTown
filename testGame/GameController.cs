@@ -103,13 +103,19 @@ public class GameController : MonoBehaviour {
         wgc.OnTwoFingerClicked += OnTwoFingerClicked;
         wgc.OnTwoFingerFlicked += OnTwoFingerFlicked;
         wgc.OnTwoFingerMove += OnTwoFingerMove;
+        //wgc.OnDoubleTwoFingerClicked += OnDoubleTwoFingerClicked;
 
         vc.AimViewController.OnWeaponFireOnce += OnWeaponFireOnce;
 
         ReStart();
         //Time.timeScale = 0;
     }
-
+    /*
+    private void OnDoubleTwoFingerClicked(Vector3 obj)
+    {
+        DodgePlayer(( obj - vc.Player.Position ).normalized, GameConfig.DodgeSpeed);
+    }
+    */
     private void OnWeaponFireOnce(IWeapon weapon, Vector3 to)
     {
         PlayerController owner = weapon.Owner.GetComponent<PlayerController>();
@@ -164,10 +170,26 @@ public class GameController : MonoBehaviour {
         vc.Player.SetPlayerPosition(fromVec + dir * GameConfig.LongMoveDistance);
     }
 
+    bool twoFingerClicked = false;
+
     private void OnTwoFingerClicked(Vector3 obj)
     {
         if (vc.IsGameOver) return;
-        vc.Player.SetPlayerPosition(obj);
+        //vc.Player.SetPlayerPosition(obj);
+
+        if (twoFingerClicked)
+        {
+            DodgePlayer((obj - vc.Player.Position).normalized, GameConfig.DodgeSpeed);
+            twoFingerClicked = false;
+        }else
+        {
+            vc.Player.SetPlayerPosition(obj);
+        }
+        twoFingerClicked = true;
+        StartCoroutine(DelayCall(.5f, () =>
+        {
+            twoFingerClicked = false;
+        }));
     }
 
     private void OnOneFingerMove(Vector3 obj)
@@ -209,6 +231,7 @@ public class GameController : MonoBehaviour {
     void CreatePlayer()
     {
         GameObject player = vc.CreatePlayer();
+        player.name = "Player";
         vc.Player.OnHitEvent += OnEnemyHit;
 
         WongWeaponController wwc = player.GetComponent<WongWeaponController>();

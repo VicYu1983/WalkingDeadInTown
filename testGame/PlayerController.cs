@@ -126,7 +126,7 @@ public class PlayerController : MonoBehaviour {
         {
             for (int x = 0; x < canvas.width; x++)
             {
-                Color color = drawTarget.GetPixel(x, y);
+                Color color = drawTarget.GetPixel(x * 4, y * 4);
                 if(ignoreAlpha)
                 {
                     if (color.a != 0) canvas.SetPixel(x, y, color);
@@ -330,23 +330,21 @@ public class PlayerController : MonoBehaviour {
         double radian = Math.Atan2(dir.x, -dir.y);
         float angle = (float)radian / (float)Math.PI * 180;
         handlight.GetComponent<RectTransform>().rotation = Quaternion.Euler( 0, 0, angle);
-
+        
         // 180, 0 wei shang xia
         float diffA = 180 - Math.Abs(angle);
         float diffB = Math.Abs(angle);
-        if (diffA < diffB)
-        {
-            handlight.GetComponent<RectTransform>().localScale = new Vector3(1, diffA / 90 * .3f + .7f, 1);
-        }
-        else
-        {
-            handlight.GetComponent<RectTransform>().localScale = new Vector3(1, diffB / 90 * .3f + .7f, 1);
-        }
+        handlight.GetComponent<RectTransform>().localScale = new Vector3(1, Math.Min(diffA, diffB) / 90 * .3f + .7f, 1);
     }
 
     void Start()
     {
         SetColor(color);
+
+        if( gameObject.name != "Player")
+        {
+            handlight.SetActive(false);
+        }
     }
 
     void Update()

@@ -35,12 +35,24 @@ namespace VicScript.WongGesture
             GetComponent<DoubleFlickedGesture>().OnDoubleFlickedEvent += OnGamePageDoubleFlicked;
         }
 
+        bool twoFingerClicked = false;
+
         void Update()
         {
             /* 是點擊、非swipe、非連續swipe、兩指在屏上才會觸發 */
             if (GetTouchCount() == 2 && GetIsClick() && !isFlicked && !isDoubleFlicked)
             {
-                if (OnTwoFingerClicked != null) OnTwoFingerClicked.Invoke(Camera.main.ScreenToWorldPoint(GetTouchPosition()));
+                //if (OnTwoFingerClicked != null) OnTwoFingerClicked.Invoke(Camera.main.ScreenToWorldPoint(GetTouchPosition()));
+
+                if (!twoFingerClicked)
+                {
+                    twoFingerClicked = true;
+                    StartCoroutine(DelayCall(.1f, () =>
+                    {
+                        twoFingerClicked = false;
+                    }));
+                    if (OnTwoFingerClicked != null) OnTwoFingerClicked.Invoke(Camera.main.ScreenToWorldPoint(GetTouchPosition()));
+                }
             }
 
             /* 如果單指有劃過，就不觸動持續移動的功能 */
