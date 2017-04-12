@@ -557,6 +557,11 @@ private void OnAimEmpty()
         AudioDongDongDong.Play();
     }
 
+    public void PlayBombBong()
+    {
+        PlaySound(Audios[4]);
+    }
+
     public void StopDongDongDong()
     {
         AudioDongDongDong.Stop();

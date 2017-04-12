@@ -7,6 +7,30 @@ public class BarrelController : MonoBehaviour {
 
     public Action<BarrelController, GameObject> OnHitEvent;
 
+    int _hp = 120;
+    public int HP
+    {
+        get
+        {
+            return _hp;
+        }
+        set
+        {
+            _hp = value;
+            print(_hp);
+            if (_hp < 0) _hp = 0;
+        }
+    }
+
+    public bool isDead
+    {
+        get
+        {
+            return _hp <= 0;
+        }
+    }
+
+
     // Use this for initialization
     void Start () {
 		
@@ -16,6 +40,7 @@ public class BarrelController : MonoBehaviour {
 	void Update () {
 		
 	}
+    
 
     void OnTriggerEnter2D(Collider2D other)
     {

@@ -248,10 +248,24 @@ public class GameController : MonoBehaviour {
         bc.OnHitEvent += OnBarrelHit;
     }
 
-    private void OnBarrelHit(BarrelController arg1, GameObject arg2)
+    private void OnBarrelHit(BarrelController barrel, GameObject rayLine)
     {
-        arg1.OnHitEvent -= OnBarrelHit;
-        arg1.gameObject.GetComponent<Animator>().SetBool("Die", true);
+        barrel.HP -= 10;
+        if( barrel.isDead)
+        {
+            barrel.OnHitEvent -= OnBarrelHit;
+            barrel.gameObject.GetComponent<Animator>().SetBool("Die", true);
+            vc.PlayBombBong();
+        }
+        else
+        {
+            RaylineModel rm = rayLine.GetComponent<RaylineModel>();
+            Vector3 from = rm.fromPos;
+            Vector3 offset = barrel.GetComponent<RectTransform>().position - from;
+            offset.Normalize();
+
+            barrel.GetComponent<Rigidbody2D>().AddForce(offset * 30);
+        }
     }
 
     void CreateEnemy()
