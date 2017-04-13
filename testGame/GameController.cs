@@ -256,17 +256,43 @@ public class GameController : MonoBehaviour {
             barrel.OnHitEvent -= OnBarrelHit;
             barrel.gameObject.GetComponent<Animator>().SetBool("Die", true);
             vc.PlayBombBong();
+            ExplodeWind(barrel.GetComponent<RectTransform>().position);
         }
         else
         {
             RaylineModel rm = rayLine.GetComponent<RaylineModel>();
-            Vector3 from = rm.fromPos;
-            Vector3 offset = barrel.GetComponent<RectTransform>().position - from;
-            offset.Normalize();
-
-            barrel.GetComponent<Rigidbody2D>().AddForce(offset * 30);
+            if(rm != null)
+            {
+                Vector3 from = rm.fromPos;
+                Vector3 offset = barrel.GetComponent<RectTransform>().position - from;
+                offset.Normalize();
+                barrel.GetComponent<Rigidbody2D>().AddForce(offset * 30);
+            }
         }
     }
+
+    private void ExplodeWind( Vector3 pos )
+    {
+        List<GameObject> newlist = new List<GameObject>(vc.ForSortingZ);
+        foreach( GameObject g in newlist)
+        {
+            if(g != null)
+            {
+                Vector3 gPos = g.GetComponent<RectTransform>().position;
+                Vector3 dir = gPos - pos;
+                if (dir.magnitude < 100)
+                {
+                    g.GetComponent<Rigidbody2D>().AddForce(dir.normalized * 60);
+                    if (g.GetComponent<PlayerController>() != null)
+                    {
+                        ProcessHitEffect(g.GetComponent<PlayerController>(), gPos, pos, 20, 50);
+                    }
+                }
+            }
+            
+        }
+    }
+    
 
     void CreateEnemy()
     {
@@ -351,8 +377,9 @@ public class GameController : MonoBehaviour {
             {
                 //maybe player die now!
             }
-            
 
+            ProcessHitEffect(beenHit, rm.targetPos, rm.fromPos, rm.speed, 10);
+            /*
             Vector3 dir = rm.targetPos - rm.fromPos;
             beenHit.Hit(dir, rm.speed, 10);
             
@@ -376,10 +403,37 @@ public class GameController : MonoBehaviour {
                 }
                 
             }
-
+            */
             Destroy(other.gameObject);
         }
         
+    }
+
+    void ProcessHitEffect(PlayerController beenHit, Vector3 hitPos, Vector3 fromPos, float power, int damage)
+    {
+        Vector3 dir = hitPos - fromPos;
+        beenHit.Hit(dir, power, damage);
+
+        if (beenHit.HP == 0)
+        {
+            beenHit.OnHitEvent = null;
+            beenHit.GetComponent<AgeCalculator>().OnDeadEvent = null;
+            vc.CreateExplodeEffect(beenHit.Position, beenHit.color);
+            vc.DestoryEnemy(beenHit.gameObject);
+            vc.PlayDeadSound();
+        }
+        else
+        {
+            if (beenHit == vc.Player)
+            {
+                vc.MakeEnemyHitEffect(beenHit, Color.white);
+            }
+            else
+            {
+                vc.MakeEnemyHitEffect(beenHit, vc.EnemyColor);
+            }
+
+        }
     }
 
     /*

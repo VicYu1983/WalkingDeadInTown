@@ -17,7 +17,6 @@ public class BarrelController : MonoBehaviour {
         set
         {
             _hp = value;
-            print(_hp);
             if (_hp < 0) _hp = 0;
         }
     }

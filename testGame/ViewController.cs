@@ -52,7 +52,7 @@ public class ViewController : MonoBehaviour {
 
     [SerializeField]
     private List<GameObject> Bullets;
-    private List<GameObject> ForSortingZ = new List<GameObject>();
+    public List<GameObject> ForSortingZ = new List<GameObject>();
 
     private Dictionary<int,List<AimController>> Aims = new Dictionary<int,List<AimController>>();
 
