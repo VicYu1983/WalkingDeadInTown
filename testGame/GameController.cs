@@ -152,7 +152,14 @@ public class GameController : MonoBehaviour {
     IEnumerator DelayProcessPlayerAttack(PlayerController owner, IWeapon weapon, Vector3 to)
     {
         yield return new WaitForSeconds(1);
-        ProcessPlayerAttack(owner.gameObject, weapon, to);
+        try
+        {
+            ProcessPlayerAttack(owner.gameObject, weapon, to);
+        }
+        catch( MissingReferenceException e)
+        {
+            print(e);
+        }
     }
 
     private void OnOneFingerMoveAfterHold(Vector3 obj)
