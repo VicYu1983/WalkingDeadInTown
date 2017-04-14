@@ -127,6 +127,7 @@ public class ViewController : MonoBehaviour {
         Player = ep;
         return e;
     }
+
     public GameObject CreateEnemy( Vector3 pos )
     {
         GameObject e = GameObjectFactory(PrefabName.ENEMY);
@@ -162,6 +163,14 @@ public class ViewController : MonoBehaviour {
         ForSortingZ.Add(e);
         return e;
     }
+
+    public void CreateSpark( Vector3 pos )
+    {
+        GameObject e = Instantiate(Prefabs[9]);
+        pos.z = 2;
+        e.transform.SetParent(ObjectContainer.transform);
+        e.transform.position = pos;
+    }
     /*
     private void OnEnemySpeakEvent(AgeCalculator obj)
     {
@@ -179,9 +188,14 @@ public class ViewController : MonoBehaviour {
         s.GetComponent<RaylineModel>().targetPos = target;
         s.GetComponent<RaylineModel>().speed = 12;
         s.GetComponent<RaylineModel>().CurrentPos = from;
-
+        s.GetComponent<RaylineModel>().OnDeadEvent += OnRayLineDead;
 
         if (symbol) s.GetComponent<Image>().color = new Color(0, 0, 0, 0);
+    }
+
+    private void OnRayLineDead(Vector3 obj)
+    {
+        CreateSpark(obj);
     }
 
     public void CreateShadow(Vector3 pos, Vector3 scale)

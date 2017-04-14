@@ -18,6 +18,7 @@ public class GameController : MonoBehaviour {
     public AgeCalculator agc;
 
     public bool EnableShadow = true;
+    public bool OnlyPlayer = false;
     
     /* 代表雙指劃過 */
     bool isDoubleFlicked = false;
@@ -32,7 +33,8 @@ public class GameController : MonoBehaviour {
         vc.ClearFirstAid();
         for (int i = 0; i < 5; ++i)
         {
-            CreateEnemy();
+            if(!OnlyPlayer)
+                CreateEnemy();
             CreateFirstAid();
         }
         for (int i = 0; i < 50; ++i)
@@ -126,9 +128,10 @@ public class GameController : MonoBehaviour {
             CreateFirstAid();
         }
 
-        if( vc.Enemys.Count < 10)
+        if( vc.Enemys.Count < 6)
         {
-            CreateEnemy();
+            if(!OnlyPlayer)
+                CreateEnemy();
         }
     }
 
@@ -156,17 +159,17 @@ private void OnDoubleTwoFingerClicked(Vector3 obj)
 
         if (crb == null) return;
         Vector3 fromPos = crb.Position;
+        PlayerController pc = owner.GetComponent<PlayerController>();
+        Vector3 diff = to - crb.Position;
 
         if (weapon.IsBlade())
         {
-            PlayerController pc = owner.GetComponent<PlayerController>();
-            Vector3 diff = to - crb.Position;
             pc.GetComponent<ControllerRigidbody>().Dodge(diff, GameConfig.DodgeSpeed * 1.2f);
             vc.CreateRayLine(weapon, fromPos, to, true);
         }
         else
         {
-            vc.CreateRayLine(weapon, fromPos, to);
+            vc.CreateRayLine(weapon, fromPos + diff.normalized * 10, to);
         }
     }
 
@@ -370,21 +373,7 @@ private void OnDoubleTwoFingerClicked(Vector3 obj)
         WongWeaponController wwc = enemy.GetComponent<WongWeaponController>();
         wwc.AimViewController = vc.AimViewController;
         wwc.AddWeapon(new object[] { "步槍(半自動)", 10, .6f, false, 5, 30.0f, 0.5f, false, 0.0f, false, false, 5, false, true });
-        /*
-        float wid = UnityEngine.Random.value;
-        if( wid < .6f)
-        {
-            wwc.AddWeapon(GameConfig.WeaponConfig[1]);
-        }
-        else if( wid < .8f)
-        {
-            wwc.AddWeapon(GameConfig.WeaponConfig[5]);
-        }
-        else
-        {
-            wwc.AddWeapon(GameConfig.WeaponConfig[0]);
-        }
-        */
+        
         AIWeapon weaponAI = new AIWeapon();
         weaponAI.PlayerController = ep;
         weaponAI.WongWeaponController = wwc;
