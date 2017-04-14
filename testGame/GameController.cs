@@ -28,15 +28,17 @@ public class GameController : MonoBehaviour {
         vc.ClearPlayer();
         vc.ClearEnemy();
         vc.ClearBarrel();
+        vc.ClearFirstAid();
         for (int i = 0; i < 5; ++i)
         {
             CreateEnemy();
+            CreateFirstAid();
         }
         for (int i = 0; i < 50; ++i)
         {
             CreateBarrels();
-            CreateFirstAid();
         }
+
         CreatePlayer();
         SetPlayerWeapons(0);
     }

@@ -71,6 +71,16 @@ public class ViewController : MonoBehaviour {
         if (Player != null) DestoryEnemy(Player.gameObject);
     }
 
+    public void ClearFirstAid()
+    {
+        for (int i = FirstAids.Count - 1; i > 0; --i)
+        {
+            if (FirstAids[i] != null)
+                DestoryEnemy(FirstAids[i].gameObject);
+        }
+        FirstAids.Clear();
+    }
+
     public void ClearBarrel()
     {
         for (int i = Barrels.Count - 1; i > 0; --i)
