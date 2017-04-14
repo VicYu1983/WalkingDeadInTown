@@ -31,7 +31,7 @@ public class ViewController : MonoBehaviour {
     public List<GameObject> Stuffs;
     public GameObject[] Prefabs;
     public List<PlayerController> Enemys;
-    public List<BarrelController> Barrels;
+    public List<GameObject> Barrels;
     public AudioClip[] Audios;
     AudioSource AudioDongDongDong;
     AudioSource AudioDaDaDa;
@@ -124,9 +124,7 @@ public class ViewController : MonoBehaviour {
         e.transform.SetParent(ObjectContainer.transform);
         e.transform.position = pos;
 
-        BarrelController ep = e.GetComponent<BarrelController>();
-        Barrels.Add(ep);
-        
+        Barrels.Add(e);
         ForSortingZ.Add(e);
         return e;
     }

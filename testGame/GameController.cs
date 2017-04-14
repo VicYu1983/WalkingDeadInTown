@@ -249,14 +249,15 @@ public class GameController : MonoBehaviour {
         pos.x = UnityEngine.Random.value * 3000 - 1500;
         pos.y = UnityEngine.Random.value * 3000 - 1500;
         GameObject barrel = vc.CreateBarrel(pos);
-        BarrelController bc = barrel.GetComponent<BarrelController>();
+        ControllerRigidbody bc = barrel.GetComponent<ControllerRigidbody>();
         bc.OnHitEvent += OnBarrelHit;
     }
 
-    private void OnBarrelHit(BarrelController barrel, GameObject rayLine)
+    private void OnBarrelHit(ControllerRigidbody barrel, GameObject rayLine)
     {
-        barrel.HP -= 10;
-        if( barrel.isDead)
+        ControllerHP ch = barrel.GetComponent<ControllerHP>();
+        ch.HP -= 10;
+        if( ch.IsDead() )
         {
             barrel.OnHitEvent -= OnBarrelHit;
             barrel.gameObject.GetComponent<Animator>().SetBool("Die", true);
