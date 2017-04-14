@@ -256,6 +256,7 @@ public class GameController : MonoBehaviour {
         pos.x = UnityEngine.Random.value * 3000 - 1500;
         pos.y = UnityEngine.Random.value * 3000 - 1500;
         GameObject barrel = vc.CreateBarrel(pos);
+        barrel.GetComponent<ControllerHP>().HP = 120;
         ControllerRigidbody bc = barrel.GetComponent<ControllerRigidbody>();
         bc.OnHitEvent += OnBarrelHit;
     }

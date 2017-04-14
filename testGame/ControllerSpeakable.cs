@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.testGame
 {
-    class ControllerSpeackable : MonoBehaviour
+    class ControllerSpeakable : MonoBehaviour
     {
         public Text Bubble;
 

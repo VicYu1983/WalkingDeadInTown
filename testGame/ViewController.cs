@@ -527,9 +527,9 @@ private void OnAimEmpty()
         }
         int choose = Mathf.FloorToInt(UnityEngine.Random.value * targetSpeaks.Length);
 
-        p.GetComponent<ControllerSpeackable>().SpeakContent = targetSpeaks[choose];
+        p.GetComponent<ControllerSpeakable>().SpeakContent = targetSpeaks[choose];
         yield return new WaitForSeconds(3f);
-        p.GetComponent<ControllerSpeackable>().SpeakContent = "";
+        p.GetComponent<ControllerSpeakable>().SpeakContent = "";
     }
 
     public void DestoryEnemy( GameObject enemy )
