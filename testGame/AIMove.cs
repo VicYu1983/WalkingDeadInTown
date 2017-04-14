@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.testGame;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,8 @@ public class AIMove : AIBasic
 {
     public override void Update()
     {
-        Vector3 targetPos = PlayerController.Position;
+        ControllerRigidbody crb = PlayerController.GetComponent<ControllerRigidbody>();
+        Vector3 targetPos = crb.Position;
         if(ViewController.Player != null)
         {
             targetPos += GetPlayerMoveTarget(PlayerController, ViewController.Player, 100, TrackAndKeepMethod);
@@ -21,7 +23,7 @@ public class AIMove : AIBasic
                     targetPos += GetPlayerMoveTarget(PlayerController, m, 60, KeepMethod);
                 }
             }
-            PlayerController.SetPlayerPosition(targetPos);
+            crb.SetPlayerPosition(targetPos);
         }
     }
 
@@ -39,13 +41,15 @@ public class AIMove : AIBasic
 
     Vector3 GetPlayerMoveTarget(PlayerController follower, PlayerController hoster, float distance, TrackMethod method)
     {
-        Vector3 diff = hoster.Position - follower.Position;
+        ControllerRigidbody crb_follower = follower.GetComponent<ControllerRigidbody>();
+        ControllerRigidbody crb_hoster = hoster.GetComponent<ControllerRigidbody>();
+        Vector3 diff = crb_hoster.Position - crb_follower.Position;
         Vector3 retOffset = new Vector3();
         if (method(diff, distance))
         {
             Vector3 dir = diff.normalized;
-            Vector3 targetPos = hoster.Position + -dir * distance;
-            retOffset = targetPos - follower.Position;
+            Vector3 targetPos = crb_hoster.Position + -dir * distance;
+            retOffset = targetPos - crb_follower.Position;
         }
         return retOffset;
     }

@@ -7,11 +7,11 @@ public class PlayerController : MonoBehaviour {
     public GameObject body;
     public GameObject foot;
     public GameObject handlight;
-    public Text Bubble;
-    public Color color;
+    //public Text Bubble;
+    //public Color color;
 
-    public bool IsWalk = false;
-
+    //public bool IsWalk = false;
+    /*
     public string SpeakContent
     {
         set
@@ -30,7 +30,8 @@ public class PlayerController : MonoBehaviour {
             return Bubble.text;
         }
     }
-
+    */
+    /*
     int _hp = 100;
     public int HP
     {
@@ -50,7 +51,7 @@ public class PlayerController : MonoBehaviour {
         return HP <= 0;
     }
     public Action<PlayerController,GameObject> OnHitEvent;
-
+    */
     Vector3 normalScale = new Vector3(1, 1, 1);
     Vector3 flipScale = new Vector3(-1, 1, 1);
     Vector3 currentDir = new Vector3(0, -1, 0);
@@ -58,7 +59,7 @@ public class PlayerController : MonoBehaviour {
     /* 持有武器 */
    // public List<IWeapon> weapons = new List<IWeapon>();
 
-    Vector3? targetPos;
+    //Vector3? targetPos;
     
     public AIBasic AIMove
     {
@@ -81,6 +82,7 @@ public class PlayerController : MonoBehaviour {
 
         }
     }
+    /*
     public Vector3 Position
     {
         set
@@ -93,7 +95,7 @@ public class PlayerController : MonoBehaviour {
             return this.GetComponent<RectTransform>().position;
         }
     }
-
+    */
     bool _isAim = false;
     public bool IsAim
     {
@@ -139,14 +141,14 @@ public class PlayerController : MonoBehaviour {
             }
         }
     }
-
+    /*
     public void Hit( Vector3 dir, float force, int damage )
     {
         GetComponent<Rigidbody2D>().AddForce(dir.normalized * force);
         HP -= damage;
         if (HP < 0) HP = 0;
     }
-
+    */
     public Sprite GetPlayerImage()
     {
         Texture2D texture = new Texture2D(32, 32);
@@ -155,7 +157,7 @@ public class PlayerController : MonoBehaviour {
         texture.Apply();
         return Sprite.Create(texture, new Rect(0, 0, 32, 32), new Vector2()); ;
     }
-
+    /*
     public void SetPlayerPositionByScreenPos(Vector3 screenPos)
     {
         targetPos = GetMousePositionOnWorld(screenPos);
@@ -189,7 +191,7 @@ public class PlayerController : MonoBehaviour {
     {
         targetPos = null;
     }
-
+    */
     public void BodyRotateByAimDir ( Vector3 dir ){
         currentDir = dir;
         _isAim = true;
@@ -202,7 +204,7 @@ public class PlayerController : MonoBehaviour {
         if (_isAim) return;
         SetBodyImage(dir);
     }
-
+    /*
     public void SetColor( Color color )
     {
         try
@@ -220,6 +222,7 @@ public class PlayerController : MonoBehaviour {
             //maybe die now!
         }
     }
+    */
     /*
     public void SetAI( ViewController vc, AIBasic ai)
     {
@@ -232,28 +235,20 @@ public class PlayerController : MonoBehaviour {
     {
         SetBodyImage(currentDir);
     }
-    
+    /*
     void OnTriggerEnter2D( Collider2D other )
     {
         if(OnHitEvent != null)
             OnHitEvent(this,other.gameObject);
     }
-
+    */
+    /*
     void SetPlayerForce(Vector3 dir, float force)
     {
-       // GetComponent<Rigidbody2D>().AddForce(dir.normalized * force);
         GetComponent<Rigidbody2D>().velocity = dir.normalized * force * 100;
-        
-        //使用數據移動，會喪失一些物理效果，例如會穿過物理物件
-        /*
-        Vector3 newpos = Position;
-        newpos += dir.normalized * force * 2;
-        newpos.z = 0;
-        Position = newpos;
-        */
         GetComponent<PlayerController>().BodyRotateByMoveDir(dir.normalized);
     }
-
+*/
     void SetAnimation( string aniName )
     {
         body.GetComponent<Animator>().enabled = false;
@@ -339,7 +334,7 @@ public class PlayerController : MonoBehaviour {
 
     void Start()
     {
-        SetColor(color);
+        //SetColor(color);
 
         if( gameObject.name != "Player")
         {
@@ -350,7 +345,7 @@ public class PlayerController : MonoBehaviour {
     void Update()
     {
         foot.GetComponent<Animator>().SetFloat("Speed", GetComponent<Rigidbody2D>().velocity.magnitude);
-        UpdatePosition();
+        //UpdatePosition();
         if (AIMove != null) AIMove.Update();
         if( AIWeapon != null) AIWeapon.Update();
     }
@@ -360,7 +355,7 @@ public class PlayerController : MonoBehaviour {
         AIMove = null;
         AIWeapon = null;
     }
-
+    /*
     void UpdatePosition()
     {
         if (targetPos != null)
@@ -388,4 +383,5 @@ public class PlayerController : MonoBehaviour {
         clickPos.z = Camera.main.transform.localPosition.z;
         return Camera.main.ScreenToWorldPoint(clickPos);
     }
+    */
 }

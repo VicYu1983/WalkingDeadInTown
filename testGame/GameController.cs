@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using VicScript.WongGesture;
 using VicScript.WongWeaponSystem;
+using Assets.testGame;
 
 public class GameController : MonoBehaviour {
 
@@ -120,22 +121,26 @@ public class GameController : MonoBehaviour {
     {
         PlayerController owner = weapon.Owner.GetComponent<PlayerController>();
         if( owner == vc.Player) {
-            ProcessPlayerAttack(owner, weapon, to);
+            ProcessPlayerAttack(owner.gameObject, weapon, to);
         }else
         {
             StartCoroutine(DelayProcessPlayerAttack(owner, weapon, to));
         }
     }
 
-    void ProcessPlayerAttack(PlayerController owner, IWeapon weapon, Vector3 to)
+    void ProcessPlayerAttack(GameObject owner, IWeapon weapon, Vector3 to)
     {
-        if (owner == null) return;
-        Vector3 fromPos = owner.Position;
+        ControllerRigidbody crb = owner.GetComponent<ControllerRigidbody>();
+        
+
+        if (crb == null) return;
+        Vector3 fromPos = crb.Position;
 
         if (weapon.IsBlade())
         {
-            Vector3 diff = to - owner.Position;
-            owner.Dodge(diff, GameConfig.DodgeSpeed * 1.2f);
+            PlayerController pc = owner.GetComponent<PlayerController>();
+            Vector3 diff = to - crb.Position;
+            pc.GetComponent<ControllerRigidbody>().Dodge(diff, GameConfig.DodgeSpeed * 1.2f);
             vc.CreateRayLine(weapon, fromPos, to, true);
         }
         else
@@ -147,7 +152,7 @@ public class GameController : MonoBehaviour {
     IEnumerator DelayProcessPlayerAttack(PlayerController owner, IWeapon weapon, Vector3 to)
     {
         yield return new WaitForSeconds(1);
-        ProcessPlayerAttack(owner, weapon, to);
+        ProcessPlayerAttack(owner.gameObject, weapon, to);
     }
 
     private void OnOneFingerMoveAfterHold(Vector3 obj)
@@ -159,7 +164,7 @@ public class GameController : MonoBehaviour {
     private void OnTwoFingerMove(Vector3 obj)
     {
         if (vc.IsGameOver) return;
-        vc.Player.SetPlayerPosition(obj);
+        vc.Player.GetComponent<ControllerRigidbody>().SetPlayerPosition(obj);
     }
 
     private void OnTwoFingerFlicked(Vector3 obj)
@@ -167,7 +172,7 @@ public class GameController : MonoBehaviour {
         if (vc.IsGameOver) return;
         Vector3 dir = obj.normalized;
         Vector3 fromVec = vc.Player.GetComponent<RectTransform>().position;
-        vc.Player.SetPlayerPosition(fromVec + dir * GameConfig.LongMoveDistance);
+        vc.Player.GetComponent<ControllerRigidbody>().SetPlayerPosition(fromVec + dir * GameConfig.LongMoveDistance);
     }
 
     bool twoFingerClicked = false;
@@ -179,11 +184,11 @@ public class GameController : MonoBehaviour {
 
         if (twoFingerClicked)
         {
-            DodgePlayer((obj - vc.Player.Position).normalized, GameConfig.DodgeSpeed);
+            DodgePlayer((obj - vc.Player.GetComponent<ControllerRigidbody>().Position).normalized, GameConfig.DodgeSpeed);
             twoFingerClicked = false;
         }else
         {
-            vc.Player.SetPlayerPosition(obj);
+            vc.Player.GetComponent<ControllerRigidbody>().SetPlayerPosition(obj);
         }
         twoFingerClicked = true;
         StartCoroutine(DelayCall(.5f, () =>
@@ -232,7 +237,7 @@ public class GameController : MonoBehaviour {
     {
         GameObject player = vc.CreatePlayer();
         player.name = "Player";
-        vc.Player.OnHitEvent += OnEnemyHit;
+        vc.Player.GetComponent<ControllerRigidbody>().OnHitEvent += OnEnemyHit;
 
         WongWeaponController wwc = player.GetComponent<WongWeaponController>();
         wwc.AimViewController = vc.AimViewController;
@@ -285,7 +290,7 @@ public class GameController : MonoBehaviour {
                     g.GetComponent<Rigidbody2D>().AddForce(dir.normalized * 60);
                     if (g.GetComponent<PlayerController>() != null)
                     {
-                        ProcessHitEffect(g.GetComponent<PlayerController>(), gPos, pos, 20, 50);
+                        ProcessHitEffect(g.gameObject, gPos, pos, 20, 50);
                     }
                 }
             }
@@ -301,8 +306,8 @@ public class GameController : MonoBehaviour {
         pos.y = UnityEngine.Random.value * -100;
         GameObject enemy = vc.CreateEnemy(pos);
         PlayerController ep = enemy.GetComponent<PlayerController>();
-        ep.HP = 100;
-        ep.OnHitEvent += OnEnemyHit;
+        ep.GetComponent<ControllerHP>().HP = 100;
+        ep.GetComponent<ControllerRigidbody>().OnHitEvent += OnEnemyHit;
         ep.GetComponent<AgeCalculator>().DeadAge = Mathf.FloorToInt(UnityEngine.Random.value * 1000) + 500;
         ep.GetComponent<AgeCalculator>().OnDeadEvent += OnEnemySpeakEvent;
         ep.gameObject.name = "enemy";
@@ -344,7 +349,7 @@ public class GameController : MonoBehaviour {
             obj.ResetAge();
             obj.DeadAge = Mathf.FloorToInt(UnityEngine.Random.value * 1000) + 500;
             
-            StartCoroutine(vc.DisplayPlayerSpeak(obj.GetComponent<PlayerController>()));
+            StartCoroutine(vc.DisplayPlayerSpeak(obj.gameObject));
         }
     }
 
@@ -353,7 +358,7 @@ public class GameController : MonoBehaviour {
         if (vc.IsGameOver) return;
 
         uc.SetState("Dodge");
-        vc.Player.Dodge(dir, force);
+        vc.Player.GetComponent<ControllerRigidbody>().Dodge(dir, force);
         vc.PlayDodgeSound();
 
         isDoubleFlicked = true;
@@ -363,7 +368,7 @@ public class GameController : MonoBehaviour {
         }));
     }
 
-    private void OnEnemyHit(PlayerController beenHit, GameObject other)
+    private void OnEnemyHit(ControllerRigidbody beenHit, GameObject other)
     {
         if (other.name.IndexOf("RayLineObject") != -1)
         {
@@ -378,7 +383,7 @@ public class GameController : MonoBehaviour {
                 //maybe player die now!
             }
 
-            ProcessHitEffect(beenHit, rm.targetPos, rm.fromPos, rm.speed, 10);
+            ProcessHitEffect(beenHit.gameObject, rm.targetPos, rm.fromPos, rm.speed, 10);
             /*
             Vector3 dir = rm.targetPos - rm.fromPos;
             beenHit.Hit(dir, rm.speed, 10);
@@ -409,28 +414,40 @@ public class GameController : MonoBehaviour {
         
     }
 
-    void ProcessHitEffect(PlayerController beenHit, Vector3 hitPos, Vector3 fromPos, float power, int damage)
+    void ProcessHitEffect(GameObject beenHit, Vector3 hitPos, Vector3 fromPos, float power, int damage)
     {
-        Vector3 dir = hitPos - fromPos;
-        beenHit.Hit(dir, power, damage);
+        ControllerRigidbody crb = beenHit.GetComponent<ControllerRigidbody>();
+        ControllerHP ch = beenHit.GetComponent<ControllerHP>();
+        ControllerColor cc = beenHit.GetComponent<ControllerColor>();
 
-        if (beenHit.HP == 0)
+        Vector3 dir = hitPos - fromPos;
+        crb.Hit(dir, power);
+        ch.Hit(damage);
+
+        if (ch.IsDead() )
         {
-            beenHit.OnHitEvent = null;
+            crb.OnHitEvent = null;
             beenHit.GetComponent<AgeCalculator>().OnDeadEvent = null;
-            vc.CreateExplodeEffect(beenHit.Position, beenHit.color);
+            vc.CreateExplodeEffect(crb.Position, cc.color);
             vc.DestoryEnemy(beenHit.gameObject);
             vc.PlayDeadSound();
         }
         else
         {
-            if (beenHit == vc.Player)
+            try
             {
-                vc.MakeEnemyHitEffect(beenHit, Color.white);
+                if (beenHit.gameObject == vc.Player.gameObject)
+                {
+                    vc.MakeEnemyHitEffect(beenHit.gameObject, Color.white);
+                }
+                else
+                {
+                    vc.MakeEnemyHitEffect(beenHit.gameObject, vc.EnemyColor);
+                }
             }
-            else
+            catch( NullReferenceException e)
             {
-                vc.MakeEnemyHitEffect(beenHit, vc.EnemyColor);
+                print(e);
             }
 
         }
@@ -452,7 +469,7 @@ public class GameController : MonoBehaviour {
     private void OnSpaceClick()
     {
         if (vc.IsGameOver) return;
-        vc.Player.MakePlayerStop();
+        vc.Player.GetComponent<ControllerRigidbody>().MakePlayerStop();
         uc.SetState("Stop Player");
     }
     /*
@@ -473,20 +490,20 @@ public class GameController : MonoBehaviour {
     private void OnFPress()
     {
         if (vc.IsGameOver) return;
-        vc.Player.SetPlayerPositionByScreenPos( Input.mousePosition );
+        vc.Player.GetComponent<ControllerRigidbody>().SetPlayerPositionByScreenPos( Input.mousePosition );
     }
 
 
     private void OnDClick()
     {
         if (vc.IsGameOver) return;
-        vc.Player.DodgePlayerByScreenPos(Input.mousePosition, GameConfig.DodgeSpeed);
+        vc.Player.GetComponent<ControllerRigidbody>().DodgePlayerByScreenPos(Input.mousePosition, GameConfig.DodgeSpeed);
     }
 
     private void OnFClick()
     {
         if (vc.IsGameOver) return;
-        vc.Player.SetPlayerPositionByScreenPos( Input.mousePosition );
+        vc.Player.GetComponent<ControllerRigidbody>().SetPlayerPositionByScreenPos( Input.mousePosition );
     }
     /*
     void FireOnce( Vector3 firePos )
@@ -509,7 +526,7 @@ public class GameController : MonoBehaviour {
         if (EnableShadow)
         {
             if (vc.Player == null) return;
-            if (isDoubleFlicked) vc.CreateShadow(vc.Player.Position, vc.Player.Scale);
+            if (isDoubleFlicked) vc.CreateShadow(vc.Player.GetComponent<ControllerRigidbody>().Position, vc.Player.Scale);
         }
     }
 

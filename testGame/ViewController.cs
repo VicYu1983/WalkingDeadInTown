@@ -6,6 +6,7 @@ using System;
 using UnityEngine.UI;
 using VicScript.WongWeaponSystem;
 using VicScript;
+using Assets.testGame;
 
 enum PrefabName{
     BULLET,
@@ -94,6 +95,7 @@ public class ViewController : MonoBehaviour {
         e.transform.position = new Vector3();
 
         PlayerController ep = e.GetComponent<PlayerController>();
+        ep.GetComponent<ControllerColor>().SetColor(Color.white);
         ep.UpdateBody();
         ForSortingZ.Add(e);
 
@@ -109,7 +111,7 @@ public class ViewController : MonoBehaviour {
         PlayerController ep = e.GetComponent<PlayerController>();
         Enemys.Add(ep);
 
-        ep.SetColor(EnemyColor);
+        ep.GetComponent<ControllerColor>().SetColor(EnemyColor);
         ep.UpdateBody();
         ForSortingZ.Add(e);
 
@@ -222,7 +224,7 @@ public class ViewController : MonoBehaviour {
     */
     private void BodyRotateByAimDir( PlayerController attacker, Vector3 aimPos )
     {
-        Vector3 aimDir = (aimPos - attacker.Position).normalized;
+        Vector3 aimDir = (aimPos - attacker.GetComponent<ControllerRigidbody>().Position).normalized;
         attacker.BodyRotateByAimDir(aimDir);
     }
     /*
@@ -480,7 +482,7 @@ private void OnAimEmpty()
     }
     */
 
-    public void MakeEnemyHitEffect(PlayerController p, Color color )
+    public void MakeEnemyHitEffect(GameObject p, Color color )
     {
         try
         {
@@ -492,41 +494,43 @@ private void OnAimEmpty()
         }
     }
 
-    IEnumerator DisplayHitEffect(PlayerController p, Color color)
+    IEnumerator DisplayHitEffect(GameObject p, Color color)
     {
-        p.SetColor(Color.red);
+        ControllerColor cc = p.GetComponent<ControllerColor>();
+        cc.SetColor(Color.red);
         yield return new WaitForSeconds(.05f);
-        p.SetColor(color);
+        cc.SetColor(color);
     }
 
-    public IEnumerator DisplayPlayerSpeak(PlayerController p)
+    public IEnumerator DisplayPlayerSpeak(GameObject p)
     {
+        ControllerHP ch = p.GetComponent<ControllerHP>();
         string[] targetSpeaks = null;
-        if( p.HP <= 10)
+        if( ch.HP <= 10)
         {
             targetSpeaks = HitSpeaks_10;
         }
-        else if( p.HP <= 25)
+        else if( ch.HP <= 25)
         {
             targetSpeaks = HitSpeaks_25;
         }
-        else if (p.HP <= 50)
+        else if (ch.HP <= 50)
         {
             targetSpeaks = HitSpeaks_50;
         }
-        else if (p.HP <= 75)
+        else if (ch.HP <= 75)
         {
             targetSpeaks = HitSpeaks_75;
         }
-        else if (p.HP <= 100)
+        else if (ch.HP <= 100)
         {
             targetSpeaks = HitSpeaks_100;
         }
         int choose = Mathf.FloorToInt(UnityEngine.Random.value * targetSpeaks.Length);
 
-        p.SpeakContent = targetSpeaks[choose];
+        p.GetComponent<ControllerSpeackable>().SpeakContent = targetSpeaks[choose];
         yield return new WaitForSeconds(3f);
-        p.SpeakContent = "";
+        p.GetComponent<ControllerSpeackable>().SpeakContent = "";
     }
 
     public void DestoryEnemy( GameObject enemy )
@@ -592,14 +596,14 @@ private void OnAimEmpty()
     void Update () {
         if (IsGameOver) return;
         Vector3 cameraPos = Camera.main.transform.localPosition;
-        cameraPos.x = Player.Position.x;
-        cameraPos.y = Player.Position.y;
+        cameraPos.x = Player.GetComponent<ControllerRigidbody>().Position.x;
+        cameraPos.y = Player.GetComponent<ControllerRigidbody>().Position.y;
         Camera.main.transform.localPosition = cameraPos;
         SortingZ();
 
         if( Player != null )
         {
-            if (Player.IsWalk)
+            if (Player.GetComponent<ControllerRigidbody>().IsWalk)
             {
                 if (!isPlayWalkSound)
                 {

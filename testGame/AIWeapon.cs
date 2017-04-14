@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.testGame;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,10 +11,12 @@ public class AIWeapon : AIBasic
     {
         if (ViewController.Player == null) return;
         if (PlayerController != null) {
-            Vector3 diff = ViewController.Player.Position - PlayerController.Position;
+            ControllerRigidbody crb_player = ViewController.Player.GetComponent<ControllerRigidbody>();
+            ControllerRigidbody crb_current = PlayerController.GetComponent<ControllerRigidbody>();
+            Vector3 diff = crb_player.Position - crb_current.Position;
             if (UnityEngine.Random.value > .995f)
             {
-                WongWeaponController.weapons[0].AimOnce(ViewController.Player.Position);
+                WongWeaponController.weapons[0].AimOnce(crb_player.Position);
             }
         }
     }
