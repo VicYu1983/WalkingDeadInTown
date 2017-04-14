@@ -35,6 +35,7 @@ public class GameController : MonoBehaviour {
         for (int i = 0; i < 50; ++i)
         {
             CreateBarrels();
+            CreateFirstAid();
         }
         CreatePlayer();
         SetPlayerWeapons(0);
@@ -248,6 +249,26 @@ public class GameController : MonoBehaviour {
 
         WongWeaponController wwc = player.GetComponent<WongWeaponController>();
         wwc.AimViewController = vc.AimViewController;
+    }
+
+    void CreateFirstAid()
+    {
+        Vector3 pos = new Vector3();
+        pos.x = UnityEngine.Random.value * 3000 - 1500;
+        pos.y = UnityEngine.Random.value * 3000 - 1500;
+        GameObject firstaid = vc.CreateFirstAid(pos);
+        ControllerRigidbody bc = firstaid.GetComponent<ControllerRigidbody>();
+        bc.OnHitEvent += OnFirstAidHitEvent;
+    }
+
+    private void OnFirstAidHitEvent(ControllerRigidbody firstAid, GameObject hitObject)
+    {
+        if (hitObject.name == "Player")
+        {
+            firstAid.OnHitEvent -= OnFirstAidHitEvent;
+            hitObject.GetComponent<ControllerHP>().HP += 30;
+            vc.DestoryFirstAid(firstAid.gameObject);
+        }
     }
 
     void CreateBarrels()

@@ -17,7 +17,8 @@ enum PrefabName{
     ENEMY,
     SPEED_SHADOW,
     EXPLODE,
-    BARREL
+    BARREL,
+    FIRSTAID
 }
 
 public class ViewController : MonoBehaviour {
@@ -32,6 +33,7 @@ public class ViewController : MonoBehaviour {
     public GameObject[] Prefabs;
     public List<PlayerController> Enemys;
     public List<GameObject> Barrels;
+    public List<GameObject> FirstAids;
     public AudioClip[] Audios;
     AudioSource AudioDongDongDong;
     AudioSource AudioDaDaDa;
@@ -116,6 +118,15 @@ public class ViewController : MonoBehaviour {
         ep.UpdateBody();
         ForSortingZ.Add(e);
 
+        return e;
+    }
+
+    public GameObject CreateFirstAid(Vector3 pos)
+    {
+        GameObject e = GameObjectFactory(PrefabName.FIRSTAID);
+        e.transform.SetParent(ObjectContainer.transform);
+        e.transform.position = pos;
+        FirstAids.Add(e);
         return e;
     }
 
@@ -385,10 +396,10 @@ public class ViewController : MonoBehaviour {
                 return Instantiate(Prefabs[5]);
             case PrefabName.SPEED_SHADOW:
                 return Instantiate(Prefabs[6]);
-            case PrefabName.EXPLODE:
-                return Instantiate(Prefabs[7]);
             case PrefabName.BARREL:
                 return Instantiate(Prefabs[7]);
+            case PrefabName.FIRSTAID:
+                return Instantiate(Prefabs[8]);
         }
         return null;
     }
@@ -546,8 +557,12 @@ private void OnAimEmpty()
 
         ForSortingZ.Remove(enemy);
         Destroy(enemy);
-        
-        //playersAimCount.Remove(enemy.GetComponent<PlayerController>());
+    }
+
+    public void DestoryFirstAid(GameObject firstAid)
+    {
+        FirstAids.Remove(firstAid);
+        Destroy(firstAid);
     }
 
     public void PlayDeadSound()

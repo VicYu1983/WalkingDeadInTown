@@ -91,6 +91,12 @@ namespace Assets.testGame
                 OnHitEvent(this, other.gameObject);
         }
 
+        void OnCollisionEnter2D(Collision2D other)
+        {
+            if (OnHitEvent != null)
+                OnHitEvent(this, other.gameObject);
+        }
+
         void UpdatePosition()
         {
             if (targetPos != null)
