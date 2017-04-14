@@ -2,8 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ControllerHP : MonoBehaviour {
+
+    public Text Txt_hp;
 
     int _hp = 100;
     public int HP
@@ -16,6 +19,7 @@ public class ControllerHP : MonoBehaviour {
         {
             if (value < 0) value = 0;
             _hp = value;
+            Txt_hp.text = "HP:" + _hp;
         }
     }
 
@@ -29,14 +33,5 @@ public class ControllerHP : MonoBehaviour {
         HP -= damage;
         if (HP < 0) HP = 0;
     }
-
-    // Use this for initialization
-    void Start () {
-        
-    }
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    
 }

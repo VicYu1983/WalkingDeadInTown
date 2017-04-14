@@ -95,6 +95,7 @@ public class ViewController : MonoBehaviour {
         e.transform.position = new Vector3();
 
         PlayerController ep = e.GetComponent<PlayerController>();
+        ep.GetComponent<ControllerHP>().HP = 200;
         ep.GetComponent<ControllerColor>().SetColor(Color.white);
         ep.UpdateBody();
         ForSortingZ.Add(e);
