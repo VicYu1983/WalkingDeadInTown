@@ -68,7 +68,11 @@ public class ViewController : MonoBehaviour {
 
     public void ClearPlayer()
     {
-        if (Player != null) DestoryEnemy(Player.gameObject);
+        if (Player != null)
+        {
+            Player.GetComponent<ControllerRigidbody>().OnHitEvent = null;
+            DestoryEnemy(Player.gameObject);
+        }
     }
 
     public void ClearFirstAid()
@@ -76,7 +80,11 @@ public class ViewController : MonoBehaviour {
         for (int i = FirstAids.Count - 1; i > 0; --i)
         {
             if (FirstAids[i] != null)
+            {
+                FirstAids[i].GetComponent<ControllerRigidbody>().OnHitEvent = null;
                 DestoryEnemy(FirstAids[i].gameObject);
+            }
+                
         }
         FirstAids.Clear();
     }
@@ -86,7 +94,10 @@ public class ViewController : MonoBehaviour {
         for (int i = Barrels.Count - 1; i > 0; --i)
         {
             if (Barrels[i] != null)
+            {
+                Barrels[i].GetComponent<ControllerRigidbody>().OnHitEvent = null;
                 DestoryEnemy(Barrels[i].gameObject);
+            }
         }
         Barrels.Clear();
     }
@@ -95,6 +106,7 @@ public class ViewController : MonoBehaviour {
     {
         for( int i = Enemys.Count - 1; i > 0; --i)
         {
+            Enemys[i].GetComponent<ControllerRigidbody>().OnHitEvent = null;
             DestoryEnemy(Enemys[i].gameObject);
         }
         Enemys.Clear();

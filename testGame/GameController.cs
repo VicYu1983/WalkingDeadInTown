@@ -268,7 +268,7 @@ public class GameController : MonoBehaviour {
         if (hitObject.name == "Player")
         {
             firstAid.OnHitEvent -= OnFirstAidHitEvent;
-            hitObject.GetComponent<ControllerHP>().HP += 30;
+            hitObject.GetComponent<ControllerHP>().HP += 25;
             vc.DestoryFirstAid(firstAid.gameObject);
         }
     }
