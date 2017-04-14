@@ -24,7 +24,16 @@ namespace Assets.testGame
             }
         }
 
+        public Vector3 Velocity
+        {
+            get
+            {
+                return this.GetComponent<Rigidbody2D>().velocity;
+            }
+        }
+
         public Action<ControllerRigidbody, GameObject> OnHitEvent;
+        public Action<ControllerRigidbody, GameObject> OnCollideEvent;
 
         public void Hit(Vector3 dir, float force)
         {
@@ -93,8 +102,8 @@ namespace Assets.testGame
 
         void OnCollisionEnter2D(Collision2D other)
         {
-            if (OnHitEvent != null)
-                OnHitEvent(this, other.gameObject);
+            if (OnCollideEvent != null)
+                OnCollideEvent(this, other.gameObject);
         }
 
         void UpdatePosition()

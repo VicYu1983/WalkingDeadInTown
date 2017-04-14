@@ -15,6 +15,7 @@ public class GameController : MonoBehaviour {
     public ViewController vc;
     public UIController uc;
     public WongGestureController wgc;
+    public AgeCalculator agc;
 
     public bool EnableShadow = true;
     
@@ -113,13 +114,30 @@ public class GameController : MonoBehaviour {
 
         ReStart();
         //Time.timeScale = 0;
+
+        agc.OnDeadEvent += OnCreateEnemyAndFirstAid;
     }
-    /*
-    private void OnDoubleTwoFingerClicked(Vector3 obj)
+
+    private void OnCreateEnemyAndFirstAid(AgeCalculator obj)
     {
-        DodgePlayer(( obj - vc.Player.Position ).normalized, GameConfig.DodgeSpeed);
+        obj.ResetAge();
+        if ( vc.FirstAids.Count < 10)
+        {
+            CreateFirstAid();
+        }
+
+        if( vc.Enemys.Count < 10)
+        {
+            CreateEnemy();
+        }
     }
-    */
+
+    /*
+private void OnDoubleTwoFingerClicked(Vector3 obj)
+{
+   DodgePlayer(( obj - vc.Player.Position ).normalized, GameConfig.DodgeSpeed);
+}
+*/
     private void OnWeaponFireOnce(IWeapon weapon, Vector3 to)
     {
         PlayerController owner = weapon.Owner.GetComponent<PlayerController>();
@@ -260,7 +278,7 @@ public class GameController : MonoBehaviour {
         pos.y = UnityEngine.Random.value * 3000 - 1500;
         GameObject firstaid = vc.CreateFirstAid(pos);
         ControllerRigidbody bc = firstaid.GetComponent<ControllerRigidbody>();
-        bc.OnHitEvent += OnFirstAidHitEvent;
+        bc.OnCollideEvent += OnFirstAidHitEvent;
     }
 
     private void OnFirstAidHitEvent(ControllerRigidbody firstAid, GameObject hitObject)
