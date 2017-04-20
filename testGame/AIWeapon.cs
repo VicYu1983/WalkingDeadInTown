@@ -16,7 +16,9 @@ public class AIWeapon : AIBasic
             Vector3 diff = crb_player.Position - crb_current.Position;
             if (UnityEngine.Random.value > .995f)
             {
-                WongWeaponController.weapons[0].AimOnce(crb_player.Position + crb_player.Velocity);
+                Vector3 aimpos = crb_player.Position + crb_player.Velocity;
+                ViewController.CreateBigAim(aimpos);
+                WongWeaponController.weapons[0].AimOnce(aimpos);
             }
         }
     }

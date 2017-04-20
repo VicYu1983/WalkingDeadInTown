@@ -153,6 +153,14 @@ public class ViewController : MonoBehaviour {
         return e;
     }
 
+    public GameObject CreateBigAim(Vector3 pos)
+    {
+        GameObject e = Instantiate(Prefabs[10]);
+        e.transform.SetParent(ObjectContainer.transform);
+        e.transform.position = pos;
+        return e;
+    }
+
     public GameObject CreateBarrel( Vector3 pos)
     {
         GameObject e = GameObjectFactory(PrefabName.BARREL);

@@ -22,6 +22,7 @@ namespace VicScript.WongWeaponSystem
         public Action<IWeapon, Vector3> OnWeaponFireOnce;
 
         public Action OnAimEmpty;
+        public bool visibleAim;
 
         Dictionary<int, List<AimController>> Aims = new Dictionary<int, List<AimController>>();
         int aimsId = 0;
@@ -47,6 +48,8 @@ namespace VicScript.WongWeaponSystem
                 aim.SetActive(true);
                 aim.transform.parent = gameObject.transform;
                 aim.transform.localScale = new Vector3(Scale, Scale, 1);
+
+                aim.SetActive(visibleAim);
 
                 Vector3 offset = new Vector3(UnityEngine.Random.Range(-1.0f, 1.0f) * seperateRange * Scale, UnityEngine.Random.Range(-1.0f, 1.0f) * seperateRange * Scale, 0);
 
